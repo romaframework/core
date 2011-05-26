@@ -55,7 +55,7 @@ public class SpringComponentEngine extends AbstractServiceable implements Compon
 		}
 	}
 
-	public Map<String, Object> getComponentsOfClass(Class<?> iComponentClass) throws ContextException {
+	public <T> Map<String, T> getComponentsOfClass(Class<T> iComponentClass) throws ContextException {
 		try {
 			return springContext.getBeansOfType(iComponentClass);
 		} catch (BeansException e) {
@@ -72,13 +72,11 @@ public class SpringComponentEngine extends AbstractServiceable implements Compon
 		springContext = new GenericApplicationContext();
 		XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(springContext);
 
-		List<File> cfgFiles = FileUtils.searchAllFiles(RomaApplicationContext.getApplicationPath() + COMPONENT_SRV_DIRECTORY,
-				COMPONENT_SRV_FILE_PATTERN, true);
+		List<File> cfgFiles = FileUtils.searchAllFiles(RomaApplicationContext.getApplicationPath() + COMPONENT_SRV_DIRECTORY, COMPONENT_SRV_FILE_PATTERN, true);
 
 		if (cfgFiles == null || cfgFiles.size() == 0)
-			LoggingHelper.raiseCfgException(getClass(),
-					"Error on loading configuration from path: " + RomaApplicationContext.getApplicationPath() + COMPONENT_SRV_DIRECTORY
-							+ ". No files found.");
+			LoggingHelper.raiseCfgException(getClass(), "Error on loading configuration from path: " + RomaApplicationContext.getApplicationPath()
+					+ COMPONENT_SRV_DIRECTORY + ". No files found.");
 
 		for (File f : cfgFiles) {
 			xmlReader.loadBeanDefinitions(new FileSystemResource(f));
@@ -108,8 +106,7 @@ public class SpringComponentEngine extends AbstractServiceable implements Compon
 	public void endConfigClass(SchemaClassDefinition iClass) {
 	}
 
-	public void configAction(SchemaClassElement action, Annotation actionAnnotation, Annotation genericAnnotation,
-			XmlActionAnnotation node) {
+	public void configAction(SchemaClassElement action, Annotation actionAnnotation, Annotation genericAnnotation, XmlActionAnnotation node) {
 	}
 
 	public void configClass(SchemaClassDefinition class1, Annotation annotation, XmlClassAnnotation node) {
@@ -118,8 +115,7 @@ public class SpringComponentEngine extends AbstractServiceable implements Compon
 	public void configEvent(SchemaEvent event, Annotation eventAnnotation, Annotation genericAnnotation, XmlEventAnnotation node) {
 	}
 
-	public void configField(SchemaField field, Annotation fieldAnnotation, Annotation genericAnnotation, Annotation getterAnnotation,
-			XmlFieldAnnotation node) {
+	public void configField(SchemaField field, Annotation fieldAnnotation, Annotation genericAnnotation, Annotation getterAnnotation, XmlFieldAnnotation node) {
 	}
 
 	public Object getUnderlyingComponent() {

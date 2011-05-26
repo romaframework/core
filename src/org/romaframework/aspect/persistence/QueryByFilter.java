@@ -20,9 +20,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.reverspring.annotations.SpringConstructor;
-import org.reverspring.annotations.SpringDescribe;
-
 public class QueryByFilter extends Query {
 	private Class<?>									candidateClass;
 
@@ -52,7 +49,7 @@ public class QueryByFilter extends Query {
 		this(iCandidateClass, PREDICATE_AND);
 	}
 
-	@SpringConstructor(constructorParamsGetters = { "getCandidateClass", "getPredicateOperator" })
+	//@SpringConstructor(constructorParamsGetters = { "getCandidateClass", "getPredicateOperator" })
 	public QueryByFilter(Class<?> iCandidateClass, String iPredicateOperator) {
 		candidateClass = iCandidateClass;
 		items = new ArrayList<QueryByFilterItem>();
@@ -117,7 +114,7 @@ public class QueryByFilter extends Query {
 		orders.clear();
 	}
 
-	@SpringDescribe(nested = true)
+	//@SpringDescribe(nested = true)
 	public List<QueryByFilterItem> getItems() {
 		return items;
 	}

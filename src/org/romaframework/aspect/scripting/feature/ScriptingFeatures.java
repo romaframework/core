@@ -15,14 +15,11 @@
  */
 package org.romaframework.aspect.scripting.feature;
 
-import org.romaframework.core.util.DynaBean;
+import org.romaframework.aspect.scripting.ScriptingAspect;
+import org.romaframework.core.schema.Feature;
+import org.romaframework.core.schema.FeatureType;
 
-public class ScriptingFeatures extends DynaBean {
-	public ScriptingFeatures() {
-		defineAttribute(LANGUAGE, null);
-		defineAttribute(CODE, null);
-	}
-
-	public static final String	LANGUAGE	= "language";
-	public static final String	CODE			= "code";
+public class ScriptingFeatures {
+	public static final Feature<String>	LANGUAGE	= new Feature<String>(ScriptingAspect.ASPECT_NAME, "language", FeatureType.ACTION, String.class);
+	public static final Feature<String>	CODE			= new Feature<String>(ScriptingAspect.ASPECT_NAME, "code", FeatureType.ACTION, String.class);
 }

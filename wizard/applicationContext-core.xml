@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans default-autowire="no" default-dependency-check="none" default-lazy-init="false">
+	<bean id="FlowAspect" singleton="true" class="org.romaframework.aspect.flow.impl.POJOFlow" />
+
+	<bean id="I18NAspect" singleton="true" class="org.romaframework.aspect.i18n.rb.I18NAspectResourceBundleImpl">
+		<constructor-arg ref="AutoReloadManager" />
+		<property name="packages">
+			<list>
+				<!-- ADDITIONAL PATHS TO DISCOVER I18N FILES -->
+			</list>
+		</property>
+	</bean>
+
+	<bean id="AutoReloadManager" singleton="true" class="org.romaframework.core.resource.AutoReloadManager">
+		<constructor-arg value="1000" />
+	</bean>
+
+	<bean id="ResourceResolver" class="org.romaframework.core.resource.ResourceResolver" singleton="true" />
+
+	<bean id="SchemaClassResolver" class="org.romaframework.core.schema.SchemaClassResolver" singleton="true">
+		<constructor-arg ref="ResourceResolver" />
+		<property name="packages">
+			<list>
+				<!-- ADDITIONAL PACKAGES TO USE AS DOMAIN -->
+			</list>
+		</property>
+	</bean>
+
+	<bean id="SchemaManager" class="org.romaframework.core.schema.SchemaManager" singleton="true" init-method="config">
+		<property name="configuration">
+			<map>
+				<entry key="ignore-actions" value="jdo*" />
+			</map>
+		</property>
+	</bean>
+
+	<bean id="SchemaConfigurationLoader" class="org.romaframework.core.schema.SchemaConfigurationLoader" singleton="true" />
+
+	<bean id="SchemaReloader" class="org.romaframework.core.schema.SchemaReloader" singleton="true" />
+
+	<bean id="AuthenticationAspect" class="org.romaframework.aspect.authentication.mock.NoAuthenticationManager" singleton="true" />
+
+	<bean id="ScreenConfigurationLoader" class="org.romaframework.aspect.view.screen.config.ScreenConfigurationLoader" singleton="true" />
+
+	<bean id="RenderingModeManager" class="org.romaframework.aspect.view.rendering.RenderingModeManager" singleton="true">
+		<property name="components">
+			<list></list>
+		</property>
+	</bean>
+
+	<bean class="org.romaframework.aspect.view.area.AreaModeManager" dependency-check="default" id="AreaModeManager" singleton="true">
+		<property name="components">
+			<list></list>
+		</property>
+	</bean>
+
+	<bean id="LayoutModeManager" class="org.romaframework.aspect.view.layout.LayoutModeManager" singleton="true">
+		<property name="components">
+			<list></list>
+		</property>
+	</bean>
+
+	<bean id="LoggingAspect" class="org.romaframework.aspect.logging.LoggingCommonAspect" singleton="true" />
+
+	<bean id="ConsoleLogger" class="org.romaframework.aspect.logging.loggers.ConsoleLogger" singleton="true">
+		<constructor-arg>
+			<ref bean="LoggingAspect" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="ValidationAspect" class="org.romaframework.aspect.validation.BasicValidationModule" singleton="true" />
+
+	<bean id="SerializationAspect" class="org.romaframework.aspect.serialization.DefaultSerializationAspect" />
+	<bean id="SerializationInspectionStrategy" class="org.romaframework.aspect.serialization.impl.SchemaSerializationInspectionStrategy" />
+	<bean id="SerializationFormatStrategy" class="org.romaframework.aspect.serialization.impl.NativeSerializationFormatStrategy" />
+	<bean id="JsonFormatStrategy" class="org.romaframework.aspect.serialization.impl.JsonSerializationFormatStrategy" />
+	<bean id="JsonFullFormatStrategy" class="org.romaframework.aspect.serialization.impl.JsonFullSerializationFormatStrategy" />
+
+	<bean id="HookAspect" class="org.romaframework.aspect.hook.HookAspect" />
+</beans>

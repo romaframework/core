@@ -14,7 +14,7 @@ import org.romaframework.aspect.core.annotation.AnnotationConstants;
  * @author Luca Garulli (luca.garulli--at--assetdata.it)
  * @since 2.0
  */
-@Target( { ElementType.FIELD, ElementType.METHOD })
+@Target({ ElementType.FIELD, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidationField {
 	byte required() default AnnotationConstants.UNSETTED;
@@ -33,6 +33,12 @@ public @interface ValidationField {
 	 * Maximum value for numeric fields and Maximum length for strings
 	 */
 	int max() default DEF_MAX;
+
+	/**
+	 * 
+	 * Enable and disable the validation.
+	 */
+	byte enabled() default AnnotationConstants.UNSETTED;
 
 	public static final int	DEF_MIN	= Integer.MIN_VALUE;
 	public static final int	DEF_MAX	= Integer.MAX_VALUE;

@@ -22,26 +22,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import org.romaframework.aspect.core.CoreAspect;
 import org.romaframework.aspect.core.feature.CoreFieldFeatures;
-import org.romaframework.aspect.serialization.SerializationAspect;
 import org.romaframework.aspect.serialization.SerializationConstants;
 import org.romaframework.aspect.serialization.SerializationData;
 import org.romaframework.aspect.serialization.SerializationElement;
 import org.romaframework.aspect.serialization.SerializationHelper;
 import org.romaframework.aspect.serialization.exception.SerializationException;
-import org.romaframework.aspect.serialization.feature.SerializationClassFeature;
-import org.romaframework.aspect.serialization.feature.SerializationFieldFeature;
+import org.romaframework.aspect.serialization.feature.SerializationClassFeatures;
+import org.romaframework.aspect.serialization.feature.SerializationFieldFeatures;
 import org.romaframework.core.Roma;
 import org.romaframework.core.entity.EntityHelper;
 import org.romaframework.core.exception.ConfigurationNotFoundException;
-import org.romaframework.core.flow.ObjectContext;
+import org.romaframework.core.schema.Feature;
+import org.romaframework.core.schema.FeatureRegistry;
+import org.romaframework.core.schema.FeatureType;
+import org.romaframework.core.schema.SchemaAction;
 import org.romaframework.core.schema.SchemaClassDefinition;
 import org.romaframework.core.schema.SchemaClassElement;
+import org.romaframework.core.schema.SchemaEvent;
 import org.romaframework.core.schema.SchemaFeatures;
 import org.romaframework.core.schema.SchemaField;
 import org.romaframework.core.schema.SchemaHelper;
-import org.romaframework.core.util.DynaBean;
 
 /**
  * 
@@ -71,7 +72,7 @@ public class SchemaSerializationInspectionStrategy extends AbstractSerialization
 			definition = Roma.schema().getSchemaClass(toInspect.getClass());
 		}
 		SerializationData data = inspect(toInspect, definition, null, inspected);
-		data.setName((String) definition.getFeature(SerializationAspect.ASPECT_NAME, SerializationClassFeature.ROOT_ELEMENT_NAME));
+		data.setName((String) definition.getFeature(SerializationClassFeatures.ROOT_ELEMENT_NAME));
 		return data;
 	}
 
@@ -86,8 +87,7 @@ public class SchemaSerializationInspectionStrategy extends AbstractSerialization
 	 *          relative object schema definition.
 	 * @return the data relative of current object.
 	 */
-	protected SerializationData inspect(Object toInspect, SchemaClassDefinition definition, SchemaClassDefinition embeddedType,
-			Stack<Object> inspected) {
+	protected SerializationData inspect(Object toInspect, SchemaClassDefinition definition, SchemaClassDefinition embeddedType, Stack<Object> inspected) {
 		if (toInspect == null || definition == null || inspected.contains(toInspect)) {
 			return null;
 		} else {
@@ -122,7 +122,7 @@ public class SchemaSerializationInspectionStrategy extends AbstractSerialization
 			List<SerializationElement> fields = new ArrayList<SerializationElement>();
 			for (Map.Entry<String, SchemaField> field : definition.getFields().entrySet()) {
 				SchemaField schemaField = field.getValue();
-				if (Boolean.TRUE.equals(schemaField.getFeature(SerializationAspect.ASPECT_NAME, SerializationFieldFeature.TRANSIENT)))
+				if (Boolean.TRUE.equals(schemaField.getFeature(SerializationFieldFeatures.TRANSIENT)))
 					continue;
 				SerializationElement element = inspectField(schemaField.getValue(toInspect), schemaField, inspected);
 				if (element != null) {
@@ -162,10 +162,9 @@ public class SchemaSerializationInspectionStrategy extends AbstractSerialization
 		copyFeatures(schemaField, serializationElement, modeInspect);
 		serializationElement.setName(schemaField.getName());
 
-		Boolean runtimeType = (Boolean) schemaField.getFeature(CoreAspect.ASPECT_NAME, CoreFieldFeatures.USE_RUNTIME_TYPE);
+		Boolean runtimeType = (Boolean) schemaField.getFeature(CoreFieldFeatures.USE_RUNTIME_TYPE);
 
-		SerializationData data = inspect(fieldValue, getObjectType(fieldValue, schemaField.getType(), runtimeType), schemaField
-				.getEmbeddedType(), inspected);
+		SerializationData data = inspect(fieldValue, getObjectType(fieldValue, schemaField.getType(), runtimeType), schemaField.getEmbeddedType(), inspected);
 		serializationElement.setData(data);
 		serializationElement.setEvents(inspectSchemaElement(schemaField.getEventIterator()));
 		return serializationElement;
@@ -241,14 +240,13 @@ public class SchemaSerializationInspectionStrategy extends AbstractSerialization
 	 */
 	public void fill(Object toFill, SerializationData data) {
 		boolean copyFeatures = true;
-		SchemaClassDefinition definition = ObjectContext.getInstance().getSchemaObject(toFill);
+		SchemaClassDefinition definition = Roma.getSchemaObject(toFill);
 		if (definition == null) {
 			copyFeatures = false;
 			definition = Roma.schema().getSchemaClass(toFill.getClass());
 		}
 		if (data.getName() != null && !definition.getName().equals(data.getName())) {
-			throw new SerializationException("Not Same Instance of serialized, have:" + definition.getName() + " expected:"
-					+ data.getName());
+			throw new SerializationException("Not Same Instance of serialized, have:" + definition.getName() + " expected:" + data.getName());
 		}
 		fill(toFill, data, definition, copyFeatures);
 	}
@@ -272,7 +270,7 @@ public class SchemaSerializationInspectionStrategy extends AbstractSerialization
 		List<SerializationElement> fields = data.getFields();
 		for (SerializationElement serializationField : fields) {
 			SchemaField field = definition.getField(serializationField.getName());
-			if (Boolean.TRUE.equals(field.getFeature(SerializationAspect.ASPECT_NAME, SerializationFieldFeature.TRANSIENT)))
+			if (Boolean.TRUE.equals(field.getFeature(SerializationFieldFeatures.TRANSIENT)))
 				continue;
 			fillField(toFill, serializationField, field, copyFeatures);
 		}
@@ -396,21 +394,21 @@ public class SchemaSerializationInspectionStrategy extends AbstractSerialization
 	 * @param dest
 	 *          of copy.
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected void copyFeatures(SchemaFeatures source, SchemaFeatures dest, boolean mode) {
 		if (mode)
 			SerializationHelper.reallineFeature(source);
-
-		for (Map.Entry<String, DynaBean> features : source.getAllFeatures().entrySet()) {
-			DynaBean bean = dest.getFeatures(features.getKey());
-			if (bean == null) {
-				bean = new DynaBean();
-				dest.setFeatures(features.getKey(), bean);
-			}
-			for (Map.Entry<String, Object> atribute : features.getValue().getAttributes().entrySet()) {
-				if (!bean.getAttributes().keySet().contains(atribute.getKey()))
-					bean.defineAttribute(atribute.getKey(), null);
-				bean.setAttribute(atribute.getKey(), atribute.getValue());
-			}
+		List<Feature> features = null;
+		if (source instanceof SchemaClassDefinition)
+			features = FeatureRegistry.getFeatures(FeatureType.CLASS);
+		else if (source instanceof SchemaField)
+			features = FeatureRegistry.getFeatures(FeatureType.FIELD);
+		else if (source instanceof SchemaEvent)
+			features = FeatureRegistry.getFeatures(FeatureType.EVENT);
+		else if (source instanceof SchemaAction)
+			features = FeatureRegistry.getFeatures(FeatureType.ACTION);
+		for (Feature feature : features) {
+			dest.setFeature(feature, source.getFeature(feature));
 		}
 
 		if (!mode)

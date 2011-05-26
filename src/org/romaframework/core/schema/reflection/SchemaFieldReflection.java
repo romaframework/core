@@ -1,11 +1,8 @@
 package org.romaframework.core.schema.reflection;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Set;
 
@@ -15,14 +12,12 @@ import org.romaframework.core.Roma;
 import org.romaframework.core.aspect.Aspect;
 import org.romaframework.core.binding.BindingException;
 import org.romaframework.core.flow.Controller;
-import org.romaframework.core.flow.UserObjectEventListener;
+import org.romaframework.core.flow.SchemaFieldListener;
+import org.romaframework.core.schema.FeatureLoader;
 import org.romaframework.core.schema.SchemaClass;
 import org.romaframework.core.schema.SchemaClassDefinition;
 import org.romaframework.core.schema.SchemaField;
-import org.romaframework.core.schema.SchemaHelper;
-import org.romaframework.core.schema.config.EmbeddedSchemaConfiguration;
 import org.romaframework.core.schema.config.SchemaConfiguration;
-import org.romaframework.core.schema.xmlannotations.XmlClassAnnotation;
 import org.romaframework.core.schema.xmlannotations.XmlEventAnnotation;
 import org.romaframework.core.schema.xmlannotations.XmlFieldAnnotation;
 
@@ -45,28 +40,10 @@ public class SchemaFieldReflection extends SchemaField {
 		return languageType.isArray();
 	}
 
-	public void configure(SchemaClass iFieldType, Class<?> iLanguageFieldType, Field iField, Method iGetterMethod,
-			Method iSetterMethod) {
-		languageType = iLanguageFieldType;
-
-		if (iFieldType == null)
-			iFieldType = Roma.schema().getSchemaClassIfExist(languageType);
-
-		field = iField;
-
-		if (iGetterMethod != null)
-			getterMethod = iGetterMethod;
-
-		if (iSetterMethod != null)
-			setterMethod = iSetterMethod;
-
-		String annotationName;
-		Annotation fieldAnnotation;
-		Annotation genericAnnotation;
-		Annotation getterAnnotation;
+	public void configure() {
 
 		SchemaConfiguration classDescriptor = entity.getSchemaClass().getDescriptor();
-
+		
 		XmlFieldAnnotation parentDescriptor = null;
 
 		if (classDescriptor != null && classDescriptor.getType() != null && classDescriptor.getType().getFields() != null) {
@@ -74,71 +51,12 @@ public class SchemaFieldReflection extends SchemaField {
 			parentDescriptor = classDescriptor.getType().getField(name);
 		}
 
+		FeatureLoader.loadFieldFeatures(this, parentDescriptor);
 		
-
-		if (parentDescriptor != null && parentDescriptor.getClassAnnotation() != null) {
-			// CONFIGURE EMBEDDED CLASS IF ANY
-			XmlClassAnnotation subClass = parentDescriptor.getClassAnnotation();
-			SchemaConfiguration fieldSchemaDescr = null;
-			// INLINE DESCRIPTOR
-			SchemaConfiguration sourceDescr = getEntity().getSchemaClass().getDescriptor();
-			if (sourceDescr != null) {
-				fieldSchemaDescr = new EmbeddedSchemaConfiguration(subClass);
-
-				SchemaClass baseType = (SchemaClass) (Roma.schema().getSchemaClass(languageType));
-
-				// CREATE A NEW INLINE CLASS
-				setType(Roma.schema().createSchemaClass(getEntity().getSchemaClass().getName() + "." + getName(), baseType,
-						fieldSchemaDescr));
-			} else {
-				setType(Roma.schema().getSchemaClassIfExist(getLanguageType()));
-			}
-
-		} else
-			type = iFieldType;
-
-		if (type == null)
-			setType(Roma.schema().getSchemaClassIfExist(getLanguageType()));
 
 		// BROWSE ALL ASPECTS
 		for (Aspect aspect : Roma.aspects()) {
-			// COMPOSE ANNOTATION NAME BY ASPECT
-			annotationName = aspect.aspectName();
-			annotationName = Character.toUpperCase(annotationName.charAt(0)) + annotationName.substring(1);
-
-			if (field != null) {
-				fieldAnnotation = searchForAnnotation(field, annotationName + "Field", aspect.aspectName());
-				genericAnnotation = searchForAnnotation(field, annotationName, aspect.aspectName());
-			} else {
-				fieldAnnotation = null;
-				genericAnnotation = null;
-			}
-
-			if (getterMethod != null)
-				getterAnnotation = searchForAnnotation(getterMethod, annotationName + "Field", aspect.aspectName());
-			else
-				getterAnnotation = null;
-
-			// CONFIGURE THE SCHEMA OBJECT WITH CURRENT ASPECT
-			aspect.configField(this, fieldAnnotation, genericAnnotation, getterAnnotation, parentDescriptor);
-		}
-		
-		// DISCOVER EMBEDDED TYPE
-		Type embType;
-		if ((embType = assignEmbeddedType(getterMethod.getGenericReturnType())) == null)
-			if ((embType = assignEmbeddedType(getterMethod.getReturnType())) == null)
-				if (field != null)
-					embType = assignEmbeddedType(field.getGenericType());
-
-		if (embType != null && embType instanceof ParameterizedType) {
-			ParameterizedType pt = (ParameterizedType) embType;
-			if (pt.getActualTypeArguments() != null) {
-				embeddedTypeGenerics = new SchemaClass[pt.getActualTypeArguments().length];
-				int i = 0;
-				for (Type argType : pt.getActualTypeArguments())
-					if (argType instanceof Class<?>)
-						embeddedTypeGenerics[i++] = Roma.schema().getSchemaClassIfExist((Class<?>) argType);
-			}
+			aspect.configField(this, null, null, null, parentDescriptor);
 		}
 
 		if (parentDescriptor != null && parentDescriptor.getEvents() != null) {
@@ -152,7 +70,7 @@ public class SchemaFieldReflection extends SchemaField {
 					eventInfo = new SchemaEventReflection(this, xmlConfigEventType.getName(), null);
 					setEvent(xmlConfigEventType.getName(), eventInfo);
 				}
-				eventInfo.configure(null);
+				eventInfo.configure();
 			}
 		}
 	}
@@ -162,7 +80,7 @@ public class SchemaFieldReflection extends SchemaField {
 		if (iObject == null)
 			return null;
 
-		List<UserObjectEventListener> listeners = Controller.getInstance().getListeners(UserObjectEventListener.class);
+		List<SchemaFieldListener> listeners = Controller.getInstance().getListeners(SchemaFieldListener.class);
 
 		try {
 			// CREATE THE CONTEXT BEFORE TO CALL THE ACTION
@@ -171,7 +89,7 @@ public class SchemaFieldReflection extends SchemaField {
 			// CALL ALL LISTENERS BEFORE TO RETURN THE VALUE
 			Object value = invokeCallbackBeforeFieldRead(listeners, iObject);
 
-			if (value != UserObjectEventListener.IGNORED)
+			if (value != SchemaFieldListener.IGNORED)
 				return value;
 
 			// TRY TO INVOKE GETTER IF ANY
@@ -221,8 +139,8 @@ public class SchemaFieldReflection extends SchemaField {
 		} else {
 			// WRITE THE FIELD
 			if (field == null) {
-				log.debug("[SchemaHelper.setFieldValue] Cannot set the value '" + iValue + "' for field '" + name + "' on object "
-						+ iObject + " since it has neither setter neir field declared");
+				log.debug("[SchemaHelper.setFieldValue] Cannot set the value '" + iValue + "' for field '" + name + "' on object " + iObject
+						+ " since it has neither setter neir field declared");
 				return;
 			}
 
@@ -273,27 +191,5 @@ public class SchemaFieldReflection extends SchemaField {
 	protected SchemaClass getSchemaClassFromLanguageType() {
 		return Roma.schema().getSchemaClass(languageType);
 	}
-
-	/**
-	 * Get embedded type using Generics Reflection.
-	 * 
-	 * @param iType
-	 *          Type to check
-	 * @return true if an embedded type was found, otherwise false
-	 */
-	private Type assignEmbeddedType(Type iType) {
-		// CHECK FOR ARRAY
-		if (iType instanceof Class<?>) {
-			Class<?> cls = (Class<?>) iType;
-			if (cls.isArray())
-				setEmbeddedLanguageType(cls.getComponentType());
-		}
-
-		Class<?> embClass = SchemaHelper.getGenericClass(iType);
-		if (embClass != null) {
-			setEmbeddedLanguageType(embClass);
-		}
-
-		return embClass != null ? iType : null;
-	}
+	
 }

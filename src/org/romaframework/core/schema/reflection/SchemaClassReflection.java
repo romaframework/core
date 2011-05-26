@@ -17,7 +17,6 @@
 package org.romaframework.core.schema.reflection;
 
 import java.io.File;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -30,14 +29,12 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.romaframework.aspect.core.CoreAspect;
-import org.romaframework.aspect.core.feature.CoreClassFeatures;
 import org.romaframework.core.GlobalConstants;
 import org.romaframework.core.Roma;
 import org.romaframework.core.Utility;
 import org.romaframework.core.aspect.Aspect;
-import org.romaframework.core.domain.entity.ComposedEntity;
 import org.romaframework.core.exception.ConfigurationNotFoundException;
+import org.romaframework.core.schema.FeatureLoader;
 import org.romaframework.core.schema.SchemaAction;
 import org.romaframework.core.schema.SchemaClass;
 import org.romaframework.core.schema.SchemaClassResolver;
@@ -50,7 +47,6 @@ import org.romaframework.core.schema.SchemaParameter;
 import org.romaframework.core.schema.SchemaReloader;
 import org.romaframework.core.schema.config.SaxSchemaConfiguration;
 import org.romaframework.core.schema.config.SchemaConfiguration;
-import org.romaframework.core.schema.xmlannotations.XmlClassAnnotation;
 
 /**
  * Represent a class. It's not necessary that a Java class exist in the Classpath since you can define a SchemaClassReflection that
@@ -61,13 +57,14 @@ import org.romaframework.core.schema.xmlannotations.XmlClassAnnotation;
  */
 public class SchemaClassReflection extends SchemaClass {
 
+	private static final long			serialVersionUID		= 8389722670237445799L;
 	private Class<?>							javaClass;
 	private SchemaClass						baseClass;
 
 	public static final String		GET_METHOD					= "get";
 	public static final String		IS_METHOD						= "is";
 	public static final String		SET_METHOD					= "set";
-	public static final String[]	IGNORE_METHOD_NAMES	= { "equals", "toString", "hashCode", "validate", "getClass", "on^*", "clone" };
+	public static final String[]	IGNORE_METHOD_NAMES	= { "equals", "toString", "hashCode", "validate", "getClass", "clone" };
 
 	private static Log						log									= LogFactory.getLog(SchemaClassReflection.class);
 
@@ -75,8 +72,7 @@ public class SchemaClassReflection extends SchemaClass {
 		super(Utility.getClassName(iClass));
 		javaClass = iClass;
 		// USED CLASS EQUALS FOR CROSS CLASSLOADER COMPARE
-		baseClass = iClass.getSuperclass() != null && iClass.getSuperclass().equals(Object.class) ? Roma.schema().getSchemaClass(
-				iClass.getSuperclass()) : null;
+		baseClass = iClass.getSuperclass() != null && iClass.getSuperclass().equals(Object.class) ? Roma.schema().getSchemaClass(iClass.getSuperclass()) : null;
 		config();
 	}
 
@@ -107,8 +103,8 @@ public class SchemaClassReflection extends SchemaClass {
 	}
 
 	@Override
-	public Object newInstanceFinal(Object... iArgs) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
-			SecurityException, InvocationTargetException, NoSuchMethodException {
+	public Object newInstanceFinal(Object... iArgs) throws InstantiationException, IllegalAccessException, IllegalArgumentException, SecurityException,
+			InvocationTargetException, NoSuchMethodException {
 		Class<?> currClass = (Class<?>) (javaClass != null ? javaClass : baseClass.getLanguageType());
 
 		if (iArgs == null || iArgs.length == 0)
@@ -157,10 +153,191 @@ public class SchemaClassReflection extends SchemaClass {
 		inspectInheritance();
 		readAllAnnotations();
 
-		readFields();
-		readActions();
-		readEvents();
+		readClass();
 		endConfig();
+	}
+
+	private void readClass() {
+		Class<?> iClass = (Class<?>) (javaClass != null ? javaClass : baseClass.getLanguageType());
+
+		List<Method> methods = SchemaHelper.getMethods(iClass);
+		for (Method method : methods) {
+			// JUMP STATIC FIELDS OR NOT PUBLIC FIELDS
+			if (isToIgnoreMethod(method))
+				continue;
+			if (isGetterForField(method, javaClass))
+				continue;
+			else if (isSetterForField(method, javaClass))
+				continue;
+			else if (isEvent(method))
+				continue;
+			else
+				createAction(method);
+
+		}
+
+		Field[] javaFields = javaClass.getDeclaredFields();
+		for (Field curField : javaFields) {
+			SchemaField sf = getField(curField.getName());
+			if (sf != null && sf instanceof SchemaFieldReflection) {
+				SchemaClass fieldSchemaClass = Roma.schema().getSchemaClassIfExist(curField.getType());
+				if (sf.getType() == null || fieldSchemaClass.isAssignableAs(fieldSchemaClass)) {
+					sf.setType(fieldSchemaClass);
+					((SchemaFieldReflection) sf).field = curField;
+					((SchemaFieldReflection) sf).languageType = curField.getType();
+				}
+			}
+		}
+
+		List<SchemaField> toRemove = new ArrayList<SchemaField>();
+		for (SchemaField field : fields.values()) {
+			if (field instanceof SchemaFieldReflection && ((SchemaFieldReflection) field).getGetterMethod() == null)
+				toRemove.add(field);
+			else {
+				if (field instanceof SchemaFieldReflection)
+					((SchemaFieldReflection) field).configure();
+				field.setOrder(getFieldOrder(field));
+			}
+		}
+		for (SchemaField schemaField : toRemove) {
+			fields.remove(schemaField.getName());
+			orderedFields.remove(schemaField);
+		}
+		Collections.sort(orderedFields);
+
+		for (SchemaAction action : actions.values()) {
+			if (action instanceof SchemaActionReflection)
+				((SchemaActionReflection) action).configure();
+			action.setOrder(getActionOrder(action));
+		}
+		Collections.sort(orderedActions);
+
+		for (SchemaEvent event : events.values()) {
+			if (event instanceof SchemaEventReflection)
+				((SchemaEventReflection) event).configure();
+			event.setOrder(getActionOrder(event));
+		}
+		Collections.sort(orderedActions);
+	}
+
+	private void createAction(Method method) {
+		String methodSignature = getMethodSignature(method);
+		log.debug("[SchemaClassReflection] Class " + getName() + " found method: " + methodSignature);
+
+		SchemaActionReflection actionInfo = (SchemaActionReflection) getAction(methodSignature);
+
+		if (actionInfo == null) {
+			List<SchemaParameter> orderedParameters = new ArrayList<SchemaParameter>();
+			for (int i = 0; i < method.getParameterTypes().length; ++i) {
+				orderedParameters.add(new SchemaParameter("param" + i, Roma.schema().getSchemaClassIfExist(method.getParameterTypes()[i])));
+			}
+			// ACTION NOT EXISTENT: CREATE IT AND INSERT IN THE COLLECTION
+			actionInfo = new SchemaActionReflection(this, methodSignature, orderedParameters);
+			actionInfo.method = method;
+			setAction(methodSignature, actionInfo);
+		}
+		actionInfo.setReturnType(Roma.schema().getSchemaClassIfExist(method.getReturnType()));
+	}
+
+	private SchemaFieldReflection createField(String fieldName, Class<?> javaFieldType) {
+		log.debug("[SchemaClassReflection] Class " + getName() + " found field: " + fieldName);
+		SchemaFieldReflection fieldInfo;
+		// FIELD NOT EXISTENT: CREATE IT AND INSERT IN THE COLLECTION
+		fieldInfo = new SchemaFieldReflection(this, fieldName);
+		fieldInfo.languageType = javaFieldType;
+		fieldInfo.setType(Roma.schema().getSchemaClassIfExist(javaFieldType));
+		setField(fieldName, fieldInfo);
+		return fieldInfo;
+	}
+
+	public Boolean isGetterForField(Method method, Class<?> owner) {
+		int prefixLength;
+		String fieldName = method.getName();
+		if (fieldName.startsWith(GET_METHOD) && checkIfFirstCharAfterPrefixIsUpperCase(fieldName, GET_METHOD))
+			prefixLength = GET_METHOD.length();
+		else if (fieldName.startsWith(IS_METHOD) && checkIfFirstCharAfterPrefixIsUpperCase(fieldName, IS_METHOD))
+			prefixLength = IS_METHOD.length();
+		else
+			return false;
+		if (method.getParameterTypes() != null && method.getParameterTypes().length > 0)
+			return false;
+		if (fieldName.length() <= prefixLength)
+			return false;
+
+		fieldName = firstToLower(fieldName.substring(prefixLength));
+		Class<?> javaFieldType = method.getReturnType();
+		SchemaFieldReflection fieldInfo = (SchemaFieldReflection) getField(fieldName);
+		if (fieldInfo == null) {
+			fieldInfo = createField(fieldName, javaFieldType);
+			fieldInfo.getterMethod = method;
+		} else if (fieldInfo instanceof SchemaFieldReflection && javaFieldType.isAssignableFrom(((SchemaFieldReflection) fieldInfo).getLanguageType())) {
+			fieldInfo.getterMethod = method;
+		}
+
+		return true;
+	}
+
+	public boolean isSetterForField(Method method, Class<?> owner) {
+		String fieldName = method.getName();
+		if (!fieldName.startsWith(SET_METHOD) || !checkIfFirstCharAfterPrefixIsUpperCase(fieldName, SET_METHOD))
+			return false;
+		if (method.getParameterTypes() != null && method.getParameterTypes().length != 1)
+			return false;
+
+		fieldName = firstToLower(fieldName.substring(SET_METHOD.length()));
+		Class<?> javaFieldType = method.getParameterTypes()[0];
+		SchemaFieldReflection fieldInfo = (SchemaFieldReflection) getField(fieldName);
+		if (fieldInfo == null) {
+			fieldInfo = createField(fieldName, javaFieldType);
+			fieldInfo.setterMethod = method;
+		} else if (fieldInfo instanceof SchemaFieldReflection && ((SchemaFieldReflection) fieldInfo).getLanguageType().isAssignableFrom(javaFieldType)) {
+			fieldInfo.setterMethod = method;
+		}
+		return true;
+
+	}
+
+	public boolean isEvent(Method method) {
+		String eventMethodName = method.getName();
+		if (!eventMethodName.startsWith(SchemaEvent.ON_METHOD) || !checkIfFirstCharAfterPrefixIsUpperCase(eventMethodName, SchemaEvent.ON_METHOD))
+			return false;
+		eventMethodName = firstToLower(eventMethodName.substring(SchemaEvent.ON_METHOD.length()));
+
+		SchemaField fieldEvent = getFieldComposedEntity(eventMethodName);
+		String eventName = lastCapitalWords(eventMethodName);
+		eventName = firstToLower(eventName);
+		String fieldName;
+
+		if (fieldEvent != null) {
+			if (!eventMethodName.equals(eventName)) {
+				fieldName = eventMethodName.substring(0, eventMethodName.length() - eventName.length());
+				fieldName = firstToLower(fieldName);
+				SchemaField field = getFieldComposedEntity(fieldName);
+				if (field != null) {
+					if (log.isWarnEnabled())
+						log.warn("The method '" + method + "' will be associated as default event for the field '" + fieldEvent.getEntity().getSchemaClass().getName()
+								+ "." + fieldEvent.getName() + "' instead of '" + eventName + "' event for the field '" + field.getEntity().getSchemaClass().getName() + "."
+								+ field.getName() + "' ");
+				}
+			}
+			addEvent(SchemaEvent.DEFAULT_EVENT_NAME, fieldEvent, method);
+		} else if (eventMethodName.equals(eventName)) {
+			addEvent(eventName, null, method);
+		} else {
+			// EVENT IS A FIELD EVENT
+			fieldName = eventMethodName.substring(0, eventMethodName.length() - eventName.length());
+			fieldName = firstToLower(fieldName);
+			SchemaField field = getFieldComposedEntity(fieldName);
+
+			if (field == null) {
+				if (log.isWarnEnabled())
+					log.warn("[SchemaClassReflection] Cannot associate the event '" + getName() + "." + eventName + "' to the field '" + getName() + "." + fieldName
+							+ "'. The event will be ignored.");
+				return false;
+			}
+			addEvent(eventName, field, method);
+		}
+		return true;
 	}
 
 	public Class<?> getLanguageType() {
@@ -220,228 +397,14 @@ public class SchemaClassReflection extends SchemaClass {
 			makeDependency(superClass);
 	}
 
-	@SuppressWarnings("unchecked")
 	protected void readAllAnnotations() {
-		String annotationName;
-		Class<? extends Annotation> annotationClass;
-		Annotation annotation;
-
-		XmlClassAnnotation parentDescriptor = null;
-
-		if (descriptor != null)
-			parentDescriptor = descriptor.getType();
-
-		// BROWSE ALL ASPECTS
+		FeatureLoader.loadClassFeatures(this, descriptor);
 		for (Aspect aspect : Roma.aspects()) {
-			// READ CLASS ANNOTATIONS
-
-			if (javaClass != null) {
-				// COMPOSE ANNOTATION NAME BY ASPECT
-				annotationName = aspect.aspectName();
-				annotationName = Character.toUpperCase(annotationName.charAt(0)) + annotationName.substring(1) + "Class";
-
-				// CHECK FOR ANNOTATION PRESENCE
-				try {
-					annotationClass = (Class<? extends Annotation>) Class.forName(Utility.ROMA_PACKAGE + ".aspect." + aspect.aspectName()
-							+ ".annotation." + annotationName);
-					annotation = javaClass.getAnnotation(annotationClass);
-				} catch (ClassNotFoundException e) {
-					// ANNOTATION CLASS NOT EXIST FOR CURRENT ASPECT
-					annotation = null;
-				}
-			} else
-				annotation = null;
-
-			// READ XML ANNOTATIONS
-			aspect.configClass(this, annotation, parentDescriptor);
+			aspect.configClass(this, null, null);
 		}
 	}
 
-	protected void readFields() {
-		readFields((Class<?>) (javaClass != null ? javaClass : baseClass.getLanguageType()));
-	}
-
-	protected void readFields(Class<?> iClass) {
-		Field field;
-		SchemaFieldReflection fieldInfo;
-		Method setterMethod;
-		String fieldName;
-		SchemaClass fieldType = null;
-		Class<?> javaFieldType;
-		for (Method getterMethod : SchemaHelper.getMethods(iClass)) {
-			if (Modifier.isStatic(getterMethod.getModifiers()))
-				// JUMP STATIC FIELDS
-				continue;
-
-			if (!Modifier.isPublic(getterMethod.getModifiers()))
-				// JUMP NOT PUBLIC FIELDS
-				continue;
-
-			fieldName = getterMethod.getName();
-
-			int prefixLength;
-			if (fieldName.startsWith(GET_METHOD))
-				prefixLength = GET_METHOD.length();
-			else if (fieldName.startsWith(IS_METHOD) && Character.isUpperCase(fieldName.charAt(IS_METHOD.length())))
-				prefixLength = IS_METHOD.length();
-			else
-				continue;
-
-			if (getterMethod.getParameterTypes() != null && getterMethod.getParameterTypes().length > 0)
-				continue;
-
-			if (isToIgnoreMethod(getterMethod))
-				// IGNORE THE METHOD SINCE IT'S IN IGNORE_METHOD_NAMES
-				continue;
-
-			if (fieldName.length() <= prefixLength)
-				// GET METHOD ONLY: JUMP IT
-				continue;
-
-			log.debug("[SchemaClassReflection] Class " + getName() + " found field: " + fieldName);
-
-			// GET FIELD NAME
-			fieldName = Character.toLowerCase(fieldName.charAt(prefixLength)) + fieldName.substring(prefixLength + 1);
-
-			// GET FIELD TYPE
-			javaFieldType = getterMethod.getReturnType();
-
-			try {
-				// TRY TO FIND SETTER METHOD IF ANY
-				setterMethod = iClass.getMethod(SET_METHOD + getterMethod.getName().substring(prefixLength), new Class[] { javaFieldType });
-			} catch (Exception e) {
-				setterMethod = null;
-			}
-
-			// TRY TO FIND FIELD IF ANY
-			field = SchemaHelper.getField(iClass, fieldName);
-			if (field != null && field.getType() != Object.class) {
-				// OVERRIDE GETTER METHOD'S TYPE WITH THE FIELD TYPE
-				javaFieldType = field.getType();
-			}
-
-			fieldInfo = (SchemaFieldReflection) getField(fieldName);
-			fieldType = null;
-
-			if (getterMethod.getName().equals("getEntity") && ComposedEntity.class.isAssignableFrom(getterMethod.getDeclaringClass())
-					&& getFeatures(CoreAspect.ASPECT_NAME) != null) {
-				if (fieldInfo != null && fieldInfo.getType() != null && !fieldInfo.getType().getName().equals("Object")) {
-					// RE-USE THE TYPE INHERITED BY CLONING
-					fieldType = (SchemaClass) fieldInfo.getType();
-					javaFieldType = fieldInfo.getLanguageType();
-				} else {
-					// ENTITY FIELD: CHECK FOR SPECIAL ENTITY TYPE
-					// TODO: REMOVE THIS WIRED CONCEPT
-					fieldType = (SchemaClass) getFeatures(CoreAspect.ASPECT_NAME).getAttribute(CoreClassFeatures.ENTITY);
-
-					if (fieldType != null)
-						javaFieldType = ((SchemaClassReflection) fieldType).getLanguageType();
-					else if (!Modifier.isAbstract(iClass.getModifiers()) && !Modifier.isInterface(iClass.getModifiers())) {
-						log.warn("[SchemaClassReflection.readFields] Cannot find the annotation XML and/or Java annotation @CoreClass(entity=X.class) for class '"
-								+ iClass
-								+ "'. Since it's a ComposedEntity implementation an annotation is required to expand the entity correctly.");
-					}
-				}
-			}
-
-			if (fieldInfo == null) {
-				// FIELD NOT EXISTENT: CREATE IT AND INSERT IN THE COLLECTION
-				fieldInfo = new SchemaFieldReflection(this, fieldName);
-				setField(fieldName, fieldInfo);
-			}
-
-			// GENERATE OR OVERWRITE (IN CASE OF INHERITANCE) FIELD CONFIGURATION
-			fieldInfo.configure(fieldType, javaFieldType, field, getterMethod, setterMethod);
-
-			fieldInfo.setOrder(getFieldOrder(fieldInfo));
-		}
-
-		Collections.sort(orderedFields);
-	}
-
-	protected void readActions() {
-		if (javaClass == null)
-			// NO CONCRETE JAVA CLASS FOUND
-			return;
-
-		SchemaActionReflection actionInfo;
-		String methodName;
-
-		for (Method currentMethod : SchemaHelper.getMethods(javaClass)) {
-			methodName = currentMethod.getName();
-
-			log.debug("[SchemaClassReflection] TEMP Class " + getName() + " found method: " + currentMethod);
-
-			if (Modifier.isStatic(currentMethod.getModifiers()))
-				// JUMP STATIC METHODS
-				continue;
-
-			if (!Modifier.isPublic(currentMethod.getModifiers()))
-				// IGNORE NON PUBLIC METHODS
-				continue;
-
-			if (isToIgnoreMethod(currentMethod))
-				// IGNORE METHOD
-				continue;
-
-			if (isSetter(currentMethod) || isGetter(currentMethod))
-				// GETTER OR SETTER: IGNORE IT (ARE TREATED AS FIELDS)
-				continue;
-
-			// FILL METHOD SIGNATURE
-			String methodSignature = getMethodSignature(currentMethod);
-
-			log.debug("[SchemaClassReflection] Class " + getName() + " found method: " + methodSignature);
-
-			actionInfo = (SchemaActionReflection) getAction(methodSignature);
-
-			if (actionInfo == null) {
-				List<SchemaParameter> orderedParameters = new ArrayList<SchemaParameter>();
-				for (int i = 0; i < currentMethod.getParameterTypes().length; ++i) {
-					orderedParameters.add(new SchemaParameter("param" + i, Roma.schema().getSchemaClassIfExist(
-							currentMethod.getParameterTypes()[i])));
-				}
-
-				// ACTION NOT EXISTENT: CREATE IT AND INSERT IN THE COLLECTION
-				actionInfo = new SchemaActionReflection(this, methodName, orderedParameters);
-
-				setAction(methodSignature, actionInfo);
-			}
-
-			actionInfo.setReturnType(Roma.schema().getSchemaClassIfExist(currentMethod.getReturnType()));
-
-			// GENERATE OR OVERWRITE (IN CASE OF INHERITANCE) ACTION CONFIGURATION
-			actionInfo.configure(currentMethod);
-
-			actionInfo.setOrder(getActionOrder(actionInfo));
-		}
-
-		Collections.sort(orderedActions);
-	}
-
-	private boolean isGetter(Method currentMethod) {
-		boolean result = !currentMethod.getReturnType().equals(Void.TYPE) && currentMethod.getParameterTypes().length == 0
-				&& (currentMethod.getName().startsWith(GET_METHOD) || currentMethod.getName().startsWith(IS_METHOD));
-		if (result) {
-			String methodName = currentMethod.getName();
-			String prefix = GET_METHOD;
-			if (methodName.startsWith(IS_METHOD)) {
-				prefix = IS_METHOD;
-			}
-			result = checkIfFirstCharAfterPrefixIsUpperCase(methodName, prefix);
-		}
-		return result;
-	}
-
-	private boolean isSetter(Method currentMethod) {
-		boolean result = currentMethod.getParameterTypes().length == 1 && currentMethod.getName().startsWith(SET_METHOD);
-		if (result) {
-			result = checkIfFirstCharAfterPrefixIsUpperCase(currentMethod.getName(), SET_METHOD);
-		}
-		return result;
-	}
-
-	private boolean checkIfFirstCharAfterPrefixIsUpperCase(String methodName, String prefix) {
+	private static boolean checkIfFirstCharAfterPrefixIsUpperCase(String methodName, String prefix) {
 		return methodName.length() > prefix.length() ? Character.isUpperCase(methodName.charAt(prefix.length())) : false;
 	}
 
@@ -470,88 +433,23 @@ public class SchemaClassReflection extends SchemaClass {
 			// EVENT NOT EXISTENT: CREATE IT AND INSERT IN THE COLLECTION
 			List<SchemaParameter> orderedParameters = new ArrayList<SchemaParameter>();
 			for (int i = 0; i < eventMethod.getParameterTypes().length; ++i) {
-				orderedParameters.add(new SchemaParameter("param" + i, Roma.schema().getSchemaClassIfExist(
-						eventMethod.getParameterTypes()[i])));
+				orderedParameters.add(new SchemaParameter("param" + i, Roma.schema().getSchemaClassIfExist(eventMethod.getParameterTypes()[i])));
 			}
 			if (field == null) {
 				eventInfo = new SchemaEventReflection(this, eventName, orderedParameters);
+				eventInfo.setMethod(eventMethod);
 				setEvent(eventName, eventInfo);
 			} else {
 				eventInfo = new SchemaEventReflection(field, eventName, orderedParameters);
+				eventInfo.setMethod(eventMethod);
 				field.setEvent(eventName, eventInfo);
 			}
-
-		}
-		eventInfo.configure(eventMethod);
-	}
-
-	private void readEvents() {
-		if (javaClass == null)
-			// NO CONCRETE JAVA CLASS FOUND
-			return;
-
-		String eventMethodName;
-		for (Method eventMethod : SchemaHelper.getMethods(javaClass)) {
-
-			if (Modifier.isStatic(eventMethod.getModifiers()))
-				// JUMP STATIC FIELDS
-				continue;
-
-			if (!Modifier.isPublic(eventMethod.getModifiers()))
-				// JUMP NOT PUBLIC FIELDS
-				continue;
-
-			if (!eventMethod.getName().startsWith(SchemaEvent.ON_METHOD))
-				continue;
-
-			// GET FIELD NAME
-			eventMethodName = eventMethod.getName().substring(SchemaEvent.ON_METHOD.length());
-
-			if (Character.isLowerCase(eventMethodName.charAt(0)))
-				continue;
-
-			eventMethodName = firstToLower(eventMethodName);
-			SchemaField fieldEvent = getFieldComposedEntity(eventMethodName);
-			String eventName = lastCapitalWords(eventMethodName);
-			eventName = firstToLower(eventName);
-
-			if (fieldEvent != null) {
-				if (!eventMethodName.equals(eventName)) {
-					String fieldName = eventMethodName.substring(0, eventMethodName.length() - eventName.length());
-					fieldName = firstToLower(fieldName);
-					SchemaField field = getFieldComposedEntity(fieldName);
-					if (field != null) {
-						if (log.isWarnEnabled())
-							log.warn("The method '" + eventMethod + "' will be associated as default event for the field '"
-									+ fieldEvent.getEntity().getSchemaClass().getName() + "." + fieldEvent.getName() + "' instead of '" + eventName
-									+ "' event for the field '" + field.getEntity().getSchemaClass().getName() + "." + field.getName() + "' ");
-					}
-				}
-				addEvent(SchemaEvent.DEFAULT_EVENT_NAME, fieldEvent, eventMethod);
-				continue;
-			}
-
-			if (eventMethodName.equals(eventName)) {
-				addEvent(eventName, null, eventMethod);
-			} else {
-				// EVENT IS A FIELD EVENT
-				String fieldName = eventMethodName.substring(0, eventMethodName.length() - eventName.length());
-				fieldName = firstToLower(fieldName);
-				SchemaField field = getFieldComposedEntity(fieldName);
-
-				if (field == null) {
-					if (log.isWarnEnabled())
-						log.warn("[SchemaClassReflection] Cannot associate the event '" + getName() + "." + eventName + "' to the field '"
-								+ getName() + "." + fieldName + "'. The event will be ignored.");
-					continue;
-				}
-				addEvent(eventName, field, eventMethod);
-			}
-			// GENERATE OR OVERWRITE (IN CASE OF INHERITANCE) EVENT CONFIGURATION
 		}
 	}
 
 	protected boolean isToIgnoreMethod(Method currentMethod) {
+		if (Modifier.isStatic(currentMethod.getModifiers()) || !Modifier.isPublic(currentMethod.getModifiers()))
+			return true;
 		String methodName = currentMethod.getName();
 		// CHECK FOR FIXED NAMES TO IGNORE
 		for (int ignoreId = 0; ignoreId < IGNORE_METHOD_NAMES.length; ++ignoreId) {

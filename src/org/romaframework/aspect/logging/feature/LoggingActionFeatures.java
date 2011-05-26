@@ -15,13 +15,22 @@
  */
 package org.romaframework.aspect.logging.feature;
 
-public class LoggingActionFeatures extends LoggingElementFeatures {
+import org.romaframework.aspect.logging.LoggingAspect;
+import org.romaframework.core.schema.Feature;
+import org.romaframework.core.schema.FeatureType;
 
-	public LoggingActionFeatures() {
-		super();
-		defineAttribute(PRE, null);
-	}
+public class LoggingActionFeatures {
 
-	public static final String	PRE	= "pre";
+	public static final Feature<String>		PRE								= new Feature<String>(LoggingAspect.ASPECT_NAME, "pre", FeatureType.ACTION, String.class);
+
+	public static final Feature<Integer>	LEVEL							= new Feature<Integer>(LoggingAspect.ASPECT_NAME, "level", FeatureType.ACTION, Integer.class);
+	public static final Feature<String>		CATEGORY					= new Feature<String>(LoggingAspect.ASPECT_NAME, "category", FeatureType.ACTION, String.class);
+
+	public static final Feature<String>		EXCEPTION					= new Feature<String>(LoggingAspect.ASPECT_NAME, "exception", FeatureType.ACTION, String.class);
+	public static final Feature<Class[]>	EXCEPTIONS_TO_LOG	= new Feature<Class[]>(LoggingAspect.ASPECT_NAME, "exceptionsToLog", FeatureType.ACTION, Class[].class);
+
+	public static final Feature<String>		POST							= new Feature<String>(LoggingAspect.ASPECT_NAME, "post", FeatureType.ACTION, String.class);
+	public static final Feature<String>		MODE							= new Feature<String>(LoggingAspect.ASPECT_NAME, "mode", FeatureType.ACTION, String.class);
+	public static final Feature<Boolean>	ENABLED						= new Feature<Boolean>(LoggingAspect.ASPECT_NAME, "enabled", FeatureType.ACTION, Boolean.class);
 
 }

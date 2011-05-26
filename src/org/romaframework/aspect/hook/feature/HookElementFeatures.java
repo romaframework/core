@@ -11,15 +11,9 @@
 
 package org.romaframework.aspect.hook.feature;
 
-import org.romaframework.core.util.DynaBean;
+import org.romaframework.core.schema.Feature;
 
-public class HookElementFeatures extends DynaBean {
+public class HookElementFeatures {
 
-	private static final long	serialVersionUID	= -8297263226617355505L;
-
-	public HookElementFeatures() {
-		defineAttribute(SCOPE, null);
-	}
-
-	public static final String	SCOPE	= "scope";
+	public static final Feature<String>	FIELD	= HookFieldFeatures.FIELD;
 }

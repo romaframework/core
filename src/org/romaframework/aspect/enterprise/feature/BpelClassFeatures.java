@@ -16,25 +16,18 @@ package org.romaframework.aspect.enterprise.feature;
  * the License.
  */
 
-import org.romaframework.core.util.DynaBean;
+import org.romaframework.aspect.enterprise.EnterpriseAspectAbstract;
+import org.romaframework.core.schema.Feature;
+import org.romaframework.core.schema.FeatureType;
 
-public class BpelClassFeatures extends DynaBean {
+public class BpelClassFeatures {
 
-	private static final long	serialVersionUID	= 1L;
-
-	public BpelClassFeatures() {
-		super();
-
-		defineAttribute(OPERATIONNAME, "");
-		defineAttribute(BCADDRESS, "");
-		defineAttribute(WSDLADDRESS, "");
-		defineAttribute(PROJECTPATH, "");
-
-	}
-
-	public static final String	OPERATIONNAME	= "operationName";
-	public static final String	BCADDRESS			= "consumerAddress";
-	public static final String	WSDLADDRESS		= "wsdlAddress";
-	public static final String	PROJECTPATH		= "projectPath";
-
+	public static final Feature<String>	OPERATIONNAME	= new Feature<String>(EnterpriseAspectAbstract.ASPECT_NAME, "operationName", FeatureType.CLASS,
+																												String.class, "");
+	public static final Feature<String>	BCADDRESS			= new Feature<String>(EnterpriseAspectAbstract.ASPECT_NAME, "consumerAddress", FeatureType.CLASS,
+																												String.class, "");
+	public static final Feature<String>	WSDLADDRESS		= new Feature<String>(EnterpriseAspectAbstract.ASPECT_NAME, "wsdlAddress", FeatureType.CLASS, String.class,
+																												"");
+	public static final Feature<String>	PROJECTPATH		= new Feature<String>(EnterpriseAspectAbstract.ASPECT_NAME, "projectPath", FeatureType.CLASS, String.class,
+																												"");
 }

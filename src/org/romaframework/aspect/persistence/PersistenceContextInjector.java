@@ -18,25 +18,23 @@ package org.romaframework.aspect.persistence;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.romaframework.aspect.persistence.feature.PersistenceFeatures;
-import org.romaframework.aspect.session.SessionInfo;
 import org.romaframework.core.Roma;
 import org.romaframework.core.flow.ContextLifecycleListener;
 import org.romaframework.core.flow.Controller;
 import org.romaframework.core.flow.ObjectContext;
-import org.romaframework.core.flow.UserObjectEventListener;
-import org.romaframework.core.schema.SchemaClassElement;
-import org.romaframework.core.schema.SchemaField;
+import org.romaframework.core.flow.SchemaActionListener;
+import org.romaframework.core.schema.SchemaAction;
 
 /**
  * Inject TxPersistenceAspect object inside Thread Local Context to be reachable by actions.
  * 
  * @author Luca Garulli (luca.garulli--at--assetdata.it)
  */
-public class PersistenceContextInjector implements UserObjectEventListener, ContextLifecycleListener {
+public class PersistenceContextInjector implements ContextLifecycleListener, SchemaActionListener {
 	private static Log	log	= LogFactory.getLog(PersistenceContextInjector.class);
 
 	public PersistenceContextInjector() {
-		Controller.getInstance().registerListener(UserObjectEventListener.class, this);
+		Controller.getInstance().registerListener(SchemaActionListener.class, this);
 		Controller.getInstance().registerListener(ContextLifecycleListener.class, this);
 	}
 
@@ -58,9 +56,14 @@ public class PersistenceContextInjector implements UserObjectEventListener, Cont
 		return null;
 	}
 
-	public boolean onBeforeActionExecution(Object content, SchemaClassElement action) {
+	public void onAfterAction(Object iContent, SchemaAction iAction, Object returnedValue) {
+	}
+
+	public boolean onBeforeAction(Object iContent, SchemaAction iAction) {
+
+		// TODO:Review the plug of transaction mode.
 		if (!ObjectContext.getInstance().existContextComponent(PersistenceAspect.class)) {
-			String mode = (String) action.getFeature(PersistenceAspect.ASPECT_NAME, PersistenceFeatures.MODE);
+			String mode = (String) iAction.getFeature(PersistenceFeatures.MODE);
 			if (mode != null) {
 				setPersistenceAspectInContext(mode);
 			}
@@ -69,26 +72,7 @@ public class PersistenceContextInjector implements UserObjectEventListener, Cont
 		return true;
 	}
 
-	public void onAfterActionExecution(Object content, SchemaClassElement action, Object returnedValue) {
-	}
-
-	public void onFieldRefresh(SessionInfo session, Object content, SchemaField field) {
-	}
-
-	public Object onBeforeFieldRead(Object content, SchemaField field, Object currentValue) {
-		return IGNORED;
-	}
-
-	public Object onAfterFieldRead(Object content, SchemaField field, Object currentValue) {
-		return currentValue;
-	}
-
-	public Object onBeforeFieldWrite(Object content, SchemaField field, Object currentValue) {
-		return currentValue;
-	}
-
-	public Object onAfterFieldWrite(Object content, SchemaField field, Object currentValue) {
-		return currentValue;
+	public void onExceptionAction(Object iContent, SchemaAction iAction, Exception exception) {
 	}
 
 	protected PersistenceAspect setPersistenceAspectInContext(String mode) {
@@ -122,13 +106,5 @@ public class PersistenceContextInjector implements UserObjectEventListener, Cont
 				pa.close();
 			}
 		}
-	}
-
-	public Object onException(Object content, SchemaClassElement element, Throwable throwed) {
-		return null;
-	}
-
-	public int getPriority() {
-		return 1000;
 	}
 }

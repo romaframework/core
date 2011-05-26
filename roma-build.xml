@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project basedir="." default="compile" name="roma-core" xmlns:ivy="antlib:org.apache.ivy.ant">
+	<property environment="env" />
+
+	<property name="project.src" value="src" />
+	<property name="project.test" value="test" />
+	<property name="project.lib" value="lib" />
+	<property name="project.bin" value="bin" />
+	<property name="project.wizard" value="wizard" />
+	<property name="project.config" value="config" />
+	<property name="project.build" value="build" />
+	<property name="project.build.src" value="${project.build}/src" />
+	<property name="project.build.test" value="${project.build}/test" />
+	<property name="project.scaffolding" value="scaffolding" />
+
+	<property name="project.mainclass" value="" />
+	<property name="project.debug" value="on" />
+	<property name="project.debuglevel" value="source,lines,vars" />
+	<property name="project.targetComp" value="1.5" />
+	<property name="project.dist" value="dist" />
+
+	<property name="ivy.install.version" value="2.2.0" />
+	<property name="ivy.jar.file" value="${project.lib}/ivy.jar" />
+
+	<target name="clean">
+		<delete dir="${project.build}" />
+	</target>
+
+	<target name="clean-dist">
+		<delete dir="${project.dist}" />
+	</target>
+
+	<target name="clean-ivy" description="--> clean the ivy installation">
+		<delete dir="${project.lib}" />
+	</target>
+
+	<target name="clean-all" depends="clean,clean-ivy,clean-dist">
+	</target>
+
+	<target name="download-ivy" unless="ivy.download.skip">
+		<mkdir dir="${project.lib}" />
+		<echo message="installing ivy..." />
+		<get src="http://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar" dest="${ivy.jar.file}" usetimestamp="true" />
+	</target>
+
+	<target name="install-ivy">
+		<available file="${ivy.jar.file}" property="ivy.download.skip" />
+		<antcall target="download-ivy" />
+		<path id="ivy.lib.path">
+			<fileset dir="${project.lib}" includes="*.jar" />
+		</path>
+		<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path" />
+	</target>
+
+	<target name="resolve-dependencies" depends="install-ivy" unless="ivy.resolve.skip">
+		<echo>Retrieving libs</echo>
+		<ivy:retrieve pattern="lib/[artifact].[ext]" />
+	</target>
+
+	<target name="compile">
+
+		<available file="${project.lib}" property="ivy.resolve.skip" />
+
+		<antcall target="resolve-dependencies" />
+
+		<path id="project.classpath">
+			<fileset dir="${project.lib}" includes="**/*.jar" />
+		</path>
+
+		<echo message="------------------------------------------------------------------------" />
+		<echo message="${ant.project.name} - debug=${project.is-debug} - compiler=${project.targetComp}" />
+		<echo message="${ant.file}" />
+		<echo message="------------------------------------------------------------------------" />
+
+		<mkdir dir="${project.build.src}" />
+		<mkdir dir="${project.build.test}" />
+
+		<javac destdir="${project.build.src}" debug="${project.debug}" debuglevel="source,lines,vars" source="${project.targetComp}" target="${project.targetComp}">
+			<src path="${project.src}" />
+			<classpath>
+				<path refid="project.classpath" />
+			</classpath>
+		</javac>
+
+		<javac destdir="${project.build.test}" debug="{project.is-debug}" source="${project.targetComp}" target="${project.targetComp}">
+			<src path="${project.test}" />
+			<classpath>
+				<path location="${project.build.src}">
+				</path>
+				<path refid="project.classpath" />
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="dist" depends="compile,install-ivy">
+		<ivy:info />
+		<jar jarfile="${project.dist}/${ivy.module}.jar" compress="true">
+			<fileset dir="${project.build.src}">
+				<include name="**/*" />
+			</fileset>
+			<manifest>
+				<attribute name="Main-Class" value="${project.mainclass}" />
+			</manifest>
+		</jar>
+
+		<jar jarfile="${project.dist}/${ivy.module}-test.jar" compress="true">
+			<fileset dir="${project.build.test}">
+				<include name="**/*" />
+			</fileset>
+			<manifest>
+				<attribute name="Main-Class" value="${project.mainclass}" />
+			</manifest>
+		</jar>
+
+		<zip destfile="${project.dist}/${ivy.module}-wizard.zip">
+			<fileset dir=".">
+				<include name="${project.scaffolding}/**" />
+				<include name="${project.wizard}/**" />
+				<include name="${project.config}/**" />
+				<include name="${project.bin}/**" />
+				<include name="module-install.xml" />
+			</fileset>
+		</zip>
+
+	</target>
+
+	<target name="publish" depends="dist">
+		<ivy:publish resolver="local" overwrite="true">
+			<artifacts pattern="${project.dist}/[module].[ext]" />
+		</ivy:publish>
+	</target>
+
+
+	<target name="javadoc">
+		<antcall target="resolve-dependencies" />
+
+		<path id="project.classpath">
+			<fileset dir="${project.lib}" includes="**/*.jar" />
+		</path>
+
+		<javadoc access="public" author="true" doctitle="Roma MetaFramework JavaDoc" nodeprecated="false" splitindex="true" use="true" version="true" destdir="${project.dist}/doc" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="1.5" sourcepath="${project.src}" packagenames="org.romaframework.*">
+			<bottom>
+				<![CDATA[<i>Copyright &#169; 2006-2009 Luca Garulli - All Rights Reserved.</i>]]>
+  			</bottom>
+		<classpath>
+			<path refid="project.classpath" />
+		</classpath>
+	</javadoc>
+</target>
+
+</project>

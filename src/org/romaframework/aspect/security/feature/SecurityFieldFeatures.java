@@ -15,19 +15,16 @@
  */
 package org.romaframework.aspect.security.feature;
 
-public class SecurityFieldFeatures extends SecurityBaseFeatures {
+import org.romaframework.aspect.security.SecurityAspect;
+import org.romaframework.core.schema.Feature;
+import org.romaframework.core.schema.FeatureType;
 
-	public SecurityFieldFeatures() {
-		super();
-		defineAttribute(READ_ROLES, null);
-		defineAttribute(WRITE_ROLES, null);
-		defineAttribute(ENCRYPT, false);
-		defineAttribute(ENCRYPTION_ALGORITHM, null);
-	}
+public class SecurityFieldFeatures {
 
-	public static final String	READ_ROLES						= "readRoles";
-	public static final String	WRITE_ROLES						= "writeRoles";
-	public static final String	ENCRYPT								= "encrypt";
-	public static final String	ENCRYPTION_ALGORITHM	= "encryptionAlgorithm";
+	public static final Feature<String[]>		READ_ROLES						= new Feature<String[]>(SecurityAspect.ASPECT_NAME, "readRoles", FeatureType.FIELD, String[].class);
+	public static final Feature<String[]>		WRITE_ROLES						= new Feature<String[]>(SecurityAspect.ASPECT_NAME, "writeRoles", FeatureType.FIELD, String[].class);
+	public static final Feature<Boolean>	ENCRYPT								= new Feature<Boolean>(SecurityAspect.ASPECT_NAME, "writeRoles", FeatureType.FIELD, Boolean.class);
+	public static final Feature<String>		ENCRYPTION_ALGORITHM	= new Feature<String>(SecurityAspect.ASPECT_NAME, "encryptionAlgorithm", FeatureType.FIELD,
+																																	String.class);
 
 }

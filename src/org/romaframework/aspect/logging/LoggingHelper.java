@@ -24,10 +24,12 @@ import org.romaframework.aspect.i18n.I18NHelper;
 import org.romaframework.aspect.logging.feature.LoggingActionFeatures;
 import org.romaframework.aspect.logging.feature.LoggingClassFeatures;
 import org.romaframework.aspect.logging.feature.LoggingElementFeatures;
+import org.romaframework.aspect.logging.feature.LoggingFieldFeatures;
 import org.romaframework.aspect.session.SessionInfo;
 import org.romaframework.core.Roma;
 import org.romaframework.core.Utility;
 import org.romaframework.core.exception.ConfigurationException;
+import org.romaframework.core.schema.SchemaAction;
 import org.romaframework.core.schema.SchemaClassDefinition;
 import org.romaframework.core.schema.SchemaClassElement;
 import org.romaframework.core.schema.SchemaField;
@@ -70,7 +72,7 @@ public class LoggingHelper {
 	 *          the returned value of the invocation
 	 */
 	public static void managePostAction(Object content, SchemaClassElement action, Object returnedValue) {
-		Boolean enabled = isEnabled(action);
+		Boolean enabled = isEnabled((SchemaAction) action);
 
 		if (!enabled) {
 			return;
@@ -112,8 +114,8 @@ public class LoggingHelper {
 	 * @param args
 	 * @return
 	 */
-	private static String getMessageToPrint(String messageTemplate, Object me, Object returnedValue, Throwable exception, String who,
-			String where, Object... args) {
+	private static String getMessageToPrint(String messageTemplate, Object me, Object returnedValue, Throwable exception, String who, String where,
+			Object... args) {
 		if (messageTemplate == null) {
 			return "";
 		}
@@ -216,7 +218,7 @@ public class LoggingHelper {
 	}
 
 	private static Object getPre(SchemaClassElement action) {
-		Object feature = action.getFeature(LoggingAspect.ASPECT_NAME, LoggingActionFeatures.PRE);
+		Object feature = action.getFeature(LoggingActionFeatures.PRE);
 		if (feature == null || feature.equals(AnnotationConstants.DEF_VALUE)) {
 			return null;
 		} else {
@@ -226,7 +228,7 @@ public class LoggingHelper {
 	}
 
 	private static Object getPost(SchemaClassElement action) {
-		Object feature = action.getFeature(LoggingAspect.ASPECT_NAME, LoggingActionFeatures.POST);
+		Object feature = action.getFeature(LoggingActionFeatures.POST);
 		if (feature == null || feature.equals(AnnotationConstants.DEF_VALUE)) {
 			return LoggingConstants.DEFAULT_MESSAGE;
 		} else {
@@ -235,7 +237,7 @@ public class LoggingHelper {
 	}
 
 	private static Object getMode(SchemaClassElement action) {
-		Object feature = action.getFeature(LoggingAspect.ASPECT_NAME, LoggingActionFeatures.MODE);
+		Object feature = action.getFeature(LoggingActionFeatures.MODE);
 		if (feature == null || feature.equals(AnnotationConstants.DEF_VALUE)) {
 			return getMode(action.getEntity());
 		} else {
@@ -244,7 +246,7 @@ public class LoggingHelper {
 	}
 
 	private static Object getMode(SchemaClassDefinition action) {
-		Object feature = action.getFeature(LoggingAspect.ASPECT_NAME, LoggingClassFeatures.MODE);
+		Object feature = action.getFeature(LoggingClassFeatures.MODE);
 		if (feature == null || feature.equals(AnnotationConstants.DEF_VALUE)) {
 			return LoggingConstants.MODE_CONSOLE;
 		} else {
@@ -253,7 +255,7 @@ public class LoggingHelper {
 	}
 
 	private static String getCategory(SchemaClassElement action) {
-		String feature = (String) action.getFeature(LoggingAspect.ASPECT_NAME, LoggingActionFeatures.CATEGORY);
+		String feature = (String) action.getFeature(LoggingActionFeatures.CATEGORY);
 		if (feature == null || feature.equals(AnnotationConstants.DEF_VALUE)) {
 			return LoggingConstants.DEFAULT_CATEGORY;
 		} else {
@@ -262,7 +264,16 @@ public class LoggingHelper {
 	}
 
 	private static Boolean isEnabled(SchemaClassElement action) {
-		Boolean elementEnabled = (Boolean) action.getFeature(LoggingAspect.ASPECT_NAME, LoggingActionFeatures.ENABLED);
+		Boolean elementEnabled = (Boolean) action.getFeature(LoggingActionFeatures.ENABLED);
+		if (elementEnabled == null) {
+			return isEnabled(action.getEntity());
+		} else {
+			return elementEnabled;
+		}
+	}
+
+	private static Boolean isEnabled(SchemaField action) {
+		Boolean elementEnabled = (Boolean) action.getFeature(LoggingFieldFeatures.ENABLED);
 		if (elementEnabled == null) {
 			return isEnabled(action.getEntity());
 		} else {
@@ -271,7 +282,7 @@ public class LoggingHelper {
 	}
 
 	private static Boolean isEnabled(SchemaClassDefinition iSchema) {
-		Boolean classEnabled = (Boolean) iSchema.getFeature(LoggingAspect.ASPECT_NAME, LoggingActionFeatures.ENABLED);
+		Boolean classEnabled = iSchema.getFeature(LoggingClassFeatures.ENABLED);
 		if (classEnabled == null) {
 			return Boolean.FALSE;
 		} else {
@@ -280,7 +291,7 @@ public class LoggingHelper {
 	}
 
 	private static Integer getLevel(SchemaClassElement action) {
-		Integer feature = (Integer) action.getFeature(LoggingAspect.ASPECT_NAME, LoggingElementFeatures.LEVEL);
+		Integer feature = (Integer) action.getFeature(LoggingElementFeatures.LEVEL);
 		if (feature == null || feature.equals(Integer.MIN_VALUE)) {
 			return LoggingConstants.LEVEL_INFO;
 		} else {
@@ -296,8 +307,8 @@ public class LoggingHelper {
 	 * @param action
 	 *          The action that is going to be invoked
 	 */
-	public static void managePreAction(Object content, SchemaClassElement action) {
-		Boolean enabled = isEnabled(action);
+	public static void managePreAction(Object content, SchemaAction action) {
+		Boolean enabled = isEnabled((SchemaAction) action);
 		if (!enabled) {
 			return;
 		}
@@ -359,7 +370,7 @@ public class LoggingHelper {
 	}
 
 	private static String getException(SchemaClassElement action) {
-		String feature = (String) action.getFeature(LoggingAspect.ASPECT_NAME, LoggingActionFeatures.EXCEPTION);
+		String feature = (String) action.getFeature(LoggingActionFeatures.EXCEPTION);
 		if (feature == null || feature.equals(AnnotationConstants.DEF_VALUE)) {
 			return DEFAULT_EXCEPTION_MESSAGE;
 		} else {
@@ -368,7 +379,7 @@ public class LoggingHelper {
 	}
 
 	protected static Class<?>[] getExceptionsToLog(SchemaClassElement action) {
-		Class<?>[] feature = (Class[]) action.getFeature(LoggingAspect.ASPECT_NAME, LoggingActionFeatures.EXCEPTIONS_TO_LOG);
+		Class<?>[] feature = (Class[]) action.getFeature(LoggingActionFeatures.EXCEPTIONS_TO_LOG);
 		return feature;
 	}
 

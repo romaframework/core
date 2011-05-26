@@ -22,11 +22,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.romaframework.aspect.core.CoreAspect;
 import org.romaframework.aspect.core.feature.CoreClassFeatures;
 import org.romaframework.core.Roma;
 import org.romaframework.core.Utility;
@@ -34,7 +32,6 @@ import org.romaframework.core.domain.entity.ComposedEntity;
 import org.romaframework.core.schema.config.SchemaConfiguration;
 import org.romaframework.core.schema.xmlannotations.XmlActionAnnotation;
 import org.romaframework.core.schema.xmlannotations.XmlFieldAnnotation;
-import org.romaframework.core.util.DynaBean;
 
 /**
  * Represent a class. It's not necessary that a Java class exist in the Classpath since you can define a SchemaClassReflection that
@@ -44,6 +41,9 @@ import org.romaframework.core.util.DynaBean;
  * @author Luca Garulli (luca.garulli--at--assetdata.it)
  */
 public abstract class SchemaClass extends SchemaClassDefinition implements Comparable<SchemaClass> {
+
+	private static final long	serialVersionUID	= 5613421165403906360L;
+
 	protected String							name;
 
 	protected SchemaClass					superClass;
@@ -70,15 +70,15 @@ public abstract class SchemaClass extends SchemaClassDefinition implements Compa
 
 	public abstract Object getLanguageType();
 
-	public abstract Object newInstanceFinal(Object... iArgs) throws InstantiationException, IllegalAccessException,
-			IllegalArgumentException, SecurityException, InvocationTargetException, NoSuchMethodException;
+	public abstract Object newInstanceFinal(Object... iArgs) throws InstantiationException, IllegalAccessException, IllegalArgumentException, SecurityException,
+			InvocationTargetException, NoSuchMethodException;
 
 	public abstract void config();
 
 	public abstract String getFullName();
 
-	public Object newInstance(Object... iArgs) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
-			SecurityException, InvocationTargetException, NoSuchMethodException {
+	public Object newInstance(Object... iArgs) throws InstantiationException, IllegalAccessException, IllegalArgumentException, SecurityException,
+			InvocationTargetException, NoSuchMethodException {
 		try {
 			// CREATE THE CONTEXT BEFORE TO CALL THE ACTION
 			Roma.context().create();
@@ -88,7 +88,7 @@ public abstract class SchemaClass extends SchemaClassDefinition implements Compa
 			assignDefaultFieldValues(instance);
 
 			return instance;
-			
+
 		} finally {
 
 			// ASSURE TO DESTROY THE CONTEXT
@@ -106,13 +106,6 @@ public abstract class SchemaClass extends SchemaClassDefinition implements Compa
 			return;
 
 		try {
-			// COPY ALL FEATURES FROM PARENT ENTITY
-			DynaBean features;
-			for (Entry<String, DynaBean> entry : iSource.getAllFeatures().entrySet()) {
-				features = (DynaBean) entry.getValue().clone();
-				allFeatures.put(entry.getKey(), features);
-			}
-
 			cloneFields(iSource, null);
 			cloneActions(iSource, null);
 			cloneEvents(iSource, null);
@@ -225,7 +218,6 @@ public abstract class SchemaClass extends SchemaClassDefinition implements Compa
 	}
 
 	protected void reset() {
-		allFeatures.clear();
 		fields.clear();
 		orderedFields.clear();
 		actions.clear();
@@ -295,7 +287,7 @@ public abstract class SchemaClass extends SchemaClassDefinition implements Compa
 	}
 
 	protected int getFieldOrder(SchemaField iField) {
-		String orderedValues = (String) getFeature(CoreAspect.ASPECT_NAME, CoreClassFeatures.ORDER_FIELDS);
+		String orderedValues = getFeature(CoreClassFeatures.ORDER_FIELDS);
 
 		if (orderedValues != null) {
 			StringTokenizer tokenizer = new StringTokenizer(orderedValues, " ");
@@ -323,7 +315,7 @@ public abstract class SchemaClass extends SchemaClassDefinition implements Compa
 	}
 
 	protected int getActionOrder(SchemaClassElement iAction) {
-		String orderedValues = (String) getFeature(CoreAspect.ASPECT_NAME, CoreClassFeatures.ORDER_ACTIONS);
+		String orderedValues = getFeature(CoreClassFeatures.ORDER_ACTIONS);
 
 		if (orderedValues != null) {
 			StringTokenizer tokenizer = new StringTokenizer(orderedValues, " ");

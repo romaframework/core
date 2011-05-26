@@ -15,8 +15,7 @@
  */
 package org.romaframework.aspect.security.feature;
 
-import org.romaframework.core.util.DynaBean;
 
-public class SecurityBaseFeatures extends DynaBean{
+public class SecurityBaseFeatures {
 
 }

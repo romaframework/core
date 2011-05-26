@@ -27,14 +27,13 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.romaframework.aspect.core.CoreAspect;
 import org.romaframework.aspect.core.feature.CoreFieldFeatures;
 import org.romaframework.core.Roma;
 import org.romaframework.core.binding.BindingException;
 import org.romaframework.core.domain.entity.ComposedEntity;
 import org.romaframework.core.exception.FieldErrorUserException;
 import org.romaframework.core.flow.Controller;
-import org.romaframework.core.flow.UserObjectEventListener;
+import org.romaframework.core.flow.SchemaFieldListener;
 import org.romaframework.core.schema.config.SchemaConfiguration;
 import org.romaframework.core.schema.virtual.VirtualObject;
 import org.romaframework.core.schema.xmlannotations.XmlFieldAnnotation;
@@ -64,20 +63,20 @@ public abstract class SchemaField extends SchemaClassElement {
 	protected abstract void setValueFinal(Object iObject, Object iValue) throws IllegalAccessException, InvocationTargetException;
 
 	public SchemaField(SchemaClassDefinition iEntity, String iName) {
-		super(iEntity, iName);
+		super(iEntity, iName, FeatureType.FIELD);
 		events = new HashMap<String, SchemaEvent>();
 	}
 
 	public void setValue(Object iObject, Object iFieldValue) {
 		try {
 			Object value = convertValue(iFieldValue);
-			List<UserObjectEventListener> listeners = Controller.getInstance().getListeners(UserObjectEventListener.class);
+			List<SchemaFieldListener> listeners = Controller.getInstance().getListeners(SchemaFieldListener.class);
 			try {
 				Roma.context().create();
 
 				// CALL ALL LISTENERS BEFORE FIELD WRITE CALLBACKS
 				synchronized (listeners) {
-					for (UserObjectEventListener listener : listeners) {
+					for (SchemaFieldListener listener : listeners) {
 						value = listener.onBeforeFieldWrite(iObject, this, value);
 					}
 				}
@@ -86,7 +85,7 @@ public abstract class SchemaField extends SchemaClassElement {
 			} finally {
 				// ASSURE TO CALL THE AFTER FIELD WRITE CALLBACKS
 				synchronized (listeners) {
-					for (UserObjectEventListener listener : listeners) {
+					for (SchemaFieldListener listener : listeners) {
 						value = listener.onAfterFieldWrite(iObject, this, value);
 					}
 				}
@@ -95,8 +94,7 @@ public abstract class SchemaField extends SchemaClassElement {
 			if (e.getCause() instanceof FieldErrorUserException) {
 				throw (FieldErrorUserException) e.getCause();
 			} else {
-				log.error("[SchemaHelper.setFieldValue] Error on setting value '" + iFieldValue + "' for field '" + name + "' on object "
-						+ iObject, e);
+				log.error("[SchemaHelper.setFieldValue] Error on setting value '" + iFieldValue + "' for field '" + name + "' on object " + iObject, e);
 				throw new BindingException(iObject, name, e);
 			}
 		} finally {
@@ -125,6 +123,8 @@ public abstract class SchemaField extends SchemaClassElement {
 	}
 
 	public SchemaClassDefinition getType() {
+		if (type == null)
+			type = getSchemaClassFromLanguageType();
 		return type;
 	}
 
@@ -169,7 +169,7 @@ public abstract class SchemaField extends SchemaClassElement {
 	}
 
 	public Type getEmbeddedLanguageType() {
-		SchemaClass cls = (SchemaClass) getFeature(CoreAspect.ASPECT_NAME, CoreFieldFeatures.EMBEDDED_TYPE);
+		SchemaClass cls = getFeature(CoreFieldFeatures.EMBEDDED_TYPE);
 		if (cls != null)
 			return (Type) cls.getLanguageType();
 
@@ -181,11 +181,11 @@ public abstract class SchemaField extends SchemaClassElement {
 	}
 
 	public SchemaClass getEmbeddedType() {
-		return (SchemaClass) getFeature(CoreAspect.ASPECT_NAME, CoreFieldFeatures.EMBEDDED_TYPE);
+		return getFeature(CoreFieldFeatures.EMBEDDED_TYPE);
 	}
 
 	public void setEmbeddedType(SchemaClass iEmbeddedSchemaClass) {
-		setFeature(CoreAspect.ASPECT_NAME, CoreFieldFeatures.EMBEDDED_TYPE, iEmbeddedSchemaClass);
+		setFeature(CoreFieldFeatures.EMBEDDED_TYPE, iEmbeddedSchemaClass);
 	}
 
 	public SchemaClass[] getEmbeddedTypeGenerics() {
@@ -195,12 +195,10 @@ public abstract class SchemaField extends SchemaClassElement {
 	@Override
 	public Object clone() throws CloneNotSupportedException {
 		SchemaField copy = (SchemaField) super.clone();
-		copy.type = type;
 		copy.events = new HashMap<String, SchemaEvent>();
 		for (Map.Entry<String, SchemaEvent> entry : events.entrySet()) {
 			copy.events.put(entry.getKey(), (SchemaEvent) entry.getValue().clone());
 		}
-
 		return copy;
 	}
 
@@ -258,8 +256,8 @@ public abstract class SchemaField extends SchemaClassElement {
 			Class<?> valueClass = value.getClass();
 			// SUCH A MONSTER!!! MOVE THIS LOGIC IN SchemaClass.isAssignableFrom...
 			if (value instanceof VirtualObject
-					&& !(typeClass.getLanguageType() instanceof Class<?> && ((Class<?>) typeClass.getLanguageType())
-							.isAssignableFrom(VirtualObject.class)) && ((VirtualObject) value).getSuperClassObject() != null) {
+					&& !(typeClass.getLanguageType() instanceof Class<?> && ((Class<?>) typeClass.getLanguageType()).isAssignableFrom(VirtualObject.class))
+					&& ((VirtualObject) value).getSuperClassObject() != null) {
 				if (ComposedEntity.class.isAssignableFrom(((VirtualObject) value).getSuperClassObject().getClass())) {
 					value = ((VirtualObject) value).getSuperClassObject();
 					valueClass = value.getClass();
@@ -272,35 +270,39 @@ public abstract class SchemaField extends SchemaClassElement {
 		}
 
 		if (value == null && typeClass.isPrimitive()) {
-			log.warn("Cannot set the field value to null for primitive types! Field: " + getEntity() + "." + name + " of class "
-					+ getType().getName() + ". Setting value to 0.");
+			log.warn("Cannot set the field value to null for primitive types! Field: " + getEntity() + "." + name + " of class " + getType().getName()
+					+ ". Setting value to 0.");
 			// SET THE VALUE TO 0
 			value = SchemaHelper.assignDefaultValueToLiteral(typeClass);
 		}
 		return value;
 	}
 
-	protected Object invokeCallbackBeforeFieldRead(List<UserObjectEventListener> listeners, Object iObject) {
-		Object value = UserObjectEventListener.IGNORED;
+	protected Object invokeCallbackBeforeFieldRead(List<SchemaFieldListener> listeners, Object iObject) {
+		Object value = SchemaFieldListener.IGNORED;
 
 		synchronized (listeners) {
 			Object callbackReturn;
-			for (UserObjectEventListener listener : listeners) {
+			for (SchemaFieldListener listener : listeners) {
 				callbackReturn = listener.onBeforeFieldRead(iObject, this, value);
 
-				if (callbackReturn != UserObjectEventListener.IGNORED)
+				if (callbackReturn != SchemaFieldListener.IGNORED)
 					value = callbackReturn;
 			}
 		}
 		return value;
 	}
 
-	protected Object invokeCallbackAfterFieldRead(List<UserObjectEventListener> listeners, Object iObject, Object value) {
+	protected Object invokeCallbackAfterFieldRead(List<SchemaFieldListener> listeners, Object iObject, Object value) {
 		synchronized (listeners) {
-			for (UserObjectEventListener listener : listeners) {
+			for (SchemaFieldListener listener : listeners) {
 				value = listener.onAfterFieldRead(iObject, this, value);
 			}
 		}
 		return value;
+	}
+
+	public void setEmbeddedTypeGenerics(SchemaClass[] embeddedTypeGenerics) {
+		this.embeddedTypeGenerics = embeddedTypeGenerics;
 	}
 }

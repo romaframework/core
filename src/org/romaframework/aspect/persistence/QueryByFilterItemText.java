@@ -16,12 +16,11 @@
 
 package org.romaframework.aspect.persistence;
 
-import org.reverspring.annotations.SpringConstructor;
 
 public class QueryByFilterItemText implements QueryByFilterItem {
   private String condition;
 
-  @SpringConstructor(constructorParamsGetters = { "getCondition" })
+//  @SpringConstructor(constructorParamsGetters = { "getCondition" })
   public QueryByFilterItemText(String iCondition) {
     this.condition = iCondition;
   }

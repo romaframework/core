@@ -15,21 +15,19 @@
  */
 package org.romaframework.aspect.security.feature;
 
-public class SecurityClassFeatures extends SecurityBaseFeatures {
+import org.romaframework.aspect.security.SecurityAspect;
+import org.romaframework.core.schema.Feature;
+import org.romaframework.core.schema.FeatureType;
 
-	public SecurityClassFeatures() {
-		super();
-		defineAttribute(READ_ROLES, null);
-		defineAttribute(WRITE_ROLES, null);
-		defineAttribute(EXECUTE_ROLES, null);
-		defineAttribute(ENCRYPT, false);
-		defineAttribute(ENCRYPTION_ALGORITHM, null);
-	}
-
-	public static final String	READ_ROLES						= "readRoles";
-	public static final String	WRITE_ROLES						= "writeRoles";
-	public static final String	EXECUTE_ROLES					= "executeRoles";
-	public static final String	ENCRYPT								= "encrypt";
-	public static final String	ENCRYPTION_ALGORITHM	= "encryptionAlgorithm";
+public class SecurityClassFeatures {
+	public static final Feature<String[]>	READ_ROLES						= new Feature<String[]>(SecurityAspect.ASPECT_NAME, "readRoles", FeatureType.CLASS,
+																																	String[].class);
+	public static final Feature<String[]>	WRITE_ROLES						= new Feature<String[]>(SecurityAspect.ASPECT_NAME, "writeRoles", FeatureType.CLASS,
+																																	String[].class);
+	public static final Feature<String[]>	EXECUTE_ROLES					= new Feature<String[]>(SecurityAspect.ASPECT_NAME, "executeRoles", FeatureType.CLASS,
+																																	String[].class);
+	public static final Feature<Boolean>	ENCRYPT								= new Feature<Boolean>(SecurityAspect.ASPECT_NAME, "executeRoles", FeatureType.CLASS,
+																																	Boolean.class, Boolean.FALSE);
+	public static final Feature<String>		ENCRYPTION_ALGORITHM	= new Feature<String>(SecurityAspect.ASPECT_NAME, "executeRoles", FeatureType.CLASS, String.class);
 
 }

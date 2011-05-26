@@ -17,10 +17,8 @@ package org.romaframework.aspect.serialization;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.romaframework.core.schema.SchemaFeatures;
-import org.romaframework.core.util.DynaBean;
 
 /**
  * 
@@ -32,9 +30,13 @@ public class SerializationElement extends SchemaFeatures {
 	private static final long						serialVersionUID	= 2474013569417995250L;
 
 	private String											name;
-	private List<SerializationElement>	events = new ArrayList<SerializationElement>();
+	private List<SerializationElement>	events						= new ArrayList<SerializationElement>();
 
 	private SerializationData						data;
+
+	public SerializationElement() {
+		super(null);
+	}
 
 	public String getName() {
 		return name;
@@ -60,7 +62,4 @@ public class SerializationElement extends SchemaFeatures {
 		this.events = events;
 	}
 
-	public void setAllFeatures(Map<String, DynaBean> allFeatures) {
-		this.allFeatures = allFeatures;
-	}
 }

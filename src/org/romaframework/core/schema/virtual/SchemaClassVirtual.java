@@ -26,6 +26,7 @@ import org.romaframework.core.Roma;
 import org.romaframework.core.aspect.Aspect;
 import org.romaframework.core.exception.ConfigurationException;
 import org.romaframework.core.exception.ConfigurationNotFoundException;
+import org.romaframework.core.schema.FeatureLoader;
 import org.romaframework.core.schema.SchemaAction;
 import org.romaframework.core.schema.SchemaClass;
 import org.romaframework.core.schema.SchemaClassDefinition;
@@ -36,7 +37,6 @@ import org.romaframework.core.schema.SchemaReloader;
 import org.romaframework.core.schema.config.SaxSchemaConfiguration;
 import org.romaframework.core.schema.config.SchemaConfiguration;
 import org.romaframework.core.schema.xmlannotations.XmlActionAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlClassAnnotation;
 import org.romaframework.core.schema.xmlannotations.XmlEventAnnotation;
 import org.romaframework.core.schema.xmlannotations.XmlFieldAnnotation;
 
@@ -65,8 +65,7 @@ public class SchemaClassVirtual extends SchemaClass {
 		makeDependency(superClass);
 	}
 
-	public SchemaClassVirtual(String iEntityName, SchemaClassDefinition iBaseClass, SchemaConfiguration iDescriptor)
-			throws ConfigurationNotFoundException {
+	public SchemaClassVirtual(String iEntityName, SchemaClassDefinition iBaseClass, SchemaConfiguration iDescriptor) throws ConfigurationNotFoundException {
 		super(iEntityName);
 
 		baseClass = iBaseClass;
@@ -82,8 +81,8 @@ public class SchemaClassVirtual extends SchemaClass {
 	}
 
 	@Override
-	public Object newInstanceFinal(Object... iArgs) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
-			SecurityException, InvocationTargetException, NoSuchMethodException {
+	public Object newInstanceFinal(Object... iArgs) throws InstantiationException, IllegalAccessException, IllegalArgumentException, SecurityException,
+			InvocationTargetException, NoSuchMethodException {
 		return new VObject(this);
 	}
 
@@ -151,15 +150,9 @@ public class SchemaClassVirtual extends SchemaClass {
 	}
 
 	protected void readAllAnnotations() {
-		XmlClassAnnotation parentDescriptor = null;
-
-		if (descriptor != null)
-			parentDescriptor = descriptor.getType();
-
-		// BROWSE ALL ASPECTS
+		FeatureLoader.loadClassFeatures(this, descriptor);
 		for (Aspect aspect : Roma.aspects()) {
-			// READ XML ANNOTATIONS
-			aspect.configClass(this, null, parentDescriptor);
+			aspect.configClass(this, null, null);
 		}
 	}
 
@@ -184,8 +177,7 @@ public class SchemaClassVirtual extends SchemaClass {
 			}
 
 			if (fieldInfo.getType() == null)
-				throw new ConfigurationException("Error on loading field definition '" + field.getName()
-						+ "' for the virtual pojo of class: " + name);
+				throw new ConfigurationException("Error on loading field definition '" + field.getName() + "' for the virtual pojo of class: " + name);
 
 			fieldType = (SchemaClass) fieldInfo.getType();
 
@@ -266,8 +258,8 @@ public class SchemaClassVirtual extends SchemaClass {
 					if (field != null) {
 						if (log.isWarnEnabled())
 							log.warn("The action '" + event.getName() + "' will be associated as default event for the field '"
-									+ fieldEvent.getEntity().getSchemaClass().getName() + "." + fieldEvent.getName() + "' instead of '" + eventName
-									+ "' event for the field '" + field.getEntity().getSchemaClass().getName() + "." + field.getName() + "' ");
+									+ fieldEvent.getEntity().getSchemaClass().getName() + "." + fieldEvent.getName() + "' instead of '" + eventName + "' event for the field '"
+									+ field.getEntity().getSchemaClass().getName() + "." + field.getName() + "' ");
 					}
 				}
 				addEvent(SchemaEvent.DEFAULT_EVENT_NAME, fieldEvent);
@@ -284,8 +276,8 @@ public class SchemaClassVirtual extends SchemaClass {
 
 				if (field == null) {
 					if (log.isWarnEnabled())
-						log.warn("[SchemaClassVirtual] Cannot associate the event '" + getName() + "." + eventName + "' to the field '"
-								+ getName() + "." + fieldName + "'. The event will be ignored.");
+						log.warn("[SchemaClassVirtual] Cannot associate the event '" + getName() + "." + eventName + "' to the field '" + getName() + "." + fieldName
+								+ "'. The event will be ignored.");
 					continue;
 				}
 				addEvent(eventName, field);

@@ -22,7 +22,7 @@ import java.util.Map;
 import org.romaframework.aspect.scripting.exception.ScriptingException;
 import org.romaframework.aspect.scripting.feature.ScriptingFeatures;
 import org.romaframework.core.Roma;
-import org.romaframework.core.util.DynaBean;
+import org.romaframework.core.schema.SchemaFeatures;
 
 /**
  * Represent a method of a class.
@@ -32,8 +32,8 @@ import org.romaframework.core.util.DynaBean;
 public class VirtualObjectHelper {
 	public static final String	DEFAULT_LANGUAGE	= "JavaScript";
 
-	public static Object invoke(VirtualObject iContent, DynaBean features) throws ScriptingException {
-		String language = (String) features.getAttribute(ScriptingFeatures.LANGUAGE);
+	public static Object invoke(VirtualObject iContent, SchemaFeatures features) throws ScriptingException {
+		String language = features.getFeature(ScriptingFeatures.LANGUAGE);
 		if (language == null)
 			// SET THE DEFAULT LANGUAGE
 			language = DEFAULT_LANGUAGE;
@@ -41,6 +41,6 @@ public class VirtualObjectHelper {
 		Map<String, Object> context = new HashMap<String, Object>();
 		context.put("me", new VirtualObjectWrapper(iContent));
 
-		return Roma.scripting().evaluate(language, (String) features.getAttribute(ScriptingFeatures.CODE), context);
+		return Roma.scripting().evaluate(language, features.getFeature(ScriptingFeatures.CODE), context);
 	}
 }

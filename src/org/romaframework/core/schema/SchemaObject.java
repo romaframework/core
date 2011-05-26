@@ -18,7 +18,6 @@ package org.romaframework.core.schema;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,7 +25,6 @@ import org.romaframework.aspect.authentication.UserObjectPermissionListener;
 import org.romaframework.core.Roma;
 import org.romaframework.core.Utility;
 import org.romaframework.core.flow.Controller;
-import org.romaframework.core.util.DynaBean;
 
 /**
  * In the Object Orientation paradigm it's the instance of the class whereas the class is the SchemaClassReflection class.
@@ -135,13 +133,6 @@ public class SchemaObject extends SchemaClassDefinition {
 
 		try {
 			Roma.context().create();
-
-			// COPY ALL FEATURES FROM PARENT ENTITY
-			DynaBean features;
-			for (Entry<String, DynaBean> entry : iSource.getAllFeatures().entrySet()) {
-				features = (DynaBean) entry.getValue().clone();
-				allFeatures.put(entry.getKey(), features);
-			}
 
 			List<UserObjectPermissionListener> listeners = Controller.getInstance().getListeners(UserObjectPermissionListener.class);
 

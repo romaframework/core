@@ -28,8 +28,8 @@ import java.util.Map;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.romaframework.aspect.serialization.exception.SerializationException;
-import org.romaframework.aspect.serialization.feature.SerializationClassFeature;
-import org.romaframework.aspect.serialization.feature.SerializationFieldFeature;
+import org.romaframework.aspect.serialization.feature.SerializationClassFeatures;
+import org.romaframework.aspect.serialization.feature.SerializationFieldFeatures;
 import org.romaframework.core.module.SelfRegistrantConfigurableModule;
 import org.romaframework.core.schema.SchemaClassDefinition;
 import org.romaframework.core.schema.SchemaClassElement;
@@ -42,7 +42,6 @@ import org.romaframework.core.schema.xmlannotations.XmlAspectAnnotation;
 import org.romaframework.core.schema.xmlannotations.XmlClassAnnotation;
 import org.romaframework.core.schema.xmlannotations.XmlEventAnnotation;
 import org.romaframework.core.schema.xmlannotations.XmlFieldAnnotation;
-import org.romaframework.core.util.DynaBean;
 
 /**
  * @author Emanuele Tagliaferri (emanuele.tagliaferri--at--assetdata.it)
@@ -157,19 +156,12 @@ public class DefaultSerializationAspect extends SelfRegistrantConfigurableModule
 	public void endConfigClass(SchemaClassDefinition iClass) {
 	}
 
-	public void configAction(SchemaClassElement iAction, Annotation iActionAnnotation, Annotation iGenericAnnotation,
-			XmlActionAnnotation iNode) {
+	public void configAction(SchemaClassElement iAction, Annotation iActionAnnotation, Annotation iGenericAnnotation, XmlActionAnnotation iNode) {
 		// TODO Auto-generated method stub
 
 	}
 
 	public void configClass(SchemaClassDefinition iClass, Annotation iAnnotation, XmlClassAnnotation iNode) {
-		DynaBean features = iClass.getFeatures(ASPECT_NAME);
-		if (features == null) {
-			// CREATE EMPTY FEATURES
-			features = new SerializationClassFeature();
-			iClass.setFeatures(ASPECT_NAME, features);
-		}
 		if (iClass instanceof SchemaClassReflection) {
 			String name;
 			Class<?> clazz = ((SchemaClassReflection) iClass).getLanguageType();
@@ -178,7 +170,7 @@ public class DefaultSerializationAspect extends SelfRegistrantConfigurableModule
 				name = xmlRootElement.name();
 			else
 				name = clazz.getSimpleName();
-			features.setAttribute(SerializationClassFeature.ROOT_ELEMENT_NAME, name);
+			iClass.setFeature(SerializationClassFeatures.ROOT_ELEMENT_NAME, name);
 		}
 	}
 
@@ -187,20 +179,13 @@ public class DefaultSerializationAspect extends SelfRegistrantConfigurableModule
 
 	}
 
-	public void configField(SchemaField iField, Annotation iFieldAnnotation, Annotation iGenericAnnotation,
-			Annotation iGetterAnnotation, XmlFieldAnnotation iNode) {
-		DynaBean features = iField.getFeatures(ASPECT_NAME);
-		if (features == null) {
-			// CREATE EMPTY FEATURES
-			features = new SerializationFieldFeature();
-			iField.setFeatures(ASPECT_NAME, features);
-		}
+	public void configField(SchemaField iField, Annotation iFieldAnnotation, Annotation iGenericAnnotation, Annotation iGetterAnnotation, XmlFieldAnnotation iNode) {
 
 		if (iField instanceof SchemaFieldReflection) {
 			Field field = ((SchemaFieldReflection) iField).getField();
 			if (field != null) {
 				Boolean trans = Modifier.isTransient(field.getModifiers());
-				features.setAttribute(SerializationFieldFeature.TRANSIENT, trans);
+				iField.setFeature(SerializationFieldFeatures.TRANSIENT, trans);
 			}
 		}
 
@@ -208,9 +193,9 @@ public class DefaultSerializationAspect extends SelfRegistrantConfigurableModule
 			XmlAspectAnnotation descriptor = iNode.aspect(SerializationAspect.ASPECT_NAME);
 
 			if (descriptor != null) {
-				String trans = descriptor.getAttribute(SerializationFieldFeature.TRANSIENT);
+				String trans = descriptor.getAttribute(SerializationFieldFeatures.TRANSIENT.getName());
 				if (trans != null) {
-					features.setAttribute(SerializationFieldFeature.TRANSIENT, Boolean.parseBoolean(trans));
+					iField.setFeature(SerializationFieldFeatures.TRANSIENT, Boolean.parseBoolean(trans));
 				}
 			}
 		}

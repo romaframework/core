@@ -16,16 +16,12 @@
 package org.romaframework.core.util;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
-import org.romaframework.core.flow.UserObjectEventListener;
-
 @SuppressWarnings("unchecked")
 public class ListenerManager<R> {
-	
+
 	private HashMap<R, List<?>>	listeners;
 
 	public ListenerManager() {
@@ -46,18 +42,6 @@ public class ListenerManager<R> {
 				result.add((T) ref);
 			}
 		}
-
-		// TODO: REMOVE THIS WIRED CONCEPT? (Lvc@)
-		// SPECIAL CASA: SORT THE UserObjectEventListener INSTANCES
-		if (UserObjectEventListener.class == iType) {
-			Collections.sort((List<? extends UserObjectEventListener>) result, new Comparator<UserObjectEventListener>() {
-
-				public int compare(UserObjectEventListener o1, UserObjectEventListener o2) {
-					return o1.getPriority() - o2.getPriority();
-				}
-			});
-		}
-
 		return result;
 	}
 
@@ -71,7 +55,7 @@ public class ListenerManager<R> {
 	 */
 	public <T> void registerListener(R iType, T iInstance) {
 		synchronized (listeners) {
-			List<T> listenersForType = (List)listeners.get(iType);
+			List<T> listenersForType = (List<T>) listeners.get(iType);
 			if (listenersForType == null)
 				listenersForType = registerListenerType(iType);
 
@@ -80,7 +64,7 @@ public class ListenerManager<R> {
 	}
 
 	private <T> List<T> registerListenerType(R iType) {
-		List<T> listenersForType = new ArrayList();
+		List<T> listenersForType = new ArrayList<T>();
 		listeners.put(iType, listenersForType);
 		return listenersForType;
 	}

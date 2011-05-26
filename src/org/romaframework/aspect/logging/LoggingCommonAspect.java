@@ -17,10 +17,10 @@ package org.romaframework.aspect.logging;
 
 import java.util.List;
 
-import org.romaframework.aspect.session.SessionInfo;
 import org.romaframework.core.flow.Controller;
-import org.romaframework.core.flow.UserObjectEventListener;
-import org.romaframework.core.schema.SchemaClassElement;
+import org.romaframework.core.flow.SchemaActionListener;
+import org.romaframework.core.flow.SchemaFieldListener;
+import org.romaframework.core.schema.SchemaAction;
 import org.romaframework.core.schema.SchemaField;
 import org.romaframework.core.util.ListenerManager;
 
@@ -30,151 +30,123 @@ import org.romaframework.core.util.ListenerManager;
  * @author Giordano Maestro (giordano.maestro--at--assetdata.it)
  * 
  */
-public class LoggingCommonAspect extends LoggingAspectAbstract implements UserObjectEventListener {
+public class LoggingCommonAspect extends LoggingAspectAbstract implements SchemaActionListener, SchemaFieldListener {
 
-  protected ListenerManager<String> loggers = new ListenerManager<String>();
+	protected ListenerManager<String>	loggers	= new ListenerManager<String>();
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.romaframework.core.flow.UserObjectEventListener#onAfterActionExecution(java.lang.Object,
-   * org.romaframework.core.schema.SchemaElement, java.lang.Object)
-   */
-  public void onAfterActionExecution(Object content, SchemaClassElement action, Object returnedValue) {
-    LoggingHelper.managePostAction(content, action, returnedValue);
-  }
+	public LoggingCommonAspect() {
+		Controller.getInstance().registerListener(SchemaActionListener.class, this);
+		Controller.getInstance().registerListener(SchemaFieldListener.class, this);
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.romaframework.core.flow.UserObjectEventListener#onAfterFieldRead(java.lang.Object,
-   * org.romaframework.core.schema.SchemaField, java.lang.Object)
-   */
-  public Object onAfterFieldRead(Object content, SchemaField field, Object currentValue) {
-    return currentValue;
-  }
+	}
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.romaframework.core.flow.UserObjectEventListener#onAfterFieldWrite(java.lang.Object,
-   * org.romaframework.core.schema.SchemaField, java.lang.Object)
-   */
-  public Object onAfterFieldWrite(Object content, SchemaField field, Object currentValue) {
-    LoggingHelper.manageAfterFieldWrite(field, currentValue);
-    return currentValue;
-  }
+	public void onAfterAction(Object iContent, SchemaAction iAction, Object returnedValue) {
+		LoggingHelper.managePostAction(iContent, iAction, returnedValue);
+	}
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.romaframework.core.flow.UserObjectEventListener#onBeforeActionExecution(java.lang.Object,
-   * org.romaframework.core.schema.SchemaElement)
-   */
-  public boolean onBeforeActionExecution(Object content, SchemaClassElement action) {
-    LoggingHelper.managePreAction(content, action);
-    return true;
-  }
+	public boolean onBeforeAction(Object iContent, SchemaAction iAction) {
+		LoggingHelper.managePreAction(iContent, iAction);
+		return true;
+	}
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.romaframework.core.flow.UserObjectEventListener#onBeforeFieldRead(java.lang.Object,
-   * org.romaframework.core.schema.SchemaField, java.lang.Object)
-   */
-  public Object onBeforeFieldRead(Object content, SchemaField field, Object currentValue) {
-    return IGNORED;
-  }
+	public void onExceptionAction(Object iContent, SchemaAction iAction, Exception exception) {
+		LoggingHelper.manageException(iContent, iAction, exception);
+	}
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.romaframework.core.flow.UserObjectEventListener#onBeforeFieldWrite(java.lang.Object,
-   * org.romaframework.core.schema.SchemaField, java.lang.Object)
-   */
-  public Object onBeforeFieldWrite(Object content, SchemaField field, Object currentValue) {
-    return currentValue;
-  }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.romaframework.core.flow.UserObjectEventListener#onAfterFieldRead(java.lang.Object,
+	 * org.romaframework.core.schema.SchemaField, java.lang.Object)
+	 */
+	public Object onAfterFieldRead(Object content, SchemaField field, Object currentValue) {
+		return currentValue;
+	}
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.romaframework.core.flow.UserObjectEventListener#onFieldRefresh(org.romaframework.aspect.session.SessionInfo,
-   * java.lang.Object, org.romaframework.core.schema.SchemaField)
-   */
-  public void onFieldRefresh(SessionInfo session, Object content, SchemaField field) {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.romaframework.core.flow.UserObjectEventListener#onAfterFieldWrite(java.lang.Object,
+	 * org.romaframework.core.schema.SchemaField, java.lang.Object)
+	 */
+	public Object onAfterFieldWrite(Object content, SchemaField field, Object currentValue) {
+		LoggingHelper.manageAfterFieldWrite(field, currentValue);
+		return currentValue;
+	}
 
-  }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.romaframework.core.flow.UserObjectEventListener#onBeforeFieldRead(java.lang.Object,
+	 * org.romaframework.core.schema.SchemaField, java.lang.Object)
+	 */
+	public Object onBeforeFieldRead(Object content, SchemaField field, Object currentValue) {
+		return IGNORED;
+	}
 
-  @Override
-  public void shutdown() {
-    super.shutdown();
-  }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.romaframework.core.flow.UserObjectEventListener#onBeforeFieldWrite(java.lang.Object,
+	 * org.romaframework.core.schema.SchemaField, java.lang.Object)
+	 */
+	public Object onBeforeFieldWrite(Object content, SchemaField field, Object currentValue) {
+		return currentValue;
+	}
 
-  @Override
-  public void startup() {
-    super.startup();
-    Controller.getInstance().registerListener(UserObjectEventListener.class, this);
-  }
+	@Override
+	public void shutdown() {
+		super.shutdown();
+	}
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.romaframework.core.flow.UserObjectEventListener#onException(java.lang.Object,
-   * org.romaframework.core.schema.SchemaElement, java.lang.Throwable)
-   */
-  public Object onException(Object content, SchemaClassElement element, Throwable throwed) {
-    LoggingHelper.manageException(content, element, throwed);
-    return null;
-  }
+	@Override
+	public void startup() {
+		super.startup();
+	}
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.romaframework.aspect.logging.LoggingAspect#registerLogger(org.romaframework.aspect.logging.Logger)
-   */
-  public void registerLogger(Logger logger) {
-    String[] types = logger.getModes();
-    if (types != null) {
-      for (String type : types) {
-        loggers.registerListener(type, logger);
-      }
-    }
-  }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.romaframework.aspect.logging.LoggingAspect#registerLogger(org.romaframework.aspect.logging.Logger)
+	 */
+	public void registerLogger(Logger logger) {
+		String[] types = logger.getModes();
+		if (types != null) {
+			for (String type : types) {
+				loggers.registerListener(type, logger);
+			}
+		}
+	}
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.romaframework.aspect.logging.LoggingAspect#removeLogger(org.romaframework.aspect.logging.Logger)
-   */
-  public void removeLogger(Logger logger) {
-    String[] types = logger.getModes();
-    if (types != null) {
-      for (String type : types) {
-        loggers.unregisterListener(type, logger);
-      }
-    }
-  }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.romaframework.aspect.logging.LoggingAspect#removeLogger(org.romaframework.aspect.logging.Logger)
+	 */
+	public void removeLogger(Logger logger) {
+		String[] types = logger.getModes();
+		if (types != null) {
+			for (String type : types) {
+				loggers.unregisterListener(type, logger);
+			}
+		}
+	}
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.romaframework.aspect.logging.LoggingAspect#log(int, java.lang.String, java.lang.String, java.lang.String)
-   */
-  public void log(int level, String category, String mode, String message) {
-    List<Logger> modeLoggers = loggers.getListeners(mode);
-    if (modeLoggers != null) {
-      for (Logger logger : modeLoggers) {
-        logger.print(level, category, message);
-      }
-    }
-  }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.romaframework.aspect.logging.LoggingAspect#log(int, java.lang.String, java.lang.String, java.lang.String)
+	 */
+	public void log(int level, String category, String mode, String message) {
+		List<Logger> modeLoggers = loggers.getListeners(mode);
+		if (modeLoggers != null) {
+			for (Logger logger : modeLoggers) {
+				logger.print(level, category, message);
+			}
+		}
+	}
 
-  public int getPriority() {
-    return 0;
-  }
-
-  public Object getUnderlyingComponent() {
-    return null;
-  }
+	public Object getUnderlyingComponent() {
+		return null;
+	}
 }

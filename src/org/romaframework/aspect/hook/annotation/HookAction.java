@@ -89,4 +89,10 @@ public @interface HookAction {
 	 */
 	String hookAfterEvent() default AnnotationConstants.DEF_VALUE;
 
+	/**
+	 * Enable and disable the hook invoke.
+	 * 
+	 */
+	byte enabled() default AnnotationConstants.UNSETTED;
+
 }

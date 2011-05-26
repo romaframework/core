@@ -30,6 +30,7 @@ import org.romaframework.core.Utility;
 
 public abstract class SchemaClassDefinition extends SchemaFeatures {
 
+	private static final long						serialVersionUID	= 2060007769938743965L;
 	protected Map<String, SchemaField>	fields;
 	protected Map<String, SchemaAction>	actions;
 	protected Map<String, SchemaEvent>	events;
@@ -37,9 +38,10 @@ public abstract class SchemaClassDefinition extends SchemaFeatures {
 	protected List<SchemaField>					orderedFields;
 	protected List<SchemaAction>				orderedActions;
 
-	private static Log									log	= LogFactory.getLog(SchemaClassDefinition.class);
+	private static Log									log								= LogFactory.getLog(SchemaClassDefinition.class);
 
 	public SchemaClassDefinition() {
+		super(FeatureType.CLASS);
 		fields = new HashMap<String, SchemaField>();
 		actions = new HashMap<String, SchemaAction>();
 		events = new HashMap<String, SchemaEvent>();
@@ -129,7 +131,7 @@ public abstract class SchemaClassDefinition extends SchemaFeatures {
 	}
 
 	public SchemaEvent getEvent(String iEventName) {
-		//TODO: Manage recursively 
+		// TODO: Manage recursively
 		return events.get(iEventName);
 	}
 
@@ -178,7 +180,7 @@ public abstract class SchemaClassDefinition extends SchemaFeatures {
 		if (actions.containsKey(iActionName)) {
 			// REPLACE IT
 			for (int i = 0; i < orderedActions.size(); ++i) {
-				if (orderedActions.get(i).getSignature() != null && orderedActions.get(i).getSignature().equals(iActionName)) {
+				if (orderedActions.get(i).getName() != null && orderedActions.get(i).getName().equals(iActionName)) {
 					orderedActions.remove(i);
 					break;
 				}
@@ -205,10 +207,10 @@ public abstract class SchemaClassDefinition extends SchemaFeatures {
 		return fields;
 	}
 
-	
 	public Map<String, SchemaAction> getActions() {
 		return actions;
-	} 
+	}
+
 	/**
 	 * COPY ALL EVENTS FROM PARENT ENTITY
 	 * 
@@ -216,8 +218,7 @@ public abstract class SchemaClassDefinition extends SchemaFeatures {
 	 * @param listeners
 	 * @throws CloneNotSupportedException
 	 */
-	protected void cloneEvents(SchemaClassDefinition iSource, List<UserObjectPermissionListener> listeners)
-			throws CloneNotSupportedException {
+	protected void cloneEvents(SchemaClassDefinition iSource, List<UserObjectPermissionListener> listeners) throws CloneNotSupportedException {
 
 		boolean allowed;
 		SchemaEvent event;
@@ -255,8 +256,7 @@ public abstract class SchemaClassDefinition extends SchemaFeatures {
 	 * @param listeners
 	 * @throws CloneNotSupportedException
 	 */
-	protected void cloneActions(SchemaClassDefinition iSource, List<UserObjectPermissionListener> listeners)
-			throws CloneNotSupportedException {
+	protected void cloneActions(SchemaClassDefinition iSource, List<UserObjectPermissionListener> listeners) throws CloneNotSupportedException {
 
 		boolean allowed;
 		SchemaAction action;
@@ -283,7 +283,7 @@ public abstract class SchemaClassDefinition extends SchemaFeatures {
 
 			action = (SchemaAction) sourceSchemaAction.clone();
 			action.entity = this;
-			setAction(action.getSignature(), action);
+			setAction(action.getName(), action);
 		}
 	}
 
@@ -294,8 +294,7 @@ public abstract class SchemaClassDefinition extends SchemaFeatures {
 	 * @param listeners
 	 * @throws CloneNotSupportedException
 	 */
-	protected void cloneFields(SchemaClassDefinition iSource, List<UserObjectPermissionListener> listeners)
-			throws CloneNotSupportedException {
+	protected void cloneFields(SchemaClassDefinition iSource, List<UserObjectPermissionListener> listeners) throws CloneNotSupportedException {
 
 		boolean allowed;
 		SchemaField field;

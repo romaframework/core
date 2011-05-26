@@ -11,19 +11,17 @@
 
 package org.romaframework.aspect.core.feature;
 
-import org.romaframework.core.util.DynaBean;
+import org.romaframework.aspect.core.CoreAspect;
+import org.romaframework.core.schema.Feature;
+import org.romaframework.core.schema.FeatureType;
+import org.romaframework.core.schema.SchemaClass;
 
-public class CoreFieldFeatures extends DynaBean {
+public class CoreFieldFeatures {
 
-	private static final long	serialVersionUID	= -8848673915906136342L;
-
-	public CoreFieldFeatures() {
-		defineAttribute(EMBEDDED_TYPE, null);
-		defineAttribute(EMBEDDED, Boolean.FALSE);
-		defineAttribute(USE_RUNTIME_TYPE, Boolean.FALSE);
-	}
-
-	public static final String	EMBEDDED_TYPE			= "embeddedType";
-	public static final String	EMBEDDED					= "embedded";
-	public static final String	USE_RUNTIME_TYPE	= "useRuntimeType";
+	public static final Feature<SchemaClass>	EMBEDDED_TYPE			= new Feature<SchemaClass>(CoreAspect.ASPECT_NAME, "embeddedType", FeatureType.FIELD,
+																																	SchemaClass.class);
+	public static final Feature<Boolean>			EMBEDDED					= new Feature<Boolean>(CoreAspect.ASPECT_NAME, "embedded", FeatureType.FIELD, Boolean.class,
+																																	Boolean.FALSE);
+	public static final Feature<Boolean>			USE_RUNTIME_TYPE	= new Feature<Boolean>(CoreAspect.ASPECT_NAME, "useRuntimeType", FeatureType.FIELD,
+																																	Boolean.class, Boolean.FALSE);
 }

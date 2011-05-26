@@ -16,14 +16,6 @@
 
 package org.romaframework.core.schema;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.romaframework.core.Utility;
 
 /**
  * Represent a base element for an entity.
@@ -31,53 +23,22 @@ import org.romaframework.core.Utility;
  * @author Luca Garulli (luca.garulli--at--assetdata.it)
  */
 public abstract class SchemaElement extends SchemaFeatures implements Comparable<SchemaElement> {
-	private static final long					serialVersionUID		= -4789886810661429988L;
+	private static final long	serialVersionUID	= -4789886810661429988L;
 
-	protected String									name;
-	protected int											order;
+	protected String					name;
+	protected int							order;
 
-	private final static Set<String>	notFoundAnnotations	= new HashSet<String>();
-	private static Log								log									= LogFactory.getLog(SchemaElement.class);
+	public final static int		DEF_ORDER					= -1;
 
-	public final static int						DEF_ORDER						= -1;
-
-	public SchemaElement(String iName) {
+	public SchemaElement(String iName, FeatureType featureType) {
+		super(featureType);
 		order = DEF_ORDER;
 		name = iName;
 	}
 
-	@SuppressWarnings("unchecked")
-	protected static Annotation searchForAnnotation(AnnotatedElement iElement, String annotationName, String iAspectName) {
-		// CHECK FOR ANNOTATION PRESENCE
-		String annotationFullName = Utility.ROMA_PACKAGE + ".aspect." + iAspectName + ".annotation." + annotationName;
-		if (notFoundAnnotations.contains(annotationFullName)) {
-			return null;
-		}
-		try {
-			Class annotationClass = Class.forName(annotationFullName);
-			Annotation ann = iElement.getAnnotation(annotationClass);
-			if (log.isDebugEnabled())
-				log.debug("[SchemaElement.searchForAnnotation] Reading Java5 annotation " + iElement + ":" + ann);
-			return ann;
-		} catch (ClassNotFoundException e) {
-			notFoundAnnotations.add(annotationFullName);
-			// ANNOTATION CLASS NOT EXIST FOR CURRENT ASPECT
-		}
-		return null;
-	}
-
-	@Override
-	public Object clone() throws CloneNotSupportedException {
-		SchemaElement copy = (SchemaElement) super.clone();
-		copy.name = name;
-		copy.order = order;
-
-		return copy;
-	}
-
 	public int compareTo(SchemaElement iField) {
 		int otherOrder = iField.getOrder();
-		
+
 		if (otherOrder == order)
 			return 0;
 

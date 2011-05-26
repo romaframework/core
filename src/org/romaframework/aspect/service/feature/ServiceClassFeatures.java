@@ -15,17 +15,13 @@
  */
 package org.romaframework.aspect.service.feature;
 
-import org.romaframework.core.util.DynaBean;
+import org.romaframework.aspect.service.ServiceAspectAbstract;
+import org.romaframework.core.schema.Feature;
+import org.romaframework.core.schema.FeatureType;
 
-public class ServiceClassFeatures extends DynaBean {
-	public static final String	INTERFACE_CLASS				= "interfaceClass";
-	public static final String	SERVICE_NAME					= "serviceName";
-	public static final String	ASPECT_IMPLEMENTATION	= "aspectImplementation";
+public class ServiceClassFeatures {
+	public static final Feature<Class>	INTERFACE_CLASS				= new Feature<Class>(ServiceAspectAbstract.ASPECT_NAME, "interfaceClass", FeatureType.CLASS,Class.class);
+	public static final Feature<String>	SERVICE_NAME					= new Feature<String>(ServiceAspectAbstract.ASPECT_NAME, "serviceName", FeatureType.CLASS,String.class,"");
+	public static final Feature<Class>	ASPECT_IMPLEMENTATION	= new Feature<Class>(ServiceAspectAbstract.ASPECT_NAME, "aspectImplementation", FeatureType.CLASS,Class.class);
 
-	public ServiceClassFeatures() {
-		super();
-		defineAttribute(INTERFACE_CLASS, null);
-		defineAttribute(SERVICE_NAME, "");
-		defineAttribute(ASPECT_IMPLEMENTATION, null);
-	}
 }

@@ -28,8 +28,8 @@ import org.romaframework.core.Utility;
 import org.romaframework.core.module.SelfRegistrantConfigurableModule;
 import org.romaframework.core.schema.SchemaClassDefinition;
 import org.romaframework.core.schema.SchemaClassResolver;
+import org.romaframework.core.schema.reflection.SchemaClassReflection;
 import org.romaframework.core.schema.xmlannotations.XmlClassAnnotation;
-import org.romaframework.core.util.DynaBean;
 
 public abstract class EnterpriseAspectAbstract extends SelfRegistrantConfigurableModule<String> implements EnterpriseAspect {
 
@@ -54,52 +54,48 @@ public abstract class EnterpriseAspectAbstract extends SelfRegistrantConfigurabl
 	}
 
 	public void configClass(SchemaClassDefinition iClass, Annotation iAnnotation, XmlClassAnnotation iXmlNode) {
-		DynaBean features = iClass.getFeatures(ASPECT_NAME);
-		if (features == null) {
-			// CREATE EMPTY FEATURES
-			features = new EnterpriseClassFeatures();
-			iClass.setFeatures(ASPECT_NAME, features);
-		}
 
-		readClassAnnotation(iAnnotation, features);
+		readClassAnnotation(iClass);
 
 	}
 
-	private void readClassAnnotation(Annotation iAnnotation, DynaBean features) {
-		if (iAnnotation instanceof EnterpriseClass) {
-			EnterpriseClass annotation = (EnterpriseClass) iAnnotation;
+	private void readClassAnnotation(SchemaClassDefinition iClass) {
+		Class<?> realClass = null;
+		if (iClass instanceof SchemaClassReflection) {
+			realClass = ((SchemaClassReflection) iClass).getLanguageType();
+		}
+		if (realClass == null)
+			return;
+		EnterpriseClass annotation = realClass.getAnnotation(EnterpriseClass.class);
 
-			if (annotation != null) {
-				// PROCESS ANNOTATIONS
-				features.setAttribute(EnterpriseClassFeatures.ESBHOST, annotation.esbHost());
-				features.setAttribute(EnterpriseClassFeatures.ESBPORT, annotation.esbPort());
-				features.setAttribute(EnterpriseClassFeatures.USERNAME, annotation.username());
-				features.setAttribute(EnterpriseClassFeatures.PASSW, annotation.password());
-				features.setAttribute(EnterpriseClassFeatures.BCADDRESS, annotation.consumerAddress());
-				features.setAttribute(EnterpriseClassFeatures.WSDLADDRESS, annotation.wsdlAddress());
+		if (annotation != null) {
+			// PROCESS ANNOTATIONS
+			iClass.setFeature(EnterpriseClassFeatures.ESBHOST, annotation.esbHost());
+			iClass.setFeature(EnterpriseClassFeatures.ESBPORT, Long.parseLong(annotation.esbPort()));
+			iClass.setFeature(EnterpriseClassFeatures.USERNAME, annotation.username());
+			iClass.setFeature(EnterpriseClassFeatures.PASSW, annotation.password());
+			iClass.setFeature(EnterpriseClassFeatures.BCADDRESS, annotation.consumerAddress());
+			iClass.setFeature(EnterpriseClassFeatures.WSDLADDRESS, annotation.wsdlAddress());
 
-			}
-		} else if (iAnnotation instanceof BpelClass) {
-			BpelClass annotation = (BpelClass) iAnnotation;
-			if (annotation != null) {
+		}
+		BpelClass bpleAnnotation = realClass.getAnnotation(BpelClass.class);
+		if (bpleAnnotation != null) {
 
-				features.setAttribute(BpelClassFeatures.PROJECTPATH, annotation.projectPath());
-				features.setAttribute(BpelClassFeatures.OPERATIONNAME, annotation.operationName());
-				features.setAttribute(BpelClassFeatures.BCADDRESS, annotation.consumerAddress());
-				features.setAttribute(BpelClassFeatures.WSDLADDRESS, annotation.wsdlAddress());
-			}
-		} else if (iAnnotation instanceof ConsumerRegistrationClass) {
-			ConsumerRegistrationClass annotation = (ConsumerRegistrationClass) iAnnotation;
-			if (annotation != null) {
+			iClass.setFeature(BpelClassFeatures.PROJECTPATH, bpleAnnotation.projectPath());
+			iClass.setFeature(BpelClassFeatures.OPERATIONNAME, bpleAnnotation.operationName());
+			iClass.setFeature(BpelClassFeatures.BCADDRESS, bpleAnnotation.consumerAddress());
+			iClass.setFeature(BpelClassFeatures.WSDLADDRESS, bpleAnnotation.wsdlAddress());
+		}
+		ConsumerRegistrationClass ConsymerAnnotation = realClass.getAnnotation(ConsumerRegistrationClass.class);
+		if (ConsymerAnnotation != null) {
 
-				features.setAttribute(ConsumerRegistrationClassFeatures.REG_URI, annotation.registryURI());
-				features.setAttribute(ConsumerRegistrationClassFeatures.USERNAME, annotation.username());
-				features.setAttribute(ConsumerRegistrationClassFeatures.PASSW, annotation.password());
-				features.setAttribute(ConsumerRegistrationClassFeatures.AUTHOR, annotation.author());
-				features.setAttribute(ConsumerRegistrationClassFeatures.ORGANIZATION, annotation.organizationPackage());
-				features.setAttribute(ConsumerRegistrationClassFeatures.SERVICE_DESC, annotation.serviceDesc());
-				features.setAttribute(ConsumerRegistrationClassFeatures.SERVICE_NAME, annotation.serviceName());
-			}
+			iClass.setFeature(ConsumerRegistrationClassFeatures.REG_URI, ConsymerAnnotation.registryURI());
+			iClass.setFeature(ConsumerRegistrationClassFeatures.USERNAME, ConsymerAnnotation.username());
+			iClass.setFeature(ConsumerRegistrationClassFeatures.PASSW, ConsymerAnnotation.password());
+			iClass.setFeature(ConsumerRegistrationClassFeatures.AUTHOR, ConsymerAnnotation.author());
+			iClass.setFeature(ConsumerRegistrationClassFeatures.ORGANIZATION, ConsymerAnnotation.organizationPackage());
+			iClass.setFeature(ConsumerRegistrationClassFeatures.SERVICE_DESC, ConsymerAnnotation.serviceDesc());
+			iClass.setFeature(ConsumerRegistrationClassFeatures.SERVICE_NAME, ConsymerAnnotation.serviceName());
 		}
 
 	}

@@ -43,14 +43,16 @@ public abstract class SchemaEvent extends SchemaAction {
 	public static final String			DEFAULT_EVENT_NAME					= ".DEFAULT_EVENT";
 
 	public SchemaEvent(SchemaField field, String iName, List<SchemaParameter> iOrderedParameters) {
-		super(field.getEntity(), iName, iOrderedParameters);
+		super(field.getEntity(), iName, iOrderedParameters,FeatureType.EVENT);
 		this.field = field;
+		eventOwner = field.getEntity();
 		// TODO:Manage Params in signature
 		eventSignature = ON_METHOD + Utility.getCapitalizedString(field.getName()) + Utility.getCapitalizedString(iName);
 	}
 
 	public SchemaEvent(SchemaClassDefinition iEntity, String iName, List<SchemaParameter> iOrderedParameters) {
-		super(iEntity, iName, iOrderedParameters);
+		super(iEntity, iName, iOrderedParameters,FeatureType.EVENT);
+		eventOwner = iEntity;
 		// TODO:Manage Params in signature
 		eventSignature = ON_METHOD + Utility.getCapitalizedString(iName);
 	}

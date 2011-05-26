@@ -22,12 +22,12 @@ public class SchemaParameter extends SchemaElement {
 	private SchemaClass				type;
 
 	public SchemaParameter(String iName, SchemaClass iType) {
-		super(iName);
+		super(iName, FeatureType.PARAMETER);
 		type = iType;
 	}
 
 	public SchemaParameter(String iName) {
-		super(iName);
+		super(iName, FeatureType.PARAMETER);
 	}
 
 	public SchemaClass getType() {

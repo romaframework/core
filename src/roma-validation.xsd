@@ -9,6 +9,6 @@
 		<xsd:attribute name="required" type="xsd:boolean" use="optional" default="true" />
 	</xsd:complexType>
 	<xsd:complexType name="aspectActionTypeValidation">
-		<xsd:attribute name="enabled" type="xsd:boolean" use="optional" default="true" />
+		<xsd:attribute name="validate" type="xsd:boolean" use="optional" default="true" />
 	</xsd:complexType>
 </xsd:schema>

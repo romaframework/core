@@ -15,33 +15,20 @@
  */
 package org.romaframework.aspect.enterprise.feature;
 
-import org.romaframework.core.util.DynaBean;
+import org.romaframework.aspect.enterprise.EnterpriseAspectAbstract;
+import org.romaframework.core.schema.Feature;
+import org.romaframework.core.schema.FeatureType;
 
-public class EnterpriseClassFeatures extends DynaBean {
-	
+public class EnterpriseClassFeatures {
 
-	private static final long	serialVersionUID	= 1L;
-	
-	public EnterpriseClassFeatures()  {
-		super();
-		
-		defineAttribute(ESBHOST,"");
-		defineAttribute(ESBPORT,"");
-		defineAttribute(USERNAME,"");		
-		defineAttribute(PASSW,"");
-		defineAttribute(BCADDRESS,"");
-		defineAttribute(WSDLADDRESS,"");
-		
-		
-	}
+	public static final Feature<String>	ESBHOST			= new Feature<String>(EnterpriseAspectAbstract.ASPECT_NAME, "esbHost", FeatureType.CLASS, String.class, "");
+	public static final Feature<Long>		ESBPORT			= new Feature<Long>(EnterpriseAspectAbstract.ASPECT_NAME, "esbPort", FeatureType.CLASS, Long.class, new Long(
+																											0));
+	public static final Feature<String>	USERNAME		= new Feature<String>(EnterpriseAspectAbstract.ASPECT_NAME, "username", FeatureType.CLASS, String.class, "");
+	public static final Feature<String>	PASSW				= new Feature<String>(EnterpriseAspectAbstract.ASPECT_NAME, "password", FeatureType.CLASS, String.class, "");
+	public static final Feature<String>	BCADDRESS		= new Feature<String>(EnterpriseAspectAbstract.ASPECT_NAME, "consumerAddress", FeatureType.CLASS,
+																											String.class, "");
+	public static final Feature<String>	WSDLADDRESS	= new Feature<String>(EnterpriseAspectAbstract.ASPECT_NAME, "wsdlAddress", FeatureType.CLASS, String.class,
+																											"");
 
-	
-	public static final String ESBHOST = "esbHost";
-	public static final String ESBPORT = "esbPort";
-	public static final String USERNAME="username";
-	public static final String PASSW="password";
-	public static final String BCADDRESS="consumerAddress";
-	public static final String WSDLADDRESS="wsdlAddress";
-	
-	
 }

@@ -16,14 +16,13 @@
 
 package org.romaframework.aspect.persistence;
 
-import org.reverspring.annotations.SpringConstructor;
 
 public class QueryByFilterItemPredicate implements QueryByFilterItem {
 	private String	fieldName;
 	private String	fieldOperator;
 	private Object	fieldValue;
 
-	@SpringConstructor(constructorParamsGetters = { "getFieldName", "getFieldOperator", "getFieldValue" })
+//	@SpringConstructor(constructorParamsGetters = { "getFieldName", "getFieldOperator", "getFieldValue" })
 	public QueryByFilterItemPredicate(String fieldName, String operator, Object value) {
 		this.fieldName = fieldName;
 		this.fieldOperator = operator;

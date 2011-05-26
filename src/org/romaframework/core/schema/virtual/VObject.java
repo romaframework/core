@@ -22,7 +22,6 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.romaframework.aspect.scripting.ScriptingAspect;
 import org.romaframework.aspect.scripting.exception.ScriptingException;
 import org.romaframework.aspect.scripting.feature.ScriptingFeatures;
 import org.romaframework.core.Roma;
@@ -141,8 +140,8 @@ public class VObject implements VirtualObject {
 	}
 
 	protected void invokeConstructor() throws ScriptingException {
-		String code = (String) clazz.getFeature(ScriptingAspect.ASPECT_NAME, ScriptingFeatures.CODE);
+		String code = clazz.getFeature(ScriptingFeatures.CODE);
 		if (code != null)
-			VirtualObjectHelper.invoke(this, clazz.getFeatures(ScriptingAspect.ASPECT_NAME));
+			VirtualObjectHelper.invoke(this, clazz);
 	}
 }

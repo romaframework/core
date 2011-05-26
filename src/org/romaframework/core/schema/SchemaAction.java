@@ -27,7 +27,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.romaframework.core.Roma;
 import org.romaframework.core.flow.Controller;
-import org.romaframework.core.flow.UserObjectEventListener;
+import org.romaframework.core.flow.SchemaActionListener;
 
 /**
  * Generic abstract class that represents an Action.
@@ -44,50 +44,63 @@ public abstract class SchemaAction extends SchemaClassElement {
 	private SchemaClass										returnType;
 
 	public SchemaAction(SchemaClassDefinition iEntity, String iName) {
-		super(iEntity, iName);
+		super(iEntity, iName, FeatureType.ACTION);
+	}
+
+	public SchemaAction(SchemaClassDefinition iEntity, String iName, FeatureType type) {
+		super(iEntity, iName, type);
 	}
 
 	public SchemaAction(SchemaClassDefinition iEntity, String iName, List<SchemaParameter> iOrderedParameters) {
-		super(iEntity, iName);
+		this(iEntity, iName, iOrderedParameters, FeatureType.ACTION);
+	}
+
+	public SchemaAction(SchemaClassDefinition iEntity, String iName, List<SchemaParameter> iOrderedParameters, FeatureType type) {
+		super(iEntity, iName, type);
 		orderedParameters = iOrderedParameters;
 		if (orderedParameters != null)
 			for (SchemaParameter param : orderedParameters)
 				parameters.put(param.getName(), param);
 	}
 
-	public abstract Object invokeFinal(Object iContent, Object[] params) throws IllegalArgumentException, IllegalAccessException,
-			InvocationTargetException;
+	public abstract Object invokeFinal(Object iContent, Object[] params) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException;
 
-	public Object invoke(Object iContent, Object... params) throws IllegalArgumentException, IllegalAccessException,
-			InvocationTargetException {
+	public Object invoke(Object iContent, Object... params) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 
 		try {
 			// CREATE THE CONTEXT BEFORE TO CALL THE ACTION
 			Roma.context().create();
 
-			List<UserObjectEventListener> listeners = Controller.getInstance().getListeners(UserObjectEventListener.class);
+			List<SchemaActionListener> listeners = Controller.getInstance().getListeners(SchemaActionListener.class);
 			boolean result = true;
-			for (UserObjectEventListener listener : listeners) {
-				result = listener.onBeforeActionExecution(iContent, this);
+			for (SchemaActionListener listener : listeners) {
+				result = listener.onBeforeAction(iContent, this);
 				if (!result) {
-					log.debug("[SchemaAction.invoke] Listener " + listener
-							+ " has interrupted the chain of execution before the execution of the action");
+					log.debug("[SchemaAction.invoke] Listener " + listener + " has interrupted the chain of execution before the execution of the action");
 					return null;
 				}
 			}
 
 			Object value = null;
 			try {
-				return invokeFinal(iContent, params);
-			} finally {
-				for (UserObjectEventListener listener : listeners) {
+				value = invokeFinal(iContent, params);
+				for (SchemaActionListener listener : listeners) {
 					try {
-						listener.onAfterActionExecution(iContent, this, value);
+						listener.onAfterAction(iContent, this, value);
 					} catch (Throwable t) {
-						log.error("[SchemaAction.invoke] Listener " + listener
-								+ " has interrupted the chain of execution after the execution of the action", t);
+						log.error("[SchemaAction.invoke] Listener " + listener + " has interrupted the chain of execution after the execution of the action", t);
 					}
 				}
+				return value;
+			} catch (IllegalArgumentException e) {
+				fireActionException(listeners, iContent, e);
+				throw e;
+			} catch (IllegalAccessException e) {
+				fireActionException(listeners, iContent, e);
+				throw e;
+			} catch (InvocationTargetException e) {
+				fireActionException(listeners, iContent, e);
+				throw e;
 			}
 		} finally {
 			// ASSURE TO DESTROY THE CONTEXT
@@ -95,9 +108,19 @@ public abstract class SchemaAction extends SchemaClassElement {
 		}
 	}
 
+	private void fireActionException(List<SchemaActionListener> listeners, Object iContent, Exception ex) {
+		for (SchemaActionListener listener : listeners) {
+			try {
+				listener.onExceptionAction(iContent, this, ex);
+			} catch (Throwable t) {
+				log.error("[SchemaAction.invoke] Listener " + listener + " has interrupted the chain of exception action  after the action throw and execution ", t);
+			}
+		}
+	}
+
 	@Override
 	public String toString() {
-		return super.toString() + getSignature();
+		return super.toString() + getFullName();
 	}
 
 	public static boolean ignoreMethod(String iItem, String iMethodName) {
@@ -132,15 +155,7 @@ public abstract class SchemaAction extends SchemaClassElement {
 	}
 
 	public String getSignature() {
-		String[] params = null;
-		if (orderedParameters != null) {
-			params = new String[orderedParameters.size()];
-			for (int i = 0; i < orderedParameters.size(); ++i) {
-				params[i] = orderedParameters.get(i).getType().getName();
-			}
-		}
-
-		return getSignature(name, params);
+		return name;
 	}
 
 	public SchemaClass getReturnType() {

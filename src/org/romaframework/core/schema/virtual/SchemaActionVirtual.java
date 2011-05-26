@@ -17,19 +17,19 @@
 package org.romaframework.core.schema.virtual;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
+import java.util.List;
 
-import org.romaframework.aspect.scripting.ScriptingAspect;
 import org.romaframework.aspect.scripting.exception.ScriptingException;
 import org.romaframework.aspect.scripting.feature.ScriptingFeatures;
 import org.romaframework.core.Roma;
 import org.romaframework.core.aspect.Aspect;
 import org.romaframework.core.exception.ConfigurationException;
+import org.romaframework.core.schema.FeatureLoader;
 import org.romaframework.core.schema.SchemaAction;
 import org.romaframework.core.schema.SchemaClassDefinition;
+import org.romaframework.core.schema.SchemaParameter;
 import org.romaframework.core.schema.config.SchemaConfiguration;
 import org.romaframework.core.schema.xmlannotations.XmlActionAnnotation;
-import org.romaframework.core.util.DynaBean;
 
 /**
  * Represent a method of a class.
@@ -42,7 +42,7 @@ public class SchemaActionVirtual extends SchemaAction {
 	public static final String	DEFAULT_LANGUAGE	= "JavaScript";
 
 	public SchemaActionVirtual(SchemaClassDefinition iEntity, String iName) {
-		super(iEntity, iName, null);
+		super(iEntity, iName, (List<SchemaParameter>) null);
 	}
 
 	public SchemaActionVirtual(SchemaClassDefinition iEntity, String iName, SchemaAction iInherited) {
@@ -51,29 +51,22 @@ public class SchemaActionVirtual extends SchemaAction {
 	}
 
 	public SchemaActionVirtual(SchemaClassDefinition iEntity, String iName, String iLanguage, String iCode) {
-		super(iEntity, iName, null);
-
-		DynaBean features = getFeatures(ScriptingAspect.ASPECT_NAME);
-		if (features == null) {
-			features = new ScriptingFeatures();
-			setFeatures(ScriptingAspect.ASPECT_NAME, features);
-		}
+		super(iEntity, iName, (List<SchemaParameter>) null);
 
 		if (iLanguage != null)
-			features.setAttribute(ScriptingFeatures.LANGUAGE, iLanguage);
+			setFeature(ScriptingFeatures.LANGUAGE, iLanguage);
 
-		features.setAttribute(ScriptingFeatures.CODE, iCode);
+		setFeature(ScriptingFeatures.CODE, iCode);
 	}
 
 	@Override
-	public Object invokeFinal(Object iContent, Object[] params) throws IllegalArgumentException, IllegalAccessException,
-			InvocationTargetException {
+	public Object invokeFinal(Object iContent, Object[] params) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		if (Roma.scripting() == null)
 			throw new ConfigurationException("No ScriptingAspect implementation found. Add it as module of the current project");
 
 		try {
-			if (getFeatures(ScriptingAspect.ASPECT_NAME).getAttribute(ScriptingFeatures.CODE) != null) {
-				return VirtualObjectHelper.invoke((VirtualObject) iContent, getFeatures(ScriptingAspect.ASPECT_NAME));
+			if (getFeature(ScriptingFeatures.CODE) != null) {
+				return VirtualObjectHelper.invoke((VirtualObject) iContent, this);
 			} else if (inheritedAction != null)
 				// EXECUTE JAVA METHOD
 				return inheritedAction.invoke(((VirtualObject) iContent).getSuperClassObject());
@@ -84,33 +77,18 @@ public class SchemaActionVirtual extends SchemaAction {
 	}
 
 	public void configure() {
-		if (inheritedAction != null) {
-			// INHERITS ALL FEATURES FROM INHERITED ACTION
-			try {
-				allFeatures = ((SchemaAction) inheritedAction.clone()).getAllFeatures();
-			} catch (CloneNotSupportedException e) {
-				e.printStackTrace();
-			}
-		}
+		SchemaConfiguration classDescriptor = entity.getSchemaClass().getDescriptor();
 
+		XmlActionAnnotation parentDescriptor = null;
+
+		if (classDescriptor != null && classDescriptor.getType() != null) {
+			// SEARCH FORM DEFINITION IN DESCRIPTOR
+			parentDescriptor = classDescriptor.getType().getAction(name);
+
+		}
+		FeatureLoader.loadActionFeatures(this, parentDescriptor);
 		// BROWSE ALL ASPECTS
 		for (Aspect aspect : Roma.aspects()) {
-			SchemaConfiguration classDescriptor = entity.getSchemaClass().getDescriptor();
-
-			XmlActionAnnotation parentDescriptor = null;
-
-			if (classDescriptor != null && classDescriptor.getType() != null && classDescriptor.getType().getActions() != null) {
-				// SEARCH FORM DEFINITION IN DESCRIPTOR
-				Collection<XmlActionAnnotation> allActions = classDescriptor.getType().getActions();
-
-				for (XmlActionAnnotation tmpDescr : allActions) {
-					if (tmpDescr.getName().equals(name)) {
-						// FOUND XML NODE
-						parentDescriptor = tmpDescr;
-						break;
-					}
-				}
-			}
 			// CONFIGURE THE SCHEMA OBJECT WITH CURRENT ASPECT
 			aspect.configAction(this, null, null, parentDescriptor);
 		}

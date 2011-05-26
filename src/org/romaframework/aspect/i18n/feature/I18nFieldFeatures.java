@@ -16,13 +16,12 @@
 
 package org.romaframework.aspect.i18n.feature;
 
-import org.romaframework.core.util.DynaBean;
+import org.romaframework.aspect.i18n.I18NAspect;
+import org.romaframework.core.schema.Feature;
+import org.romaframework.core.schema.FeatureType;
 
-public class I18NFieldFeatures extends DynaBean {
-	public I18NFieldFeatures() {
-		defineAttribute(KEY, null);
-	}
+public class I18nFieldFeatures {
 
-	public static final String	KEY					= "key";
+	public static final Feature<String>	KEY					= new Feature<String>(I18NAspect.ASPECT_NAME, "key", FeatureType.FIELD,String.class);
 	public static final String	CONTENT_VAR	= "$content";
 }

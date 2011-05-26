@@ -16,12 +16,10 @@
 
 package org.romaframework.aspect.monitoring.feature;
 
-import org.romaframework.core.util.DynaBean;
+import org.romaframework.aspect.monitoring.MonitoringAspect;
+import org.romaframework.core.schema.Feature;
+import org.romaframework.core.schema.FeatureType;
 
-public class MonitoringFeatures extends DynaBean {
-	public MonitoringFeatures() {
-		defineAttribute(ENABLED, null);
-	}
-
-	public static final String	ENABLED	= "enabled";
+public class MonitoringFeatures {
+	public static final Feature<Boolean>	ENABLED	= new Feature<Boolean>(MonitoringAspect.ASPECT_NAME,"enabled",FeatureType.FIELD,Boolean.class,Boolean.TRUE);
 }

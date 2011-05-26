@@ -16,13 +16,13 @@
 
 package org.romaframework.aspect.validation.feature;
 
-import org.romaframework.core.util.DynaBean;
+import org.romaframework.aspect.validation.ValidationAspect;
+import org.romaframework.core.schema.Feature;
+import org.romaframework.core.schema.FeatureType;
 
-public class ValidationActionFeatures extends DynaBean {
+public class ValidationActionFeatures {
 
-	public ValidationActionFeatures() {
-		defineAttribute(ENABLED, false);
-	}
+	public static final Feature<Boolean>	VALIDATE	= new Feature<Boolean>(ValidationAspect.ASPECT_NAME, "validate", FeatureType.ACTION, Boolean.class,
+																											Boolean.TRUE);
 
-	public static final String	ENABLED	= "enabled";
 }

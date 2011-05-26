@@ -25,12 +25,12 @@ import org.romaframework.core.schema.SchemaClassDefinition;
 import org.romaframework.core.schema.SchemaClassElement;
 import org.romaframework.core.schema.SchemaEvent;
 import org.romaframework.core.schema.SchemaField;
+import org.romaframework.core.schema.reflection.SchemaActionReflection;
+import org.romaframework.core.schema.reflection.SchemaFieldReflection;
 import org.romaframework.core.schema.xmlannotations.XmlActionAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlAspectAnnotation;
 import org.romaframework.core.schema.xmlannotations.XmlClassAnnotation;
 import org.romaframework.core.schema.xmlannotations.XmlEventAnnotation;
 import org.romaframework.core.schema.xmlannotations.XmlFieldAnnotation;
-import org.romaframework.core.util.DynaBean;
 
 /**
  * Persistence aspect. Manages application objects in datastore.
@@ -45,77 +45,39 @@ public abstract class PersistenceAspectAbstract implements PersistenceAspect {
 	public void endConfigClass(SchemaClassDefinition iClass) {
 	}
 
-	public void configField(SchemaField iField, Annotation iAnnotation, Annotation iGenericAnnotation, Annotation getterAnnotation,
-			XmlFieldAnnotation iXmlNode) {
+	public void configField(SchemaField iField, Annotation iAnnotation, Annotation iGenericAnnotation, Annotation getterAnnotation, XmlFieldAnnotation iXmlNode) {
 		configCommonAnnotations(iField, iAnnotation, iGenericAnnotation);
-		readFieldXml(iField, iXmlNode);
 	}
 
-	public void configAction(SchemaClassElement iAction, Annotation iActionAnnotation, Annotation iGenericAnnotation,
-			XmlActionAnnotation iXmlNode) {
+	public void configAction(SchemaClassElement iAction, Annotation iActionAnnotation, Annotation iGenericAnnotation, XmlActionAnnotation iXmlNode) {
 		configCommonAnnotations(iAction, iActionAnnotation, iGenericAnnotation);
-		readActionXml(iAction, iXmlNode);
 	}
 
 	public void configClass(SchemaClassDefinition class1, Annotation annotation, XmlClassAnnotation node) {
 	}
 
 	private void configCommonAnnotations(SchemaClassElement iElement, Annotation iAnnotation, Annotation iGenericAnnotation) {
-		DynaBean features = iElement.getFeatures(ASPECT_NAME);
-		if (features == null) {
-			// CREATE EMPTY FEATURES
-			features = new PersistenceFeatures();
-			iElement.setFeatures(ASPECT_NAME, features);
+		Persistence annotation = null;
+		if (iElement instanceof SchemaFieldReflection && ((SchemaFieldReflection) iElement).getGetterMethod() != null) {
+			annotation = (Persistence) ((SchemaFieldReflection) iElement).getGetterMethod().getAnnotation(Persistence.class);
+			if (annotation == null && ((SchemaFieldReflection) iElement).getField() != null)
+				annotation = (Persistence) ((SchemaFieldReflection) iElement).getField().getAnnotation(Persistence.class);
 		}
-
-		readAnnotation(iElement, iGenericAnnotation, features);
-		readAnnotation(iElement, iAnnotation, features);
-	}
-
-	private void readAnnotation(SchemaClassElement iElement, Annotation iAnnotation, DynaBean features) {
-		Persistence annotation = (Persistence) iAnnotation;
-
+		if (iElement instanceof SchemaActionReflection) {
+			annotation = (Persistence) ((SchemaActionReflection) iElement).getMethod().getAnnotation(Persistence.class);
+		}
 		if (annotation != null) {
 			// PROCESS ANNOTATIONS
 			// ANNOTATION ATTRIBUTES (IF DEFINED) OVERWRITE DEFAULT VALUES
 			if (annotation != null) {
 				if (!annotation.mode().equals(PersistenceConstants.MODE_NOTHING))
-					features.setAttribute(PersistenceFeatures.MODE, annotation.mode());
+					iElement.setFeature(PersistenceFeatures.MODE, annotation.mode());
 			}
 		}
+
 	}
 
-	private void readFieldXml(SchemaClassElement iElement, XmlFieldAnnotation iXmlNode) {
-		// PROCESS DESCRIPTOR CFG DESCRIPTOR ATTRIBUTES (IF DEFINED) OVERWRITE DEFAULT AND ANNOTATION VALUES
-		if (iXmlNode == null || iXmlNode.aspect(ASPECT_NAME) == null)
-			return;
-
-		DynaBean features = iElement.getFeatures(ASPECT_NAME);
-
-		XmlAspectAnnotation descriptor = iXmlNode.aspect(ASPECT_NAME);
-
-		// TODO check default!!!
-		if (descriptor != null) {
-			features.setAttribute(PersistenceFeatures.MODE, descriptor.getAttribute(PersistenceFeatures.MODE));
-		}
-	}
-
-	private void readActionXml(SchemaClassElement iElement, XmlActionAnnotation iXmlNode) {
-		// PROCESS DESCRIPTOR CFG DESCRIPTOR ATTRIBUTES (IF DEFINED) OVERWRITE DEFAULT AND ANNOTATION VALUES
-		if (iXmlNode == null || iXmlNode.aspect(ASPECT_NAME) == null)
-			return;
-
-		DynaBean features = iElement.getFeatures(ASPECT_NAME);
-
-		XmlAspectAnnotation descriptor = iXmlNode.aspect(ASPECT_NAME);
-
-		if (descriptor != null) {
-			features.setAttribute(PersistenceFeatures.MODE, descriptor.getAttribute(PersistenceFeatures.MODE));
-		}
-	}
-
-	public void configEvent(SchemaEvent iEvent, Annotation iEventAnnotation, Annotation iGenericAnnotation,
-			XmlEventAnnotation iXmlNode) {
+	public void configEvent(SchemaEvent iEvent, Annotation iEventAnnotation, Annotation iGenericAnnotation, XmlEventAnnotation iXmlNode) {
 		configAction(iEvent, iEventAnnotation, iGenericAnnotation, iXmlNode);
 	}
 

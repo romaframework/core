@@ -24,15 +24,13 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-import org.romaframework.aspect.core.annotation.AnnotationConstants;
-import org.romaframework.aspect.i18n.annotation.I18nField;
-import org.romaframework.aspect.i18n.feature.I18NFieldFeatures;
+import org.romaframework.aspect.i18n.feature.I18nFieldFeatures;
 import org.romaframework.aspect.session.SessionAspect;
-import org.romaframework.aspect.session.SessionInfo;
 import org.romaframework.core.GlobalConstants;
 import org.romaframework.core.Roma;
 import org.romaframework.core.Utility;
-import org.romaframework.core.flow.UserObjectEventListener;
+import org.romaframework.core.flow.Controller;
+import org.romaframework.core.flow.SchemaFieldListener;
 import org.romaframework.core.module.SelfRegistrantConfigurableModule;
 import org.romaframework.core.schema.SchemaClass;
 import org.romaframework.core.schema.SchemaClassDefinition;
@@ -41,11 +39,9 @@ import org.romaframework.core.schema.SchemaEvent;
 import org.romaframework.core.schema.SchemaField;
 import org.romaframework.core.schema.SchemaObject;
 import org.romaframework.core.schema.xmlannotations.XmlActionAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlAspectAnnotation;
 import org.romaframework.core.schema.xmlannotations.XmlClassAnnotation;
 import org.romaframework.core.schema.xmlannotations.XmlEventAnnotation;
 import org.romaframework.core.schema.xmlannotations.XmlFieldAnnotation;
-import org.romaframework.core.util.DynaBean;
 import org.romaframework.core.util.parser.ObjectVariableResolver;
 
 /**
@@ -54,8 +50,7 @@ import org.romaframework.core.util.parser.ObjectVariableResolver;
  * 
  * @author Luca Garulli (luca.garulli--at--assetdata.it)
  */
-public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModule<String> implements I18NAspect,
-		UserObjectEventListener {
+public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModule<String> implements I18NAspect, SchemaFieldListener {
 
 	private static final String	DATE_TIME_FORMAT_VAR	= "Application.DateTimeFormat";
 	private static final String	TIME_FORMAT_VAR				= "Application.TimeFormat";
@@ -63,54 +58,20 @@ public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModul
 	private static final String	NUMBER_FORMAT_VAR			= "Application.NumberFormat";
 	public static final String	LABEL_NAME						= "label";
 
+	public I18NAspectAbstract() {
+		Controller.getInstance().registerListener(SchemaFieldListener.class, this);
+	}
+
 	public void beginConfigClass(SchemaClassDefinition iClass) {
 	}
 
 	public void endConfigClass(SchemaClassDefinition iClass) {
 	}
 
-	public void configField(SchemaField iField, Annotation iFieldAnnotation, Annotation iGenericAnnotation,
-			Annotation iGetterAnnotation, XmlFieldAnnotation iXmlNode) {
-		DynaBean features = iField.getFeatures(ASPECT_NAME);
-		if (features == null) {
-			// CREATE EMPTY FEATURES
-			features = new I18NFieldFeatures();
-			iField.setFeatures(ASPECT_NAME, features);
-		}
+	public void configField(SchemaField iField, Annotation iFieldAnnotation, Annotation iGenericAnnotation, Annotation iGetterAnnotation,
+			XmlFieldAnnotation iXmlNode) {
 
-		readFieldAnnotation(iField, iFieldAnnotation, features);
-		readFieldAnnotation(iField, iGetterAnnotation, features);
-		readFieldXml(iField, iXmlNode);
 		setFieldDefaults(iField);
-	}
-
-	private void readFieldAnnotation(SchemaField iField, Annotation iAnnotation, DynaBean features) {
-		I18nField annotation = (I18nField) iAnnotation;
-
-		if (annotation != null) {
-			// PROCESS ANNOTATIONS
-			// ANNOTATION ATTRIBUTES (IF DEFINED) OVERWRITE DEFAULT VALUES
-			if (!annotation.key().equals(AnnotationConstants.DEF_VALUE))
-				features.setAttribute(I18NFieldFeatures.KEY, annotation.key());
-		}
-	}
-
-	private void readFieldXml(SchemaField iField, XmlFieldAnnotation iXmlNode) {
-		// PROCESS DESCRIPTOR CFG
-		// DESCRIPTOR ATTRIBUTES (IF DEFINED) OVERWRITE DEFAULT AND ANNOTATION
-		// VALUES
-		if (iXmlNode == null || iXmlNode.aspect(ASPECT_NAME) == null)
-			return;
-
-		DynaBean features = iField.getFeatures(ASPECT_NAME);
-
-		XmlAspectAnnotation descriptor = iXmlNode.aspect(ASPECT_NAME);
-
-		if (descriptor != null) {
-			String key = descriptor.getAttribute(I18NFieldFeatures.KEY);
-			if (key != null)
-				features.setAttribute(I18NFieldFeatures.KEY, key);
-		}
 	}
 
 	private void setFieldDefaults(SchemaField field) {
@@ -121,7 +82,7 @@ public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModul
 			return null;
 		}
 
-		String key = (String) iField.getFeature(I18NAspect.ASPECT_NAME, I18NFieldFeatures.KEY);
+		String key = (String) iField.getFeature(I18nFieldFeatures.KEY);
 
 		if (key == null) {
 			return iCurrentValue;
@@ -129,14 +90,14 @@ public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModul
 
 		StringBuilder keyToSearch = new StringBuilder(VARNAME_PREFIX);
 
-		int pos = key.indexOf(I18NFieldFeatures.CONTENT_VAR);
+		int pos = key.indexOf(I18nFieldFeatures.CONTENT_VAR);
 		if (pos == -1) {
 			keyToSearch.append(key);
 		} else {
 			// REPLACE CONTENT_VAR WITH REAL VALUE
 			keyToSearch.append(key.substring(0, pos));
 			keyToSearch.append(iCurrentValue.toString());
-			keyToSearch.append(key.substring(pos + I18NFieldFeatures.CONTENT_VAR.length()));
+			keyToSearch.append(key.substring(pos + I18nFieldFeatures.CONTENT_VAR.length()));
 		}
 
 		Object ret = resolveString(Roma.schema().getSchemaClass(iContent), keyToSearch.toString());
@@ -271,9 +232,6 @@ public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModul
 		return IGNORED;
 	}
 
-	public void onFieldRefresh(SessionInfo iSession, Object iContent, SchemaField iField) {
-	}
-
 	public Object onBeforeFieldWrite(Object content, SchemaField field, Object currentValue) {
 		return currentValue;
 	}
@@ -282,16 +240,7 @@ public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModul
 		return currentValue;
 	}
 
-	public Object onException(Object content, SchemaClassElement element, Throwable throwed) {
-		return null;
-	}
-
-	public int getPriority() {
-		return 0;
-	}
-
-	public void configAction(SchemaClassElement action, Annotation actionAnnotation, Annotation genericAnnotation,
-			XmlActionAnnotation node) {
+	public void configAction(SchemaClassElement action, Annotation actionAnnotation, Annotation genericAnnotation, XmlActionAnnotation node) {
 	}
 
 	public void configClass(SchemaClassDefinition class1, Annotation annotation, XmlClassAnnotation node) {
@@ -302,13 +251,6 @@ public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModul
 
 	public Object getUnderlyingComponent() {
 		return null;
-	}
-
-	public boolean onBeforeActionExecution(Object iContent, SchemaClassElement iAction) {
-		return true;
-	}
-
-	public void onAfterActionExecution(Object iContent, SchemaClassElement iAction, Object returnedValue) {
 	}
 
 	public DateFormat getDateTimeFormat() {

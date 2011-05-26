@@ -78,8 +78,13 @@ public class SchemaManager extends Configurable<String> {
 	public SchemaClass getSchemaClass(Object iObject) {
 		if (iObject == null)
 			return null;
-
-		return iObject instanceof VirtualObject ? ((VirtualObject) iObject).getClazz() : getSchemaClass(iObject.getClass());
+		if (iObject instanceof VirtualObject) {
+			return ((VirtualObject) iObject).getClazz();
+		}
+		if (iObject instanceof Class<?>) {
+			return getSchemaClass((Class<?>) iObject);
+		}
+		return getSchemaClass(iObject.getClass());
 	}
 
 	public SchemaClass getSchemaClass(Class<?> iJavaClass) {
@@ -120,32 +125,37 @@ public class SchemaManager extends Configurable<String> {
 
 		return entityInfo;
 	}
-	
+
 	/**
-	 * checks if a schema class exists or can be created 
-	 * @param iEntityName the entity class
+	 * checks if a schema class exists or can be created
+	 * 
+	 * @param iEntityName
+	 *          the entity class
 	 * @return true if a schema class exists or can be created, false otherwise
 	 */
 	public boolean existsSchemaClass(Class<?> iEntity) {
 		return existsSchemaClass(Utility.getClassName(iEntity));
 	}
+
 	/**
-	 * checks if a schema class exists or can be created 
-	 * @param iEntityName the entity name
+	 * checks if a schema class exists or can be created
+	 * 
+	 * @param iEntityName
+	 *          the entity name
 	 * @return true if a schema class exists or can be created, false otherwise
 	 */
 	public boolean existsSchemaClass(String iEntityName) {
 		if (iEntityName == null)
 			return false;
-		if (notFountEntities.contains(iEntityName)){
+		if (notFountEntities.contains(iEntityName)) {
 			return false;
 		}
-		try{
+		try {
 			SchemaClass sc = getSchemaClass(iEntityName, null, null);
-			if(sc==null){
+			if (sc == null) {
 				return false;
 			}
-		}catch(Exception e){
+		} catch (Exception e) {
 			return false;
 		}
 		return true;
@@ -173,8 +183,8 @@ public class SchemaManager extends Configurable<String> {
 	 * @return Registered ClassInfo instance.
 	 * @throws ConfigurationNotFoundException
 	 */
-	public SchemaClass registerSchemaClass(String iEntityName, Class<?> iClass, SchemaClass iBaseClass,
-			SchemaConfiguration iDescriptor) throws ConfigurationNotFoundException {
+	public SchemaClass registerSchemaClass(String iEntityName, Class<?> iClass, SchemaClass iBaseClass, SchemaConfiguration iDescriptor)
+			throws ConfigurationNotFoundException {
 		// CREATE THE SCHEMA INFO INSTANCE
 		SchemaClassReflection cls = new SchemaClassReflection(iEntityName, iClass, iBaseClass, iDescriptor);
 

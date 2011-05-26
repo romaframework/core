@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -37,7 +36,6 @@ import java.util.Set;
 import org.apache.commons.jxpath.JXPathContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.romaframework.aspect.core.CoreAspect;
 import org.romaframework.aspect.core.feature.CoreFieldFeatures;
 import org.romaframework.core.Roma;
 import org.romaframework.core.Utility;
@@ -48,7 +46,6 @@ import org.romaframework.core.entity.EntityHelper;
 import org.romaframework.core.exception.ConfigurationException;
 import org.romaframework.core.exception.UserException;
 import org.romaframework.core.factory.GenericFactory;
-import org.romaframework.core.flow.ObjectContext;
 import org.romaframework.core.handler.RomaObjectHandler;
 import org.romaframework.core.schema.reflection.SchemaClassReflection;
 import org.romaframework.core.schema.reflection.SchemaFieldReflection;
@@ -71,7 +68,7 @@ public class SchemaHelper {
 	 * @throws ConfigurationException
 	 */
 	public static SchemaClass getEmbeddedType(Object iContent, SchemaField iField) throws ConfigurationException {
-		if ((Boolean) iField.getFeature(CoreAspect.ASPECT_NAME, CoreFieldFeatures.USE_RUNTIME_TYPE)) {
+		if (iField.getFeature(CoreFieldFeatures.USE_RUNTIME_TYPE)) {
 			Object value = SchemaHelper.getFieldValue(iField, iContent);
 			if (value != null)
 				if (SchemaHelper.isMultiValueObject(value)) {
@@ -142,8 +139,7 @@ public class SchemaHelper {
 			SchemaField field = iClassDef.getField(iFieldName);
 
 			if (field == null) {
-				throw new UserException(iInstance, "Cannot find field or getter method '" + iFieldName + "' in object of class "
-						+ iInstance.getClass().getName());
+				throw new UserException(iInstance, "Cannot find field or getter method '" + iFieldName + "' in object of class " + iInstance.getClass().getName());
 			}
 
 			return getFieldValue(field, iInstance);
@@ -164,7 +160,7 @@ public class SchemaHelper {
 
 	public static Class<?> getFieldType(SchemaField iField, Object iInstance) {
 		Class<?> type = (Class<?>) iField.getLanguageType();
-		if (iInstance != null && (Boolean) iField.getFeature(CoreAspect.ASPECT_NAME, CoreFieldFeatures.USE_RUNTIME_TYPE)) {
+		if (iInstance != null && iField.getFeature(CoreFieldFeatures.USE_RUNTIME_TYPE)) {
 			Object runtimeType = SchemaHelper.getFieldValue(iField, iInstance);
 			if (runtimeType != null) {
 				type = runtimeType.getClass();
@@ -175,7 +171,7 @@ public class SchemaHelper {
 	}
 
 	public static SchemaClassDefinition getFieldDefinition(SchemaField iField, Object iInstance) {
-		if (iInstance != null && (Boolean) iField.getFeature(CoreAspect.ASPECT_NAME, CoreFieldFeatures.USE_RUNTIME_TYPE)) {
+		if (iInstance != null && iField.getFeature(CoreFieldFeatures.USE_RUNTIME_TYPE)) {
 			Object runtimeType = SchemaHelper.getFieldValue(iField, iInstance);
 			if (runtimeType != null) {
 				return Roma.schema().getSchemaClass(runtimeType);
@@ -207,8 +203,7 @@ public class SchemaHelper {
 	 * @param iValue
 	 * @throws BindingException
 	 */
-	public static void setFieldValue(SchemaClassDefinition iClassDef, String iFieldName, Object iInstance, Object iValue)
-			throws BindingException {
+	public static void setFieldValue(SchemaClassDefinition iClassDef, String iFieldName, Object iInstance, Object iValue) throws BindingException {
 		int sepPos = iFieldName.indexOf(Utility.PACKAGE_SEPARATOR);
 
 		if (sepPos == -1) {
@@ -353,8 +348,8 @@ public class SchemaHelper {
 		return methodSum;
 	}
 
-	public static Object invokeEvent(RomaObjectHandler iComponent, String eventName) throws IllegalArgumentException,
-			IllegalAccessException, InvocationTargetException {
+	public static Object invokeEvent(RomaObjectHandler iComponent, String eventName) throws IllegalArgumentException, IllegalAccessException,
+			InvocationTargetException {
 
 		// BROWSE UP UNTIL ROOT CONTENT COMPONENT SEARCHING THE EVENT
 		SchemaObject currentSchemaInstance = iComponent.getSchemaObject();
@@ -394,8 +389,8 @@ public class SchemaHelper {
 		return FAILED_EVENT_INVOKE;
 	}
 
-	public static Collection<SchemaEvent> getEvents(Object iObject, String iFieldName) throws IllegalArgumentException,
-			IllegalAccessException, InvocationTargetException {
+	public static Collection<SchemaEvent> getEvents(Object iObject, String iFieldName) throws IllegalArgumentException, IllegalAccessException,
+			InvocationTargetException {
 
 		// BROWSE UP UNTIL ROOT CONTENT COMPONENT SEARCHING THE EVENT
 
@@ -421,8 +416,7 @@ public class SchemaHelper {
 
 	}
 
-	public static Object invokeEvent(Object iObject, String eventName) throws IllegalArgumentException, IllegalAccessException,
-			InvocationTargetException {
+	public static Object invokeEvent(Object iObject, String eventName) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 
 		// BROWSE UP UNTIL ROOT CONTENT COMPONENT SEARCHING THE EVENT
 		SchemaEvent event = null;
@@ -458,8 +452,8 @@ public class SchemaHelper {
 		return FAILED_EVENT_INVOKE;
 	}
 
-	public static Object invokeEvent(RomaObjectHandler romaObjectHandler, String fieldName, String eventName, Object... params)
-			throws IllegalAccessException, InvocationTargetException {
+	public static Object invokeEvent(RomaObjectHandler romaObjectHandler, String fieldName, String eventName, Object... params) throws IllegalAccessException,
+			InvocationTargetException {
 
 		SchemaClass cls = romaObjectHandler.getSchemaObject().getSchemaClass();
 		SchemaField field = cls.getField(fieldName);
@@ -488,8 +482,8 @@ public class SchemaHelper {
 		return FAILED_EVENT_INVOKE;
 	}
 
-	public static Object invokeEvent(Object object, String fieldName, String eventName, Object... params)
-			throws IllegalAccessException, InvocationTargetException {
+	public static Object invokeEvent(Object object, String fieldName, String eventName, Object... params) throws IllegalAccessException,
+			InvocationTargetException {
 		if (object != null) {
 			SchemaClass cls = Roma.schema().getSchemaClass(object.getClass());
 			SchemaField field = cls.getField(fieldName);
@@ -543,11 +537,11 @@ public class SchemaHelper {
 			// CHECK IF IT'S A COLLECTION: IN THIS CASE THROW AN EXCEPTION SINCE
 			// IT MUST BE INITIALIZED BEFORE TO USE IT
 			if (isAssignableAs(iField.getType(), Collection.class))
-				throw new IllegalArgumentException("The collection in field '" + iField.getEntity().getSchemaClass().getName() + "."
-						+ iField.getName() + "' is null: cannot add elements. Remember to initialize it.");
+				throw new IllegalArgumentException("The collection in field '" + iField.getEntity().getSchemaClass().getName() + "." + iField.getName()
+						+ "' is null: cannot add elements. Remember to initialize it.");
 			else if (isAssignableAs(iField.getType(), Map.class))
-				throw new IllegalArgumentException("The map in field '" + iField.getEntity().getSchemaClass().getName() + "."
-						+ iField.getName() + "' is null: cannot add elements. Remember to initialize it.");
+				throw new IllegalArgumentException("The map in field '" + iField.getEntity().getSchemaClass().getName() + "." + iField.getName()
+						+ "' is null: cannot add elements. Remember to initialize it.");
 
 		if (currentValue instanceof Collection<?> && !simpleSet) {
 			// INSERT EACH ELEMENT OF SELECTION IN THE COLLECTION
@@ -610,7 +604,7 @@ public class SchemaHelper {
 		}
 
 		// REFRESH THE FIELD
-		ObjectContext.getInstance().fieldChanged(iContent, iField.getName());
+		Roma.fieldChanged(iContent, iField.getName());
 	}
 
 	public static Object removeElements(Object iContent, Object[] iSelection) {
@@ -1130,8 +1124,8 @@ public class SchemaHelper {
 	 *          Optional var args
 	 * @return The new object created
 	 */
-	public static Object createObject(SchemaClass iClass, Object... iArgs) throws IllegalArgumentException, InstantiationException,
-			IllegalAccessException, InvocationTargetException, SecurityException, NoSuchMethodException {
+	public static Object createObject(SchemaClass iClass, Object... iArgs) throws IllegalArgumentException, InstantiationException, IllegalAccessException,
+			InvocationTargetException, SecurityException, NoSuchMethodException {
 		Object newInstance = null;
 
 		try {
@@ -1200,15 +1194,14 @@ public class SchemaHelper {
 		return isMultiValueType((Type) iSchemaField.getLanguageType());
 	}
 
-	public static Object invokeAction(Object target, String action, Object... params) throws IllegalArgumentException,
-			IllegalAccessException, InvocationTargetException {
+	public static Object invokeAction(Object target, String action, Object... params) throws IllegalArgumentException, IllegalAccessException,
+			InvocationTargetException {
 		SchemaClass schemaClass = Roma.schema().getSchemaClass(target);
 
 		SchemaAction schemaAction = schemaClass.getAction(action, params);
 
 		if (schemaAction == null)
-			throw new IllegalArgumentException("Action " + schemaClass.getName() + "." + action + "(" + Utility.array2String(params)
-					+ ") was not found");
+			throw new IllegalArgumentException("Action " + schemaClass.getName() + "." + action + "(" + Utility.array2String(params) + ") was not found");
 
 		return schemaAction.invoke(target, params);
 	}

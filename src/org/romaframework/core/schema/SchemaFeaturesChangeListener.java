@@ -14,65 +14,56 @@
  * limitations under the License.
  */package org.romaframework.core.schema;
 
- /**
-  * Interface to track changes for schema class, field and action.
-  * 
-  * @author Luca Garulli (luca.garulli--at--assetdata.it)
-  * 
-  */
- public interface SchemaFeaturesChangeListener {
-	 /**
-	  * Notify the change of the features of a field
-	  * 
-	  * @param iUserObject
-	  *          the object that contains the field
-	  * @param iAspectName
-	  *          The aspect name of the feature to change
-	  * @param iFieldName
-	  *          The name of the field where the feature is changed
-	  * @param iFeatureName
-	  *          The name of the changed feature
-	  * @param iOldValue
-	  *          The old value of the feature
-	  * @param iFeatureValue
-	  *          The new value of the feature
-	  */
-	 public void signalChangeField(Object iUserObject, String iAspectName, String iFieldName, String iFeatureName, Object iOldValue,
-			 Object iFeatureValue);
+/**
+ * Interface to track changes for schema class, field and action.
+ * 
+ * @author Luca Garulli (luca.garulli--at--assetdata.it)
+ * 
+ */
+public interface SchemaFeaturesChangeListener {
+	/**
+	 * Notify the change of the features of a field
+	 * 
+	 * @param iUserObject
+	 *          the object that contains the field
+	 * @param iFieldName
+	 *          The name of the field where the feature is changed
+	 * @param iFeature
+	 *          The name of the changed feature
+	 * @param iOldValue
+	 *          The old value of the feature
+	 * @param iFeatureValue
+	 *          The new value of the feature
+	 */
+	public <T> void signalChangeField(Object iUserObject, String iFieldName, Feature<T> iFeature, T iOldValue, T iFeatureValue);
 
-	 /**
-	  * Notify the change of the features of an action
-	  * 
-	  * @param iUserObject
-	  *          the object that contains the action
-	  * @param iAspectName
-	  *          The aspect name of the feature to change
-	  * @param iActionName
-	  *          The name of the action where the feature is changed
-	  * @param iFeatureName
-	  *          The name of the changed feature
-	  * @param iOldValue
-	  *          The old value of the feature
-	  * @param iFeatureValue
-	  *          The new value of the feature
-	  */
-	 public void signalChangeAction(Object iUserObject, String iAspectName, String iActionName, String iFeatureName, Object iOldValue,
-			 Object iFeatureValue);
+	/**
+	 * Notify the change of the features of an action
+	 * 
+	 * @param iUserObject
+	 *          the object that contains the action
+	 * @param iActionName
+	 *          The name of the action where the feature is changed
+	 * @param iFeature
+	 *          The name of the changed feature
+	 * @param iOldValue
+	 *          The old value of the feature
+	 * @param iFeatureValue
+	 *          The new value of the feature
+	 */
+	public <T>void signalChangeAction(Object iUserObject, String iActionName, Feature<T> iFeature, T iOldValue, T iFeatureValue);
 
-	 /**
-	  * Notify the change of the features of a class
-	  * 
-	  * @param iUserObject
-	  *          the object that contains the action
-	  * @param iAspectName
-	  *          The aspect name of the feature to change
-	  * 
-	  * @param iFeatureName
-	  *          The name of the changed feature
-	  * @param iOldValue
-	  *          The old value of the feature
-	  * @param iFeatureValue
-	  *          The new value of the feature
-	  */
-	 public void signalChangeClass(Object iUserObject, String iAspectName, String iFeatureName, Object iOldValue, Object iFeatureValue);
- }
+	/**
+	 * Notify the change of the features of a class
+	 * 
+	 * @param iUserObject
+	 *          the object that contains the action
+	 * @param iFeature
+	 *          The name of the changed feature
+	 * @param iOldValue
+	 *          The old value of the feature
+	 * @param iFeatureValue
+	 *          The new value of the feature
+	 */
+	public<T> void signalChangeClass(Object iUserObject, Feature<T> iFeature, T iOldValue, T iFeatureValue);
+}

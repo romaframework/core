@@ -28,20 +28,14 @@ import org.romaframework.core.Utility;
 import org.romaframework.core.config.ApplicationConfiguration;
 import org.romaframework.core.config.ContextException;
 import org.romaframework.core.config.RomaApplicationContext;
-import org.romaframework.core.exception.ConfigurationException;
 import org.romaframework.core.exception.ConfigurationNotFoundException;
 import org.romaframework.core.exception.UserException;
 import org.romaframework.core.handler.RomaObjectHandler;
-import org.romaframework.core.schema.SchemaAction;
 import org.romaframework.core.schema.SchemaClass;
-import org.romaframework.core.schema.SchemaClassDefinition;
-import org.romaframework.core.schema.SchemaClassElement;
-import org.romaframework.core.schema.SchemaFeaturesChangeListener;
 import org.romaframework.core.schema.SchemaField;
 import org.romaframework.core.schema.SchemaHelper;
 import org.romaframework.core.schema.SchemaManager;
 import org.romaframework.core.schema.SchemaObject;
-import org.romaframework.core.util.DynaBean;
 
 /**
  * Manager of forms, user objects and their relationships. Track all changes in objects. It's used to update changed properties of
@@ -221,7 +215,7 @@ public class ObjectContext {
 		if (iUserObject == null)
 			return;
 
-		List<UserObjectEventListener> listeners = Controller.getInstance().getListeners(UserObjectEventListener.class);
+		List<FieldRefreshListener> listeners = Controller.getInstance().getListeners(FieldRefreshListener.class);
 
 		synchronized (listeners) {
 			SchemaClass clz = getComponent(SchemaManager.class).getSchemaClass(iUserObject);
@@ -272,8 +266,7 @@ public class ObjectContext {
 		}
 	}
 
-	protected void signalFieldChanged(SessionInfo iUserSession, Object iUserObject, List<UserObjectEventListener> listeners,
-			SchemaClass iClass, String iFieldName) {
+	protected void signalFieldChanged(SessionInfo iUserSession, Object iUserObject, List<FieldRefreshListener> listeners, SchemaClass iClass, String iFieldName) {
 		try {
 			SchemaField field = null;
 			if (iFieldName != null) {
@@ -291,12 +284,11 @@ public class ObjectContext {
 			if (iUserSession == null)
 				iUserSession = getComponent(SessionAspect.class).getActiveSessionInfo();
 
-			for (UserObjectEventListener listener : listeners) {
+			for (FieldRefreshListener listener : listeners) {
 				listener.onFieldRefresh(iUserSession, iUserObject, field);
 			}
 		} catch (UserException e) {
-			log.info("[ObjectContext.fieldChanged] Cannot refresh field '" + iFieldName + "' in object " + iUserObject
-					+ " since it not exists for current view", e);
+			log.info("[ObjectContext.fieldChanged] Cannot refresh field '" + iFieldName + "' in object " + iUserObject + " since it not exists for current view", e);
 		}
 	}
 
@@ -315,21 +307,6 @@ public class ObjectContext {
 	}
 
 	/**
-	 * Return the features of the entity. The first time the features are requested, their are cloned by the original features. This
-	 * allow to customize features at a User Object level without consuming memory if not necessary.
-	 * 
-	 * @param iUserObject
-	 *          User Object
-	 * @return DynaBean instance
-	 */
-	public DynaBean getClassFeatures(Object iUserObject, String iAspectName) throws ConfigurationNotFoundException {
-		SchemaObject obj = getSchemaObject(iUserObject);
-		if (obj == null)
-			return null;
-		return obj.getFeatures(iAspectName);
-	}
-
-	/**
 	 * Update a class feature of a SchemaClassDefinition instance. The SchemaClassDefinition is taken by current session form.
 	 * 
 	 * @param iUserObject
@@ -343,78 +320,9 @@ public class ObjectContext {
 	 * @return true if changed, otherwise false
 	 * @throws ConfigurationNotFoundException
 	 */
-	public boolean setClassFeature(Object iUserObject, String iAspectName, String iFeatureName, Object iFeatureValue)
-			throws ConfigurationNotFoundException {
-		SchemaObject schema = getSchemaObject(iUserObject);
-		if (schema == null)
-			return false;
-
-		return setClassFeature(iUserObject, iAspectName, iFeatureName, iFeatureValue, schema);
-	}
-
-	/**
-	 * Update a class feature of a SchemaClassDefinition instance.
-	 * 
-	 * @param iUserObject
-	 *          POJO to apply
-	 * @param iAspectName
-	 *          Name of the feature's aspect
-	 * @param iFeatureName
-	 *          Name of the feature to change
-	 * @param iFeatureValue
-	 *          New value of the feature
-	 * @param iSchema
-	 *          SchemaClassDefinition instance to update
-	 * @return true if changed, otherwise false
-	 * @throws ConfigurationNotFoundException
-	 */
-	public boolean setClassFeature(Object iUserObject, String iAspectName, String iFeatureName, Object iFeatureValue,
-			SchemaClassDefinition iSchema) throws ConfigurationNotFoundException {
-		// GET CURRENT VALUE
-		DynaBean features = iSchema.getFeatures(iAspectName);
-		if (features == null)
-			return false;
-
-		Object currentValue = features.getAttribute(iFeatureName);
-
-		if (iFeatureValue == null && currentValue == null)
-			// NO CHANGES
-			return false;
-		if (iFeatureValue != null && currentValue != null)
-			if (iFeatureValue.equals(currentValue))
-				// NO CHANGES
-				return false;
-
-		features.setAttribute(iFeatureName, iFeatureValue);
-
-		// BROADCAST CHANGES TO ALL REGISTERED LISTENERS
-		List<SchemaFeaturesChangeListener> listeners = Controller.getInstance().getListeners(SchemaFeaturesChangeListener.class);
-		if (listeners != null)
-			for (SchemaFeaturesChangeListener listener : listeners) {
-				listener.signalChangeClass(iUserObject, iAspectName, iFeatureName, currentValue, iFeatureValue);
-			}
-		return true;
-	}
-
-	/**
-	 * Return the features of the requested field.
-	 * 
-	 * @param iUserObject
-	 *          User Object
-	 * @param iFieldName
-	 *          The name of the field
-	 * @return DynaBean instance
-	 */
-	public DynaBean getFieldFeatures(Object iUserObject, String iAspectName, String iFieldName) throws ConfigurationNotFoundException {
-		SchemaObject obj = getSchemaObject(iUserObject);
-		if (obj == null)
-			return null;
-
-		SchemaField field = obj.getField(iFieldName);
-		if (field != null)
-			return field.getFeatures(iAspectName);
-
-		return null;
+	@Deprecated
+	public boolean setClassFeature(Object iUserObject, String iAspectName, String iFeatureName, Object iFeatureValue) throws ConfigurationNotFoundException {
+		return Roma.setClassFeature(iUserObject, iAspectName, iFeatureName, iFeatureValue);
 	}
 
 	/**
@@ -433,83 +341,10 @@ public class ObjectContext {
 	 * @return true if changed, otherwise false
 	 * @throws ConfigurationNotFoundException
 	 */
-	public boolean setFieldFeature(Object iUserObject, String iAspectName, String iFieldName, String iFeatureName,
-			Object iFeatureValue) throws ConfigurationNotFoundException {
-		SchemaObject obj = getSchemaObject(iUserObject);
-		if (obj == null)
-			return false;
-
-		return setFieldFeature(iUserObject, iAspectName, iFieldName, iFeatureName, iFeatureValue, obj);
-	}
-
-	/**
-	 * Update a field feature of a SchemaClassDefinition instance.
-	 * 
-	 * @param iUserObject
-	 *          POJO to apply
-	 * @param iAspectName
-	 *          Name of the feature's aspect
-	 * @param iFieldName
-	 *          Name of the field to apply
-	 * @param iFeatureName
-	 *          Name of the feature to change
-	 * @param iFeatureValue
-	 *          New value of the feature
-	 * @param iSchema
-	 *          SchemaClassDefinition instance to update
-	 * @return true if changed, otherwise false
-	 * @throws ConfigurationNotFoundException
-	 */
-	public boolean setFieldFeature(Object iUserObject, String iAspectName, String iFieldName, String iFeatureName,
-			Object iFeatureValue, SchemaClassDefinition iSchema) throws ConfigurationNotFoundException {
-		SchemaField field = iSchema.getField(iFieldName);
-		if (field == null) {
-			if (iSchema.getSchemaClass().getField(iFieldName) == null)
-				throw new ConfigurationException("Field '" + iFieldName + "' not found in class '" + iSchema + "'");
-			else
-				return false;
-		}
-
-		// GET CURRENT VALUE
-		DynaBean features = field.getFeatures(iAspectName);
-		if (features == null)
-			return false;
-
-		Object currentValue = features.getAttribute(iFeatureName);
-
-		if (features.setAttribute(iFeatureName, iFeatureValue)) {
-			// BROADCAST CHANGES TO ALL REGISTERED LISTENERS
-			List<SchemaFeaturesChangeListener> listeners = Controller.getInstance().getListeners(SchemaFeaturesChangeListener.class);
-			if (listeners != null)
-				for (SchemaFeaturesChangeListener listener : listeners) {
-					listener.signalChangeField(iUserObject, iAspectName, iFieldName, iFeatureName, currentValue, iFeatureValue);
-				}
-		}
-
-		return true;
-	}
-
-	/**
-	 * Return the features of the requested action. The first time the features are requested, their are cloned by the original
-	 * features. This allow to customize features at a User Object level without consuming memory if not necessary.
-	 * 
-	 * @param iUserObject
-	 *          User Object
-	 * @param iActionName
-	 *          The name of the action
-	 * @return DynaBean instance
-	 */
-	public DynaBean getActionFeatures(Object iUserObject, String iAspectName, String iActionName)
+	@Deprecated
+	public boolean setFieldFeature(Object iUserObject, String iAspectName, String iFieldName, String iFeatureName, Object iFeatureValue)
 			throws ConfigurationNotFoundException {
-		SchemaObject schema = getSchemaObject(iUserObject);
-		if (schema == null)
-			return null;
-
-		SchemaClassElement action = schema.getAction(iActionName);
-		if (action == null)
-			return null;
-
-		return action.getFeatures(iAspectName);
+		return Roma.setFieldFeature(iUserObject, iAspectName, iFieldName, iFeatureName, iFeatureValue);
 	}
 
 	/**
@@ -528,67 +363,10 @@ public class ObjectContext {
 	 * @return true if changed, otherwise false
 	 * @throws ConfigurationNotFoundException
 	 */
-	public boolean setActionFeature(Object iUserObject, String iAspectName, String iActionName, String iFeatureName,
-			Object iFeatureValue) throws ConfigurationNotFoundException {
-		SchemaObject obj = getSchemaObject(iUserObject);
-		if (obj == null)
-			return false;
-
-		return setActionFeature(iUserObject, iAspectName, iActionName, iFeatureName, iFeatureValue, obj);
-	}
-
-	/**
-	 * Update an action feature of a SchemaClassDefinition instance
-	 * 
-	 * @param iUserObject
-	 *          POJO to apply
-	 * @param iAspectName
-	 *          Name of the feature's aspect
-	 * @param iActionName
-	 *          Name of the action to apply
-	 * @param iFeatureName
-	 *          Name of the feature to change
-	 * @param iFeatureValue
-	 *          New value of the feature
-	 * @param iSchema
-	 *          SchemaClassDefinition instance to update
-	 * @return true if changed, otherwise false
-	 * @throws ConfigurationNotFoundException
-	 */
-	public boolean setActionFeature(Object iUserObject, String iAspectName, String iActionName, String iFeatureName,
-			Object iFeatureValue, SchemaClassDefinition iSchema) throws ConfigurationNotFoundException {
-		// GET CURRENT VALUE
-		SchemaAction action = iSchema.getAction(iActionName);
-		if (action == null) {
-			if (iSchema.getSchemaClass().getAction(iActionName) == null)
-				throw new ConfigurationException("Action '" + iActionName + "' not found in class '" + iSchema + "'");
-			else
-				return false;
-		}
-		DynaBean features = action.getFeatures(iAspectName);
-		if (features == null)
-			return false;
-
-		Object currentValue = features.getAttribute(iFeatureName);
-
-		if (iFeatureValue == null && currentValue == null)
-			// NO CHANGES
-			return false;
-		if (iFeatureValue != null && currentValue != null)
-			if (iFeatureValue.equals(currentValue))
-				// NO CHANGES
-				return false;
-
-		features.setAttribute(iFeatureName, iFeatureValue);
-
-		// BROADCAST CHANGES TO ALL REGISTERED LISTENERS
-		List<SchemaFeaturesChangeListener> listeners = Controller.getInstance().getListeners(SchemaFeaturesChangeListener.class);
-		if (listeners != null)
-			for (SchemaFeaturesChangeListener listener : listeners) {
-				listener.signalChangeAction(iUserObject, iAspectName, iActionName, iFeatureName, currentValue, iFeatureValue);
-			}
-
-		return true;
+	@Deprecated()
+	public boolean setActionFeature(Object iUserObject, String iAspectName, String iActionName, String iFeatureName, Object iFeatureValue)
+			throws ConfigurationNotFoundException {
+		return Roma.setActionFeature(iUserObject, iAspectName, iActionName, iFeatureName, iFeatureValue);
 	}
 
 	/**

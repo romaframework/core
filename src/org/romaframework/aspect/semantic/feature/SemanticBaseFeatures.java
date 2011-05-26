@@ -15,7 +15,6 @@
  */
 package org.romaframework.aspect.semantic.feature;
 
-import org.romaframework.core.util.DynaBean;
 
 /**
  * IMPORTANT: PLEASE DO NOT RELY ON THIS RESOURCE, IT IS UNDER DEFINITION AND 
@@ -24,6 +23,6 @@ import org.romaframework.core.util.DynaBean;
  * @author Luigi Dell'Aquila (luigi.dellaquila@assetdata.it)
  * 
  */
-public class SemanticBaseFeatures extends DynaBean{
+public class SemanticBaseFeatures{
 
 }

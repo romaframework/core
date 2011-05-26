@@ -26,21 +26,13 @@ public abstract class SchemaClassElement extends SchemaElement {
 
 	protected SchemaClassDefinition	entity;
 
-	public SchemaClassElement(SchemaClassDefinition iEntity) {
-		this(iEntity, null);
+	public SchemaClassElement(SchemaClassDefinition iEntity, FeatureType featureType) {
+		this(iEntity, null, featureType);
 	}
 
-	public SchemaClassElement(SchemaClassDefinition iEntity, String iName) {
-		super(iName);
+	public SchemaClassElement(SchemaClassDefinition iEntity, String iName, FeatureType featureType) {
+		super(iName, featureType);
 		entity = iEntity;
-	}
-
-	@Override
-	public Object clone() throws CloneNotSupportedException {
-		SchemaClassElement copy = (SchemaClassElement) super.clone();
-		copy.entity = entity;
-
-		return copy;
 	}
 
 	public SchemaClassDefinition getEntity() {

@@ -25,9 +25,6 @@ import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.romaframework.aspect.core.annotation.AnnotationConstants;
-import org.romaframework.aspect.hook.annotation.HookAction;
-import org.romaframework.aspect.hook.annotation.HookField;
 import org.romaframework.aspect.hook.annotation.HookScope;
 import org.romaframework.aspect.hook.feature.HookActionFeatures;
 import org.romaframework.aspect.hook.feature.HookFieldFeatures;
@@ -37,9 +34,12 @@ import org.romaframework.core.aspect.Aspect;
 import org.romaframework.core.config.RomaApplicationContext;
 import org.romaframework.core.config.Serviceable;
 import org.romaframework.core.flow.Controller;
-import org.romaframework.core.flow.UserObjectEventListener;
+import org.romaframework.core.flow.FieldRefreshListener;
+import org.romaframework.core.flow.SchemaActionListener;
+import org.romaframework.core.flow.SchemaFieldListener;
 import org.romaframework.core.handler.RomaObjectHandler;
 import org.romaframework.core.module.SelfRegistrantModule;
+import org.romaframework.core.schema.Feature;
 import org.romaframework.core.schema.SchemaAction;
 import org.romaframework.core.schema.SchemaClass;
 import org.romaframework.core.schema.SchemaClassDefinition;
@@ -47,18 +47,16 @@ import org.romaframework.core.schema.SchemaClassElement;
 import org.romaframework.core.schema.SchemaEvent;
 import org.romaframework.core.schema.SchemaField;
 import org.romaframework.core.schema.xmlannotations.XmlActionAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlAspectAnnotation;
 import org.romaframework.core.schema.xmlannotations.XmlClassAnnotation;
 import org.romaframework.core.schema.xmlannotations.XmlEventAnnotation;
 import org.romaframework.core.schema.xmlannotations.XmlFieldAnnotation;
-import org.romaframework.core.util.DynaBean;
 
 /**
  * Aspect that intercepts events against POJO and call the registrant.
  * 
  * @author Luca Garulli (luca.garulli--at--assetdata.it)
  */
-public class HookAspect extends SelfRegistrantModule implements Aspect, UserObjectEventListener {
+public class HookAspect extends SelfRegistrantModule implements Aspect, FieldRefreshListener, SchemaActionListener, SchemaFieldListener {
 
 	public static final String							ASPECT_NAME		= "hook";
 	public static final String							WILDCARD_ANY	= "*";
@@ -68,7 +66,9 @@ public class HookAspect extends SelfRegistrantModule implements Aspect, UserObje
 	protected static Log										log						= LogFactory.getLog(HookAspect.class);
 
 	public HookAspect() {
-		Controller.getInstance().registerListener(UserObjectEventListener.class, this);
+		Controller.getInstance().registerListener(SchemaActionListener.class, this);
+		Controller.getInstance().registerListener(FieldRefreshListener.class, this);
+		Controller.getInstance().registerListener(SchemaFieldListener.class, this);
 	}
 
 	public void startup() throws RuntimeException {
@@ -90,173 +90,47 @@ public class HookAspect extends SelfRegistrantModule implements Aspect, UserObje
 	public void configClass(SchemaClassDefinition iClass, Annotation iAnnotation, XmlClassAnnotation iXmlNode) {
 	}
 
-	public void configField(SchemaField iField, Annotation iFieldAnnotation, Annotation iGenericAnnotation,
-			Annotation iGetterAnnotation, XmlFieldAnnotation iXmlNode) {
-		DynaBean features = iField.getFeatures(ASPECT_NAME);
-		if (features == null) {
-			// CREATE EMPTY FEATURES
-			features = new HookFieldFeatures();
-			iField.setFeatures(ASPECT_NAME, features);
-		}
+	public void configField(SchemaField iField, Annotation iFieldAnnotation, Annotation iGenericAnnotation, Annotation iGetterAnnotation,
+			XmlFieldAnnotation iXmlNode) {
 
-		readFieldAnnotation(iField, iFieldAnnotation, features);
-		readFieldAnnotation(iField, iGetterAnnotation, features);
-		readFieldXml(iField, iXmlNode);
-		setFieldDefaults(iField);
+		HookScope scope = iField.getFeature(HookFieldFeatures.SCOPE);
+		if (scope != null)
+			scope = HookScope.SESSION;
+
+		registerHook(iField, HookFieldFeatures.FIELD, scope);
+
 	}
 
-	public void configAction(SchemaClassElement iAction, Annotation iActionAnnotation, Annotation iGenericAnnotation,
-			XmlActionAnnotation iXmlNode) {
-		DynaBean features = iAction.getFeatures(ASPECT_NAME);
-		if (features == null) {
-			// CREATE EMPTY FEATURES
-			features = new HookActionFeatures();
-			iAction.setFeatures(ASPECT_NAME, features);
-		}
+	public void configAction(SchemaClassElement iAction, Annotation iActionAnnotation, Annotation iGenericAnnotation, XmlActionAnnotation iXmlNode) {
 
-		readActionAnnotation(iAction, iActionAnnotation, features);
-		readActionXml(iAction, iXmlNode);
-	}
+		HookScope scope = iAction.getFeature(HookActionFeatures.SCOPE) != null ? iAction.getFeature(HookActionFeatures.SCOPE) : HookScope.SESSION;
 
-	private void readActionAnnotation(SchemaClassElement iAction, Annotation iAnnotation, DynaBean features) {
-		HookAction annotation = (HookAction) iAnnotation;
+		registerHook(iAction, HookActionFeatures.HOOK_AROUND_ACTION, scope);
+		registerHook(iAction, HookActionFeatures.HOOK_BEFORE_ACTION, scope);
+		registerHook(iAction, HookActionFeatures.HOOK_AFTER_ACTION, scope);
 
-		if (annotation != null) {
-			// PROCESS ANNOTATIONS
-			// ANNOTATION ATTRIBUTES (IF DEFINED) OVERWRITE DEFAULT VALUES
-			HookScope scope = annotation.scope() != HookScope.DEFAULT ? annotation.scope() : HookScope.SESSION;
+		registerHook(iAction, HookActionFeatures.HOOK_AROUND_FIELD_READ, scope);
+		registerHook(iAction, HookActionFeatures.HOOK_BEFORE_FIELD_READ, scope);
+		registerHook(iAction, HookActionFeatures.HOOK_AFTER_FIELD_READ, scope);
 
-			if (!annotation.hookAroundAction().equals(AnnotationConstants.DEF_VALUE))
-				registerHook(iAction, features, HookActionFeatures.HOOK_AROUND_ACTION, annotation.hookAroundAction(), scope);
-			if (!annotation.hookBeforeAction().equals(AnnotationConstants.DEF_VALUE))
-				registerHook(iAction, features, HookActionFeatures.HOOK_BEFORE_ACTION, annotation.hookBeforeAction(), scope);
-			if (!annotation.hookAfterAction().equals(AnnotationConstants.DEF_VALUE))
-				registerHook(iAction, features, HookActionFeatures.HOOK_AFTER_ACTION, annotation.hookAfterAction(), scope);
+		registerHook(iAction, HookActionFeatures.HOOK_AROUND_FIELD_READ, scope);
+		registerHook(iAction, HookActionFeatures.HOOK_BEFORE_FIELD_READ, scope);
+		registerHook(iAction, HookActionFeatures.HOOK_AFTER_FIELD_READ, scope);
 
-			if (!annotation.hookAroundFieldRead().equals(AnnotationConstants.DEF_VALUE))
-				registerHook(iAction, features, HookActionFeatures.HOOK_AROUND_FIELD_READ, annotation.hookAroundFieldRead(), scope);
-			if (!annotation.hookBeforeFieldRead().equals(AnnotationConstants.DEF_VALUE))
-				registerHook(iAction, features, HookActionFeatures.HOOK_BEFORE_FIELD_READ, annotation.hookBeforeFieldRead(), scope);
-			if (!annotation.hookAfterFieldRead().equals(AnnotationConstants.DEF_VALUE))
-				registerHook(iAction, features, HookActionFeatures.HOOK_AFTER_FIELD_READ, annotation.hookAfterFieldRead(), scope);
-
-			if (!annotation.hookAroundFieldWrite().equals(AnnotationConstants.DEF_VALUE))
-				registerHook(iAction, features, HookActionFeatures.HOOK_AROUND_FIELD_READ, annotation.hookAroundFieldWrite(), scope);
-			if (!annotation.hookBeforeFieldWrite().equals(AnnotationConstants.DEF_VALUE))
-				registerHook(iAction, features, HookActionFeatures.HOOK_BEFORE_FIELD_READ, annotation.hookBeforeFieldWrite(), scope);
-			if (!annotation.hookAfterFieldWrite().equals(AnnotationConstants.DEF_VALUE))
-				registerHook(iAction, features, HookActionFeatures.HOOK_AFTER_FIELD_READ, annotation.hookAfterFieldWrite(), scope);
-
-			if (!annotation.hookAroundEvent().equals(AnnotationConstants.DEF_VALUE))
-				registerHook(iAction, features, HookActionFeatures.HOOK_AROUND_EVENT, annotation.hookAroundAction(), scope);
-			if (!annotation.hookBeforeEvent().equals(AnnotationConstants.DEF_VALUE))
-				registerHook(iAction, features, HookActionFeatures.HOOK_BEFORE_EVENT, annotation.hookBeforeAction(), scope);
-			if (!annotation.hookAfterEvent().equals(AnnotationConstants.DEF_VALUE))
-				registerHook(iAction, features, HookActionFeatures.HOOK_AFTER_EVENT, annotation.hookAfterAction(), scope);
-		}
-	}
-
-	private void readActionXml(SchemaClassElement iAction, XmlActionAnnotation iXmlNode) {
-		// PROCESS DESCRIPTOR CFG DESCRIPTOR ATTRIBUTES (IF DEFINED) OVERWRITE DEFAULT AND ANNOTATION VALUES
-		if (iXmlNode == null)
-			return;
-
-		DynaBean features = iAction.getFeatures(ASPECT_NAME);
-
-		if (iXmlNode.aspect(ASPECT_NAME) == null)
-			return;
-
-		XmlAspectAnnotation descriptor = iXmlNode.aspect(ASPECT_NAME);
-
-		if (descriptor != null) {
-			HookScope scope = HookScope.SESSION;
-			String scopeValue = descriptor.getAttribute(HookActionFeatures.SCOPE);
-			if (scopeValue != null && scope.equals("application"))
-				scope = HookScope.APPLICATION;
-
-			// ACTIONS
-			registerHook(iAction, features, HookActionFeatures.HOOK_AROUND_ACTION,
-					descriptor.getAttribute(HookActionFeatures.HOOK_AROUND_ACTION), scope);
-			registerHook(iAction, features, HookActionFeatures.HOOK_BEFORE_ACTION,
-					descriptor.getAttribute(HookActionFeatures.HOOK_BEFORE_ACTION), scope);
-			registerHook(iAction, features, HookActionFeatures.HOOK_AFTER_ACTION,
-					descriptor.getAttribute(HookActionFeatures.HOOK_AFTER_ACTION), scope);
-
-			// FIELD READS
-			registerHook(iAction, features, HookActionFeatures.HOOK_AROUND_FIELD_READ,
-					descriptor.getAttribute(HookActionFeatures.HOOK_AROUND_FIELD_READ), scope);
-			registerHook(iAction, features, HookActionFeatures.HOOK_BEFORE_FIELD_READ,
-					descriptor.getAttribute(HookActionFeatures.HOOK_BEFORE_FIELD_READ), scope);
-			registerHook(iAction, features, HookActionFeatures.HOOK_AFTER_FIELD_READ,
-					descriptor.getAttribute(HookActionFeatures.HOOK_AFTER_FIELD_READ), scope);
-
-			// FIELD WRITES
-			registerHook(iAction, features, HookActionFeatures.HOOK_AROUND_FIELD_WRITE,
-					descriptor.getAttribute(HookActionFeatures.HOOK_AROUND_FIELD_WRITE), scope);
-			registerHook(iAction, features, HookActionFeatures.HOOK_BEFORE_FIELD_WRITE,
-					descriptor.getAttribute(HookActionFeatures.HOOK_BEFORE_FIELD_WRITE), scope);
-			registerHook(iAction, features, HookActionFeatures.HOOK_AFTER_FIELD_WRITE,
-					descriptor.getAttribute(HookActionFeatures.HOOK_AFTER_FIELD_WRITE), scope);
-		}
-	}
-
-	protected void readFieldAnnotation(SchemaField iField, Annotation iAnnotation, DynaBean features) {
-		HookField annotation = (HookField) iAnnotation;
-
-		if (annotation != null) {
-			// PROCESS ANNOTATIONS ANNOTATION ATTRIBUTES (IF DEFINED) OVERWRITE DEFAULT VALUES
-			if (annotation != null) {
-				HookScope scope = HookScope.SESSION;
-				if (annotation.scope() != null && annotation.scope().equals("application"))
-					scope = HookScope.APPLICATION;
-
-				if (annotation.scope() != HookScope.DEFAULT)
-					features.setAttribute(HookFieldFeatures.SCOPE, annotation.scope());
-				if (!annotation.field().equals(AnnotationConstants.DEF_VALUE))
-					features.setAttribute(HookFieldFeatures.FIELD, annotation.field());
-
-				registerHook(iField, features, HookFieldFeatures.FIELD, annotation.field(), scope);
-			}
-		}
-	}
-
-	protected void readFieldXml(SchemaField iField, XmlFieldAnnotation iXmlNode) {
-		// PROCESS DESCRIPTOR CFG DESCRIPTOR ATTRIBUTES (IF DEFINED) OVERWRITE DEFAULT AND ANNOTATION VALUES
-		if (iXmlNode == null || iXmlNode.aspect(HookAspect.ASPECT_NAME) == null)
-			return;
-
-		DynaBean features = iField.getFeatures(ASPECT_NAME);
-
-		XmlAspectAnnotation descriptor = iXmlNode.aspect(HookAspect.ASPECT_NAME);
-
-		if (descriptor != null) {
-			HookScope scope = HookScope.SESSION;
-			String scopeValue = descriptor.getAttribute(HookFieldFeatures.SCOPE);
-			if (scopeValue != null && scope.equals("application"))
-				scope = HookScope.APPLICATION;
-			features.setAttribute(HookFieldFeatures.SCOPE, scopeValue);
-
-			String field = descriptor.getAttribute(HookFieldFeatures.FIELD);
-			if (field != null)
-				features.setAttribute(HookFieldFeatures.FIELD, field);
-
-			registerHook(iField, features, HookFieldFeatures.FIELD, field, scope);
-		}
-	}
-
-	protected void setFieldDefaults(SchemaField field) {
+		registerHook(iAction, HookActionFeatures.HOOK_AROUND_EVENT, scope);
+		registerHook(iAction, HookActionFeatures.HOOK_AROUND_EVENT, scope);
+		registerHook(iAction, HookActionFeatures.HOOK_AFTER_EVENT, scope);
 	}
 
 	/**
 	 * Register the hook in the genericHooks map if it uses wild-cards, otherwise put the hook in the exactHooks map.
 	 */
-	protected void registerHook(SchemaClassElement iElement, DynaBean features, String iHookType, String iHookTo, HookScope iScope) {
+	protected void registerHook(SchemaClassElement iElement, Feature<String> feature, HookScope iScope) {
+		String iHookTo = iElement.getFeature(feature);
 		if (iHookTo == null)
 			return;
 
-		features.setAttribute(iHookType, iHookTo);
-
-		String key = iHookType + " " + iHookTo;
+		String key = feature.getName() + " " + iHookTo;
 
 		List<HookEntry> entries;
 		if (iHookTo.contains(WILDCARD_ANY)) {
@@ -301,14 +175,6 @@ public class HookAspect extends SelfRegistrantModule implements Aspect, UserObje
 		return null;
 	}
 
-	public int getPriority() {
-		return 0;
-	}
-
-	public void onAfterActionExecution(Object iContent, SchemaClassElement iAction, Object returnedValue) {
-		searchForHooks(iContent, HookActionFeatures.HOOK_AFTER_ACTION, iAction, true);
-	}
-
 	public Object onAfterFieldRead(Object iContent, SchemaField iField, Object iCurrentValue) {
 		return iCurrentValue;
 	}
@@ -318,7 +184,12 @@ public class HookAspect extends SelfRegistrantModule implements Aspect, UserObje
 		return iCurrentValue;
 	}
 
-	public boolean onBeforeActionExecution(Object iContent, SchemaClassElement iAction) {
+	public void onAfterAction(Object iContent, SchemaAction iAction, Object returnedValue) {
+		searchForHooks(iContent, HookActionFeatures.HOOK_AFTER_ACTION, iAction, true);
+	}
+
+	@Override
+	public boolean onBeforeAction(Object iContent, SchemaAction iAction) {
 		if (isHookDefined(HookActionFeatures.HOOK_AROUND_ACTION, iAction)) {
 			// THERE IS AN "AROUND" HOOK: CALL IT AND RETURN FALSE TO AVOID THE CALL CHAIN
 			searchForHooks(iContent, HookActionFeatures.HOOK_AROUND_ACTION, iAction, false);
@@ -330,6 +201,10 @@ public class HookAspect extends SelfRegistrantModule implements Aspect, UserObje
 		return true;
 	}
 
+	@Override
+	public void onExceptionAction(Object iContent, SchemaAction iAction, Exception exception) {
+	}
+
 	public Object onBeforeFieldWrite(Object iContent, SchemaField iField, Object iCurrentValue) {
 		if (isHookDefined(HookActionFeatures.HOOK_AROUND_FIELD_WRITE, iField)) {
 			// THERE IS AN "AROUND" HOOK: CALL IT AND RETURN THE VALUE OF THE HOOKED ACTION
@@ -339,10 +214,6 @@ public class HookAspect extends SelfRegistrantModule implements Aspect, UserObje
 			return searchForHooks(iContent, HookActionFeatures.HOOK_BEFORE_FIELD_WRITE, iField, true);
 		}
 		return iCurrentValue;
-	}
-
-	public Object onException(Object iContent, SchemaClassElement iElement, Throwable iThrowed) {
-		return null;
 	}
 
 	public Object onBeforeFieldRead(Object iContent, SchemaField iField, Object iCurrentValue) {
@@ -361,7 +232,7 @@ public class HookAspect extends SelfRegistrantModule implements Aspect, UserObje
 		searchForHooks(iContent, HookFieldFeatures.FIELD, iField, true);
 	}
 
-	public boolean isHookDefined(String iHookType, SchemaClassElement iElement) {
+	public boolean isHookDefined(Feature<String> iHookType, SchemaClassElement iElement) {
 		String key;
 
 		// FOLLOW THE INHERITANCE TREE
@@ -390,7 +261,7 @@ public class HookAspect extends SelfRegistrantModule implements Aspect, UserObje
 		return wildcardHooks;
 	}
 
-	private Object searchForHooks(Object iContent, String iHookType, SchemaClassElement iElement, boolean iFollowTheChain) {
+	private Object searchForHooks(Object iContent, Feature<String> iHookType, SchemaClassElement iElement, boolean iFollowTheChain) {
 		if (iElement == null)
 			return null;
 
@@ -425,8 +296,8 @@ public class HookAspect extends SelfRegistrantModule implements Aspect, UserObje
 		return null;
 	}
 
-	private String getHookKey(String iHookType, SchemaClassElement iElement, SchemaClass cls) {
-		return iHookType + " " + cls.getName() + "." + iElement.getFullName();
+	private String getHookKey(Feature<String> iHookType, SchemaClassElement iElement, SchemaClass cls) {
+		return iHookType.getName() + " " + cls.getName() + "." + iElement.getFullName();
 	}
 
 	private boolean hookMatches(String iSource, String iMatch) {
@@ -454,8 +325,8 @@ public class HookAspect extends SelfRegistrantModule implements Aspect, UserObje
 		return true;
 	}
 
-	private Object invokeAllRegisteredHooks(Object iContent, SchemaClassElement iElement, String key, List<HookEntry> entries,
-			boolean iFollowTheChain) {
+	@SuppressWarnings("unchecked")
+	private Object invokeAllRegisteredHooks(Object iContent, SchemaClassElement iElement, String key, List<HookEntry> entries, boolean iFollowTheChain) {
 		if (entries == null)
 			return null;
 
@@ -475,7 +346,7 @@ public class HookAspect extends SelfRegistrantModule implements Aspect, UserObje
 			} else if (entry.scope == HookScope.APPLICATION) {
 				Class<?> cls = (Class<?>) entry.clazzElement.getEntity().getSchemaClass().getLanguageType();
 
-				Map<String, Object> componentsMap = RomaApplicationContext.getInstance().getComponentAspect().getComponentsOfClass(cls);
+				Map<String, Object> componentsMap = (Map<String, Object>)RomaApplicationContext.getInstance().getComponentAspect().getComponentsOfClass(cls);
 				if (componentsMap != null) {
 					for (Object component : componentsMap.values()) {
 						result = invokeHook(iContent, iElement, key, component, entry);

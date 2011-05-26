@@ -22,8 +22,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.romaframework.aspect.core.CoreAspect;
-import org.romaframework.aspect.core.feature.CoreClassFeatures;
 import org.romaframework.core.Roma;
 import org.romaframework.core.config.ContextException;
 import org.romaframework.core.domain.entity.ComposedEntity;
@@ -33,15 +31,13 @@ import org.romaframework.core.schema.SchemaClass;
 import org.romaframework.core.schema.SchemaClassDefinition;
 
 public class EntityHelper {
-	public static Object createObject(Object iSourceEntity, SchemaClass iClass)
-			throws IllegalArgumentException, InstantiationException,
-			IllegalAccessException, InvocationTargetException {
+	public static Object createObject(Object iSourceEntity, SchemaClass iClass) throws IllegalArgumentException, InstantiationException, IllegalAccessException,
+			InvocationTargetException {
 		Object newInstance = null;
 
 		try {
 			// TRY TO USE THE FACTORY IF ANY
-			GenericFactory<?> factory = Roma.component(iClass.getName()
-					+ GenericFactory.DEF_SUFFIX);
+			GenericFactory<?> factory = Roma.component(iClass.getName() + GenericFactory.DEF_SUFFIX);
 
 			// INVOKE THE EMPTY CONSTRUCTOR
 			newInstance = factory.create();
@@ -62,8 +58,7 @@ public class EntityHelper {
 
 					// CREATE THE COMPOSED EDIT INSTANCE
 					if (newInstance instanceof ComposedEntity<?>)
-						((ComposedEntity<Object>) newInstance)
-								.setEntity(iSourceEntity);
+						((ComposedEntity<Object>) newInstance).setEntity(iSourceEntity);
 				}
 			}
 		}
@@ -75,29 +70,17 @@ public class EntityHelper {
 		try {
 			return iClass.newInstance();
 		} catch (InstantiationException e) {
-			throw new LocalizedRuntimeException(
-					"Cannot create object of class " + iClass
-							+ " since it has no default constructor!", e);
+			throw new LocalizedRuntimeException("Cannot create object of class " + iClass + " since it has no default constructor!", e);
 		} catch (IllegalAccessError e) {
-			throw new LocalizedRuntimeException(
-					"Cannot create object of class "
-							+ iClass
-							+ " since constructor is not visible! Change its visibility to public.",
-					e);
+			throw new LocalizedRuntimeException("Cannot create object of class " + iClass + " since constructor is not visible! Change its visibility to public.", e);
 		} catch (Exception e) {
-			throw new LocalizedRuntimeException(
-					"Cannot create object of class "
-							+ iClass
-							+ " since an error was thrown by executing the default constructor!",
-					e);
+			throw new LocalizedRuntimeException("Cannot create object of class " + iClass + " since an error was thrown by executing the default constructor!", e);
 		}
 	}
 
-	public static Object getEntityObjectIfNeeded(Object iValue,
-			SchemaClassDefinition target) {
+	public static Object getEntityObjectIfNeeded(Object iValue, SchemaClassDefinition target) {
 		SchemaClass sc = Roma.schema().getSchemaClass(iValue);
-		if (sc == null || target == null
-				|| sc.isAssignableAs(target.getSchemaClass()))
+		if (sc == null || target == null || sc.isAssignableAs(target.getSchemaClass()))
 			return iValue;
 		return getEntityObject(iValue);
 	}
@@ -106,12 +89,6 @@ public class EntityHelper {
 		if (iSource instanceof ComposedEntity<?>)
 			return ((ComposedEntity<?>) iSource).getEntity();
 		return iSource;
-	}
-
-	public static Class<?> getEntityClass(SchemaClassDefinition iSchema) {
-		Class<?> entityClass = (Class<?>) iSchema.getFeature(
-				CoreAspect.ASPECT_NAME, CoreClassFeatures.ENTITY);
-		return entityClass != Object.class ? entityClass : null;
 	}
 
 	public static void assignEntity(Object iComposedObject, Object iSourceEntity) {
@@ -128,10 +105,8 @@ public class EntityHelper {
 		return objects;
 	}
 
-	public static List<? extends ComposedEntity<?>> createComposedEntityList(
-			Collection<?> iObjectList, SchemaClass iListClass)
-			throws IllegalArgumentException, InstantiationException,
-			IllegalAccessException, InvocationTargetException {
+	public static List<? extends ComposedEntity<?>> createComposedEntityList(Collection<?> iObjectList, SchemaClass iListClass) throws IllegalArgumentException,
+			InstantiationException, IllegalAccessException, InvocationTargetException {
 		List<ComposedEntity<?>> tempResult = null;
 		if (iListClass.isAssignableAs(ComposedEntity.class)) {
 			// CREATE THE COMPOSED RESULT SET
@@ -147,17 +122,14 @@ public class EntityHelper {
 		return tempResult;
 	}
 
-	public Object createObjectPassingEntity(Class<?> iClass,
-			Object iSourceEntity) {
+	public Object createObjectPassingEntity(Class<?> iClass, Object iSourceEntity) {
 		Object newInstance = null;
 		Class<?> currentClass = iSourceEntity.getClass();
 		do {
 			try {
 				// TRY TO ASSIGN THE ENTITY IN THE CONSTRUCTOR
-				Constructor<?> constructor = iClass
-						.getConstructor(new Class<?>[] { currentClass });
-				newInstance = constructor
-						.newInstance(new Object[] { iSourceEntity });
+				Constructor<?> constructor = iClass.getConstructor(new Class<?>[] { currentClass });
+				newInstance = constructor.newInstance(new Object[] { iSourceEntity });
 				break;
 			} catch (Exception e) {
 				currentClass = currentClass.getSuperclass();

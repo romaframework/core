@@ -15,13 +15,12 @@
  */
 package org.romaframework.aspect.security.feature;
 
-public class SecurityActionFeatures extends SecurityBaseFeatures {
+import org.romaframework.aspect.security.SecurityAspect;
+import org.romaframework.core.schema.Feature;
+import org.romaframework.core.schema.FeatureType;
 
-	public SecurityActionFeatures() {
-		super();
-		defineAttribute(ROLES, null);
-	}
+public class SecurityActionFeatures {
 
-	public static final String	ROLES	= "roles";
+	public static final Feature<String[]>	ROLES	= new Feature<String[]>(SecurityAspect.ASPECT_NAME, "roles",FeatureType.ACTION,String[].class);
 
 }

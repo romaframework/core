@@ -240,7 +240,6 @@ public class SchemaClassResolver implements ResourceResolverListener, Serviceabl
 
 		String name = iName.substring(0, iName.length() - DESCRIPTOR_SUFFIX.length());
 		String currentPath = descriptors.get(name);
-
 		if (currentPath != null) {
 			// ALREADY EXISTS
 			if (currentPath.equals(iPackagePrefix))

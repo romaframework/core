@@ -16,14 +16,13 @@
 
 package org.romaframework.core.schema.reflection;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Collection;
 import java.util.List;
 
 import org.romaframework.core.Roma;
 import org.romaframework.core.aspect.Aspect;
+import org.romaframework.core.schema.FeatureLoader;
 import org.romaframework.core.schema.SchemaAction;
 import org.romaframework.core.schema.SchemaClassDefinition;
 import org.romaframework.core.schema.SchemaParameter;
@@ -37,16 +36,16 @@ import org.romaframework.core.schema.xmlannotations.XmlActionAnnotation;
  * @author Luca Garulli (luca.garulli--at--assetdata.it)
  */
 public class SchemaActionReflection extends SchemaAction {
+	private static final long			serialVersionUID	= -6572077296198245321L;
 	protected Method							method;
-	final static public Object[]	NO_PARAMETERS	= new Object[] {};
+	final static public Object[]	NO_PARAMETERS			= new Object[] {};
 
 	public SchemaActionReflection(SchemaClassDefinition iEntity, String iName, List<SchemaParameter> iOrderedParameters) {
 		super(iEntity, iName, iOrderedParameters);
 	}
 
 	@Override
-	public Object invokeFinal(Object iContent, Object[] params) throws IllegalArgumentException, IllegalAccessException,
-			InvocationTargetException {
+	public Object invokeFinal(Object iContent, Object[] params) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		while (iContent instanceof VirtualObject)
 			iContent = ((VirtualObject) iContent).getSuperClassObject();
 
@@ -60,45 +59,23 @@ public class SchemaActionReflection extends SchemaAction {
 		return copy;
 	}
 
-	public void configure(Method iMethod) {
-		method = iMethod;
+	public void configure() {
 
-		String annotationName;
-		Annotation annotationAction;
-		Annotation annotationGeneric;
+		SchemaConfiguration classDescriptor = entity.getSchemaClass().getDescriptor();
+
+		XmlActionAnnotation parentDescriptor = null;
+
+		if (classDescriptor != null && classDescriptor.getType() != null) {
+			// SEARCH FORM DEFINITION IN DESCRIPTOR
+			parentDescriptor = classDescriptor.getType().getAction(name);
+
+		}
+		FeatureLoader.loadActionFeatures(this, parentDescriptor);
 
 		// BROWSE ALL ASPECTS
 		for (Aspect aspect : Roma.aspects()) {
-			if (method != null) {
-				// COMPOSE ANNOTATION NAME BY ASPECT
-				annotationName = aspect.aspectName();
-				annotationName = Character.toUpperCase(annotationName.charAt(0)) + annotationName.substring(1);
-
-				annotationAction = searchForAnnotation(method, annotationName + "Action", aspect.aspectName());
-				annotationGeneric = searchForAnnotation(method, annotationName, aspect.aspectName());
-			} else {
-				annotationAction = null;
-				annotationGeneric = null;
-			}
-
-			SchemaConfiguration classDescriptor = entity.getSchemaClass().getDescriptor();
-
-			XmlActionAnnotation parentDescriptor = null;
-
-			if (classDescriptor != null && classDescriptor.getType() != null && classDescriptor.getType().getActions() != null) {
-				// SEARCH FORM DEFINITION IN DESCRIPTOR
-				Collection<XmlActionAnnotation> allActions = classDescriptor.getType().getActions();
-
-				for (XmlActionAnnotation tmpDescr : allActions) {
-					if (tmpDescr.getName().equals(name)) {
-						// FOUND XML NODE
-						parentDescriptor = tmpDescr;
-						break;
-					}
-				}
-			}
 			// CONFIGURE THE SCHEMA OBJECT WITH CURRENT ASPECT
-			aspect.configAction(this, annotationAction, annotationGeneric, parentDescriptor);
+			aspect.configAction(this, null, null, parentDescriptor);
 		}
 	}
 

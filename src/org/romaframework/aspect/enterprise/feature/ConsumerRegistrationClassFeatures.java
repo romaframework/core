@@ -14,36 +14,25 @@
  * the License.
  */
 
-
 package org.romaframework.aspect.enterprise.feature;
 
-import org.romaframework.core.util.DynaBean;
+import org.romaframework.aspect.enterprise.EnterpriseAspectAbstract;
+import org.romaframework.core.schema.Feature;
+import org.romaframework.core.schema.FeatureType;
 
-public class ConsumerRegistrationClassFeatures extends DynaBean {
+public class ConsumerRegistrationClassFeatures {
 
-	private static final long	serialVersionUID	= 1L;
+	public static final Feature<String>	SERVICE_DESC	= new Feature<String>(EnterpriseAspectAbstract.ASPECT_NAME, "serviceDesc", FeatureType.CLASS, String.class,
+																												"");
+	public static final Feature<String>	REG_URI				= new Feature<String>(EnterpriseAspectAbstract.ASPECT_NAME, "registryURI", FeatureType.CLASS, String.class,
+																												"");
+	public static final Feature<String>	USERNAME			= new Feature<String>(EnterpriseAspectAbstract.ASPECT_NAME, "username", FeatureType.CLASS, String.class, "");
+	public static final Feature<String>	PASSW					= new Feature<String>(EnterpriseAspectAbstract.ASPECT_NAME, "password", FeatureType.CLASS, String.class, "");
+	public static final Feature<String>	ORGANIZATION	= new Feature<String>(EnterpriseAspectAbstract.ASPECT_NAME, "organization", FeatureType.CLASS,
+																												String.class, "");
+	public static final Feature<String>	AUTHOR				= new Feature<String>(EnterpriseAspectAbstract.ASPECT_NAME, "author", FeatureType.CLASS, String.class, "");
+	public static final Feature<String>	ICONPATH			= new Feature<String>(EnterpriseAspectAbstract.ASPECT_NAME, "iconPath", FeatureType.CLASS, String.class, "");
+	public static final Feature<String>	SERVICE_NAME	= new Feature<String>(EnterpriseAspectAbstract.ASPECT_NAME, "serviceName", FeatureType.CLASS, String.class,
+																												"");
 
-	public ConsumerRegistrationClassFeatures() {
-		super();
-
-		defineAttribute(SERVICE_DESC, "");
-		defineAttribute(REG_URI, "");
-		defineAttribute(USERNAME, "");
-		defineAttribute(PASSW, "");
-		defineAttribute(ORGANIZATION, "");
-		defineAttribute(AUTHOR, "");
-		defineAttribute(ICONPATH, "");
-		defineAttribute(SERVICE_NAME, "");
-	}
-
-	public static final String	SERVICE_DESC	= "serviceDesc";
-	public static final String	REG_URI				= "registryURI";
-	public static final String	USERNAME			= "username";
-	public static final String	PASSW					= "password";
-	public static final String	ORGANIZATION	= "organization";
-	public static final String	AUTHOR				= "author";
-	public static final String	ICONPATH		  = "iconPath";
-	public static final String  SERVICE_NAME	= "serviceName";
-
-	
 }

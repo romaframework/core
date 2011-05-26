@@ -15,15 +15,13 @@
  */
 package org.romaframework.aspect.logging.feature;
 
-import org.romaframework.core.util.DynaBean;
+import org.romaframework.aspect.logging.LoggingAspect;
+import org.romaframework.core.schema.Feature;
+import org.romaframework.core.schema.FeatureType;
 
-public class LoggingClassFeatures extends DynaBean {
-	public LoggingClassFeatures() {
-		defineAttribute(ENABLED, null);
-		defineAttribute(MODE, null);
-	}
+public class LoggingClassFeatures {
 
-	public static final String	MODE		= "mode";
-	public static final String	ENABLED	= "enabled";
+	public static final Feature<String>		MODE		= new Feature<String>(LoggingAspect.ASPECT_NAME, "mode", FeatureType.CLASS, String.class);
+	public static final Feature<Boolean>	ENABLED	= new Feature<Boolean>(LoggingAspect.ASPECT_NAME, "enabled", FeatureType.CLASS, Boolean.class);
 
 }

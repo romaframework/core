@@ -17,52 +17,59 @@
 package org.romaframework.core.schema;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.romaframework.core.util.DynaBean;
 
 public abstract class SchemaFeatures implements Cloneable, Serializable {
-	private static final long				serialVersionUID	= -4789886810661429988L;
+	private static final long		serialVersionUID	= -4789886810661429988L;
 
-	protected Map<String, DynaBean>	allFeatures;
+	private static final Object	UNSETTED_VALUE		= new Object();
 
-	public SchemaFeatures() {
-		allFeatures = new HashMap<String, DynaBean>();
+	protected Object[][]				features;
+	protected SchemaFeatures		parent;
+	protected FeatureType				featureType;
+
+	public SchemaFeatures(FeatureType featureType) {
+		this.featureType = featureType;
 	}
 
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
 		SchemaFeatures cloned = (SchemaFeatures) super.clone();
-		cloned.allFeatures = new HashMap<String, DynaBean>();
-		for (Map.Entry<String, DynaBean> entry : allFeatures.entrySet()) {
-			cloned.allFeatures.put(entry.getKey(), (DynaBean) entry.getValue().clone());
-		}
+		cloned.features = null;
+		cloned.parent = this;
 		return cloned;
 	}
 
-	public Map<String, DynaBean> getAllFeatures() {
-		return allFeatures;
+	public <T> void setFeature(Feature<T> feature, T iFeatureValue) {
+		if (features == null) {
+			features = new Object[FeatureRegistry.aspectTotal()][];
+		}
+		Object[] aspectFeature = features[feature.getAspectId()];
+		if (aspectFeature == null) {
+			aspectFeature = new Object[FeatureRegistry.featureCount(feature.getAspectName(), feature.getType())];
+			for (int i = 0; i < aspectFeature.length; i++)
+				aspectFeature[i] = UNSETTED_VALUE;
+			features[feature.getAspectId()] = aspectFeature;
+		}
+		aspectFeature[feature.getFeatureId()] = iFeatureValue;
 	}
 
-	public DynaBean getFeatures(String iAspectName) {
-		return allFeatures.get(iAspectName);
+	@SuppressWarnings("unchecked")
+	public <T> T getFeature(Feature<T> feature) {
+		if (features != null) {
+			Object[] aspectFeature = features[feature.getAspectId()];
+			if (aspectFeature != null) {
+				Object value = aspectFeature[feature.getFeatureId()];
+				if (value != UNSETTED_VALUE) {
+					return (T) value;
+				}
+			}
+		}
+		if (parent == null)
+			return null;
+		return (T) parent.getFeature(feature);
 	}
 
-	public void setFeatures(String iAspectName, DynaBean iFeatures) {
-		allFeatures.put(iAspectName, iFeatures);
-	}
-
-	public Object getFeature(String iAspectName, String iFeatureName) {
-		DynaBean features = getFeatures(iAspectName);
-		if (features != null)
-			return features.getAttribute(iFeatureName);
-		return null;
-	}
-
-	public void setFeature(String iAspectName, String iFeatureName, Object iFeatureValue) {
-		DynaBean features = getFeatures(iAspectName);
-		if (features != null)
-			features.setAttribute(iFeatureName, iFeatureValue);
+	public FeatureType getFeatureType() {
+		return featureType;
 	}
 }

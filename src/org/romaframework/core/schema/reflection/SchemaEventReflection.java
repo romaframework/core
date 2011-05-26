@@ -16,18 +16,20 @@
 
 package org.romaframework.core.schema.reflection;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
 import org.romaframework.core.Roma;
 import org.romaframework.core.aspect.Aspect;
+import org.romaframework.core.schema.FeatureLoader;
 import org.romaframework.core.schema.SchemaClassDefinition;
 import org.romaframework.core.schema.SchemaEvent;
 import org.romaframework.core.schema.SchemaField;
 import org.romaframework.core.schema.SchemaParameter;
+import org.romaframework.core.schema.config.SchemaConfiguration;
 import org.romaframework.core.schema.virtual.VirtualObject;
+import org.romaframework.core.schema.xmlannotations.XmlActionAnnotation;
 
 /**
  * Represent an event of a class.
@@ -36,7 +38,7 @@ import org.romaframework.core.schema.virtual.VirtualObject;
  */
 public class SchemaEventReflection extends SchemaEvent {
 
-	private static final long	serialVersionUID	= 7861837910403510791L;
+	private static final long			serialVersionUID				= 7861837910403510791L;
 
 	protected Method							method;
 
@@ -47,17 +49,16 @@ public class SchemaEventReflection extends SchemaEvent {
 	public static final String		COLLECTION_EDIT_EVENT		= "Edit";
 	public static final String		COLLECTION_REMOVE_EVENT	= "Remove";
 
-	public SchemaEventReflection(SchemaField field, String iName,List<SchemaParameter> iOrderedParameters) {
-		super(field, iName,null);
+	public SchemaEventReflection(SchemaField field, String iName, List<SchemaParameter> iOrderedParameters) {
+		super(field, iName, null);
 	}
 
-	public SchemaEventReflection(SchemaClassDefinition iEntity, String iName,List<SchemaParameter> iOrderedParameters) {
-		super(iEntity, iName,null);
+	public SchemaEventReflection(SchemaClassDefinition iEntity, String iName, List<SchemaParameter> iOrderedParameters) {
+		super(iEntity, iName, null);
 	}
 
 	@Override
-	public Object invokeFinal(Object iContent, Object[] params) throws IllegalArgumentException, IllegalAccessException,
-			InvocationTargetException {
+	public Object invokeFinal(Object iContent, Object[] params) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		while (iContent instanceof VirtualObject)
 			iContent = ((VirtualObject) iContent).getSuperClassObject();
 
@@ -69,32 +70,28 @@ public class SchemaEventReflection extends SchemaEvent {
 		return name + " (event:" + method + ")";
 	}
 
-	public void configure(Method iMethod) {
-		if (iMethod != null) {
-			method = iMethod;
-			setEventOwner(Roma.schema().getSchemaClass(method.getDeclaringClass()));
-		}
+	public void setMethod(Method method) {
+		this.method = method;
+	}
 
-		String annotationName;
-		Annotation annotationEvent;
-		Annotation annotationGeneric;
+	public Method getMethod() {
+		return method;
+	}
+
+	public void configure() {
+		SchemaConfiguration classDescriptor = entity.getSchemaClass().getDescriptor();
+
+		XmlActionAnnotation parentDescriptor = null;
+		if (classDescriptor != null && classDescriptor.getType() != null) {
+			parentDescriptor = classDescriptor.getType().getEvent(name);
+		}
+		FeatureLoader.loadEventFeatures(this, parentDescriptor);
 
 		// BROWSE ALL ASPECTS
 		for (Aspect aspect : Roma.aspects()) {
-			if (method != null) {
-				// COMPOSE ANNOTATION NAME BY ASPECT
-				annotationName = aspect.aspectName();
-				annotationName = Character.toUpperCase(annotationName.charAt(0)) + annotationName.substring(1);
-
-				annotationEvent = searchForAnnotation(method, annotationName + "Action", aspect.aspectName());
-				annotationGeneric = searchForAnnotation(method, annotationName, aspect.aspectName());
-			} else {
-				annotationEvent = null;
-				annotationGeneric = null;
-			}
-
 			// CONFIGURE THE SCHEMA OBJECT WITH CURRENT ASPECT
-			aspect.configEvent(this, annotationEvent, annotationGeneric, null);
+			aspect.configEvent(this, null, null, null);
 		}
 	}
+
 }

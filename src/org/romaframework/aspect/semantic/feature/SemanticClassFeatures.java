@@ -15,23 +15,19 @@
  */
 package org.romaframework.aspect.semantic.feature;
 
+import org.romaframework.aspect.semantic.SemanticAspect;
+import org.romaframework.core.schema.Feature;
+import org.romaframework.core.schema.FeatureType;
+
 /**
- * IMPORTANT: PLEASE DO NOT RELY ON THIS RESOURCE, IT IS UNDER DEFINITION AND 
- * HEAVY DEVELOPMENT
- *  
+ * IMPORTANT: PLEASE DO NOT RELY ON THIS RESOURCE, IT IS UNDER DEFINITION AND HEAVY DEVELOPMENT
+ * 
  * @author Luigi Dell'Aquila (luigi.dellaquila@assetdata.it)
  * 
  */
-public class SemanticClassFeatures extends SemanticBaseFeatures{
+public class SemanticClassFeatures {
 
-  public SemanticClassFeatures(){
-    super();
-    defineAttribute(SUBJECT_PREFIX, "");
-    defineAttribute(SUBJECT_ID, "");
-    defineAttribute(CLASS_URI, "");
-  }
-  
-  public static final String  SUBJECT_PREFIX = "subjectPrefix";
-  public static final String  SUBJECT_ID = "subjectId";
-  public static final String  CLASS_URI = "classUri";
+	public static final Feature<String>	SUBJECT_PREFIX	= new Feature<String>(SemanticAspect.ASPECT_NAME, "subjectPrefix", FeatureType.CLASS, String.class,"");
+	public static final Feature<String>	SUBJECT_ID			= new Feature<String>(SemanticAspect.ASPECT_NAME, "subjectId", FeatureType.CLASS, String.class,"");
+	public static final Feature<String>	CLASS_URI				= new Feature<String>(SemanticAspect.ASPECT_NAME, "classUri", FeatureType.CLASS, String.class,"");
 }

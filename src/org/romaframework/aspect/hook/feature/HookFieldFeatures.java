@@ -11,14 +11,13 @@
 
 package org.romaframework.aspect.hook.feature;
 
+import org.romaframework.aspect.hook.HookAspect;
+import org.romaframework.aspect.hook.annotation.HookScope;
+import org.romaframework.core.schema.Feature;
+import org.romaframework.core.schema.FeatureType;
 
-public class HookFieldFeatures extends HookElementFeatures {
+public class HookFieldFeatures {
 
-	private static final long	serialVersionUID	= -1371119906875820494L;
-
-	public HookFieldFeatures() {
-		defineAttribute(FIELD, null);
-	}
-
-	public static final String	FIELD	= "field";
+	public static final Feature<HookScope>	SCOPE	= new Feature<HookScope>(HookAspect.ASPECT_NAME, "scope", FeatureType.FIELD, HookScope.class);
+	public static final Feature<String>			FIELD	= new Feature<String>(HookAspect.ASPECT_NAME, "field", FeatureType.FIELD, String.class);
 }

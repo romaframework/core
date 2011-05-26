@@ -11,31 +11,28 @@
 
 package org.romaframework.aspect.core.feature;
 
-import org.romaframework.core.util.DynaBean;
+import org.romaframework.aspect.core.CoreAspect;
+import org.romaframework.core.schema.Feature;
+import org.romaframework.core.schema.FeatureType;
 
-public class CoreActionFeatures extends DynaBean {
+public class CoreActionFeatures {
 
-	private static final long	serialVersionUID	= -1371119906875820494L;
-
-	public CoreActionFeatures() {
-		defineAttribute(CALLBACK_ON_ACTION, null);
-		defineAttribute(CALLBACK_BEFORE_ACTION, null);
-		defineAttribute(CALLBACK_AFTER_ACTION, null);
-		defineAttribute(CALLBACK_ON_FIELD_READ, null);
-		defineAttribute(CALLBACK_BEFORE_FIELD_READ, null);
-		defineAttribute(CALLBACK_AFTER_FIELD_READ, null);
-		defineAttribute(CALLBACK_ON_FIELD_WRITE, null);
-		defineAttribute(CALLBACK_BEFORE_FIELD_WRITE, null);
-		defineAttribute(CALLBACK_AFTER_FIELD_WRITE, null);
-	}
-
-	public static final String	CALLBACK_ON_ACTION					= "callbackOnAction";
-	public static final String	CALLBACK_BEFORE_ACTION			= "callbackBeforeAction";
-	public static final String	CALLBACK_AFTER_ACTION				= "callbackAfterAction";
-	public static final String	CALLBACK_ON_FIELD_READ			= "callbackOnFieldRead";
-	public static final String	CALLBACK_BEFORE_FIELD_READ	= "callbackBeforeFieldRead";
-	public static final String	CALLBACK_AFTER_FIELD_READ		= "callbackAfterFieldRead";
-	public static final String	CALLBACK_ON_FIELD_WRITE			= "callbackOnFieldWrite";
-	public static final String	CALLBACK_BEFORE_FIELD_WRITE	= "callbackBeforeFieldWrite";
-	public static final String	CALLBACK_AFTER_FIELD_WRITE	= "callbackAfterFieldWrite";
+	public static final Feature<String>	CALLBACK_ON_ACTION					= new Feature<String>(CoreAspect.ASPECT_NAME, "callbackOnAction", FeatureType.ACTION,
+																																			String.class);
+	public static final Feature<String>	CALLBACK_BEFORE_ACTION			= new Feature<String>(CoreAspect.ASPECT_NAME, "callbackBeforeAction", FeatureType.ACTION,
+																																			String.class);
+	public static final Feature<String>	CALLBACK_AFTER_ACTION				= new Feature<String>(CoreAspect.ASPECT_NAME, "callbackAfterAction", FeatureType.ACTION,
+																																			String.class);
+	public static final Feature<String>	CALLBACK_ON_FIELD_READ			= new Feature<String>(CoreAspect.ASPECT_NAME, "callbackOnFieldRead", FeatureType.ACTION,
+																																			String.class);
+	public static final Feature<String>	CALLBACK_BEFORE_FIELD_READ	= new Feature<String>(CoreAspect.ASPECT_NAME, "callbackBeforeFieldRead", FeatureType.ACTION,
+																																			String.class);
+	public static final Feature<String>	CALLBACK_AFTER_FIELD_READ		= new Feature<String>(CoreAspect.ASPECT_NAME, "callbackAfterFieldRead", FeatureType.ACTION,
+																																			String.class);
+	public static final Feature<String>	CALLBACK_ON_FIELD_WRITE			= new Feature<String>(CoreAspect.ASPECT_NAME, "callbackOnFieldWrite", FeatureType.ACTION,
+																																			String.class);
+	public static final Feature<String>	CALLBACK_BEFORE_FIELD_WRITE	= new Feature<String>(CoreAspect.ASPECT_NAME, "callbackBeforeFieldWrite", FeatureType.ACTION,
+																																			String.class);
+	public static final Feature<String>	CALLBACK_AFTER_FIELD_WRITE	= new Feature<String>(CoreAspect.ASPECT_NAME, "callbackAfterFieldWrite", FeatureType.ACTION,
+																																			String.class);
 }

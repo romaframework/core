@@ -18,16 +18,16 @@ package org.romaframework.core.schema.virtual;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.romaframework.aspect.scripting.ScriptingAspect;
 import org.romaframework.aspect.scripting.exception.ScriptingException;
 import org.romaframework.aspect.scripting.feature.ScriptingFeatures;
 import org.romaframework.core.Roma;
 import org.romaframework.core.aspect.Aspect;
+import org.romaframework.core.schema.FeatureLoader;
 import org.romaframework.core.schema.SchemaClassDefinition;
 import org.romaframework.core.schema.SchemaEvent;
 import org.romaframework.core.schema.SchemaField;
 import org.romaframework.core.schema.config.SchemaConfiguration;
-import org.romaframework.core.schema.xmlannotations.XmlEventAnnotation;
+import org.romaframework.core.schema.xmlannotations.XmlActionAnnotation;
 
 /**
  * Represent an event of a class.
@@ -55,9 +55,9 @@ public class SchemaEventVirtual extends SchemaEvent {
 	@Override
 	public Object invokeFinal(Object iContent,Object [] params) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		try {
-			if (getFeatures(ScriptingAspect.ASPECT_NAME).getAttribute(ScriptingFeatures.CODE) != null)
+			if (getFeature(ScriptingFeatures.CODE) != null)
 				// EXECUTE VIRTUAL CODE
-				return VirtualObjectHelper.invoke((VirtualObject) iContent, getFeatures(ScriptingAspect.ASPECT_NAME));
+				return VirtualObjectHelper.invoke((VirtualObject) iContent, this);
 			else if (inheritedEvent != null)
 				// EXECUTE JAVA METHOD
 				return inheritedEvent.invoke(((VirtualObject) iContent).getSuperClassObject());
@@ -68,33 +68,18 @@ public class SchemaEventVirtual extends SchemaEvent {
 	}
 
 	public void configure() {
-		if (inheritedEvent != null) {
-			// INHERITS ALL FEATURES FROM INHERITED EVENT
-			try {
-				allFeatures = ((SchemaEvent) inheritedEvent.clone()).getAllFeatures();
-			} catch (CloneNotSupportedException e) {
-				e.printStackTrace();
-			}
+		SchemaConfiguration classDescriptor = entity.getSchemaClass().getDescriptor();
+
+		XmlActionAnnotation parentDescriptor = null;
+		if (classDescriptor != null && classDescriptor.getType() != null) {
+			parentDescriptor = classDescriptor.getType().getEvent(name);
 		}
+		FeatureLoader.loadEventFeatures(this, parentDescriptor);
 
 		// BROWSE ALL ASPECTS
 		for (Aspect aspect : Roma.aspects()) {
-			SchemaConfiguration classDescriptor = entity.getSchemaClass().getDescriptor();
-
-			XmlEventAnnotation parentDescriptor = null;
-
-			if (classDescriptor != null && classDescriptor.getType() != null && classDescriptor.getType().getEvents() != null) {
-				// SEARCH FORM DEFINITION IN DESCRIPTOR
-				for (XmlEventAnnotation tmpDescr : classDescriptor.getType().getEvents()) {
-					if (tmpDescr.getName().equals(name)) {
-						// FOUND XML NODE
-						parentDescriptor = tmpDescr;
-						break;
-					}
-				}
-			}
 			// CONFIGURE THE SCHEMA OBJECT WITH CURRENT ASPECT
-			aspect.configEvent(this, null, null, parentDescriptor);
+			aspect.configEvent(this, null, null, null);
 		}
 	}
 }

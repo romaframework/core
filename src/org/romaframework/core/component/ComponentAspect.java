@@ -46,7 +46,7 @@ public interface ComponentAspect extends Aspect, Serviceable {
 	 *          Interface of component implementation
 	 * @return the map of components found.
 	 */
-	public Map<String, Object> getComponentsOfClass(Class<?> iComponentClass) throws ContextException;
+	public <T> Map<String, T> getComponentsOfClass(Class<T> iComponentClass) throws ContextException;
 
 	/**
 	 * Get a component configured in the Component Engine by name.

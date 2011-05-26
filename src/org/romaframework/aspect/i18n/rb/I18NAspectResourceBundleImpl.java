@@ -15,7 +15,6 @@ import org.romaframework.aspect.i18n.I18NAspectAbstract;
 import org.romaframework.core.Roma;
 import org.romaframework.core.Utility;
 import org.romaframework.core.flow.Controller;
-import org.romaframework.core.flow.UserObjectEventListener;
 import org.romaframework.core.resource.AutoReloadListener;
 import org.romaframework.core.resource.AutoReloadManager;
 import org.romaframework.core.resource.ResourceResolver;
@@ -110,8 +109,6 @@ public class I18NAspectResourceBundleImpl extends I18NAspectAbstract implements 
 		for (String loadPackage : packages) {
 			Roma.component(ResourceResolver.class).loadResources(loadPackage);
 		}
-		// REGISTER MYSELF AS EVENT LISTENER FROM OBJECTCONTEXT
-		Controller.getInstance().registerListener(UserObjectEventListener.class, this);
 	}
 
 	public List<String> getPackages() {

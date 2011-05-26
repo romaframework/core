@@ -16,12 +16,10 @@
 
 package org.romaframework.aspect.profiling.feature;
 
-import org.romaframework.core.util.DynaBean;
+import org.romaframework.aspect.profiling.ProfilingAspect;
+import org.romaframework.core.schema.Feature;
+import org.romaframework.core.schema.FeatureType;
 
-public class ProfilingClassFeatures extends DynaBean {
-  public ProfilingClassFeatures() {
-    defineAttribute(ENABLED, null);
-  }
-
-  public static final String ENABLED = "enabled";
+public class ProfilingClassFeatures {
+	public static final Feature<Boolean>	ENABLED	= new Feature<Boolean>(ProfilingAspect.ASPECT_NAME, "enabled", FeatureType.CLASS, Boolean.class);
 }

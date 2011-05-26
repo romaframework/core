@@ -16,20 +16,18 @@
 
 package org.romaframework.aspect.validation.feature;
 
-import org.romaframework.core.util.DynaBean;
+import org.romaframework.aspect.validation.ValidationAspect;
+import org.romaframework.core.schema.Feature;
+import org.romaframework.core.schema.FeatureType;
 
-public class ValidationFieldFeatures extends DynaBean {
-	public ValidationFieldFeatures() {
-		defineAttribute(ENABLED, false);
-		defineAttribute(REQUIRED, false);
-		defineAttribute(MATCH, null);
-		defineAttribute(MIN, null);
-		defineAttribute(MAX, null);
-	}
-
-	public static final String	ENABLED		= "enabled";
-	public static final String	REQUIRED	= "required";
-	public static final String	MATCH			= "match";
-	public static final String	MIN				= "min";
-	public static final String	MAX				= "max";
+public class ValidationFieldFeatures {
+	public static final Feature<Boolean>	ENABLED		= new Feature<Boolean>(ValidationAspect.ASPECT_NAME, "enabled", FeatureType.FIELD, Boolean.class,
+																											Boolean.TRUE);
+	public static final Feature<Boolean>	REQUIRED	= new Feature<Boolean>(ValidationAspect.ASPECT_NAME, "required", FeatureType.FIELD, Boolean.class,
+																											Boolean.FALSE);
+	public static final Feature<String>		MATCH			= new Feature<String>(ValidationAspect.ASPECT_NAME, "match", FeatureType.FIELD, String.class);
+	public static final Feature<Integer>	MIN				= new Feature<Integer>(ValidationAspect.ASPECT_NAME, "min", FeatureType.FIELD, Integer.class,
+																											Integer.MIN_VALUE);
+	public static final Feature<Integer>	MAX				= new Feature<Integer>(ValidationAspect.ASPECT_NAME, "max", FeatureType.FIELD, Integer.class,
+																											Integer.MAX_VALUE);
 }

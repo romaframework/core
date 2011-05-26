@@ -15,19 +15,18 @@
  */
 package org.romaframework.aspect.semantic.feature;
 
+import org.romaframework.aspect.semantic.SemanticAspect;
+import org.romaframework.core.schema.Feature;
+import org.romaframework.core.schema.FeatureType;
+
 /**
  * IMPORTANT: PLEASE DO NOT RELY ON THIS RESOURCE, IT IS UNDER DEFINITION AND HEAVY DEVELOPMENT
  * 
  * @author Luigi Dell'Aquila (luigi.dellaquila@assetdata.it)
  * 
  */
-public class SemanticFieldFeatures extends SemanticBaseFeatures {
-	public SemanticFieldFeatures() {
-		super();
-		defineAttribute(PREDICATE, null);
-		defineAttribute(RESOURCES, null);
-	}
+public class SemanticFieldFeatures {
 
-	public static final String	PREDICATE	= "predicate";
-	public static final String	RESOURCES	= "resources";
+	public static final Feature<String>	PREDICATE	= new Feature<String>(SemanticAspect.ASPECT_NAME,"predicate",FeatureType.FIELD,String.class);
+	public static final Feature<String[]>	RESOURCES	= new Feature<String[]>(SemanticAspect.ASPECT_NAME,"resources",FeatureType.FIELD,String[].class);
 }

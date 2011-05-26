@@ -15,6 +15,20 @@
  */
 package org.romaframework.aspect.logging.feature;
 
-public class LoggingFieldFeatures extends LoggingElementFeatures {
+import org.romaframework.aspect.logging.LoggingAspect;
+import org.romaframework.core.schema.Feature;
+import org.romaframework.core.schema.FeatureType;
+
+public class LoggingFieldFeatures {
+
+	public static final Feature<Integer>	LEVEL							= new Feature<Integer>(LoggingAspect.ASPECT_NAME, "level", FeatureType.FIELD, Integer.class);
+	public static final Feature<String>		CATEGORY					= new Feature<String>(LoggingAspect.ASPECT_NAME, "category", FeatureType.FIELD, String.class);
+
+	public static final Feature<String>		EXCEPTION					= new Feature<String>(LoggingAspect.ASPECT_NAME, "exception", FeatureType.FIELD, String.class);
+	public static final Feature<Class[]>	EXCEPTIONS_TO_LOG	= new Feature<Class[]>(LoggingAspect.ASPECT_NAME, "exceptionsToLog", FeatureType.FIELD, Class[].class);
+
+	public static final Feature<String>		POST							= new Feature<String>(LoggingAspect.ASPECT_NAME, "post", FeatureType.FIELD, String.class);
+	public static final Feature<String>		MODE							= new Feature<String>(LoggingAspect.ASPECT_NAME, "mode", FeatureType.FIELD, String.class);
+	public static final Feature<Boolean>	ENABLED						= new Feature<Boolean>(LoggingAspect.ASPECT_NAME, "enabled", FeatureType.FIELD, Boolean.class);
 
 }

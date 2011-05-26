@@ -8,7 +8,8 @@ import org.romaframework.core.Roma;
 import org.romaframework.core.aspect.Aspect;
 import org.romaframework.core.binding.BindingException;
 import org.romaframework.core.flow.Controller;
-import org.romaframework.core.flow.UserObjectEventListener;
+import org.romaframework.core.flow.SchemaFieldListener;
+import org.romaframework.core.schema.FeatureLoader;
 import org.romaframework.core.schema.SchemaClass;
 import org.romaframework.core.schema.SchemaClassDefinition;
 import org.romaframework.core.schema.SchemaField;
@@ -70,35 +71,20 @@ public class SchemaFieldVirtual extends SchemaField {
 
 	public void configure(SchemaClass iFieldType) {
 		type = iFieldType;
-
-		if (inheritedField != null) {
-			// INHERITS ALL FEATURES FROM INHERITED FIELD
-			try {
-				allFeatures = ((SchemaField) inheritedField.clone()).getAllFeatures();
-			} catch (CloneNotSupportedException e) {
-				e.printStackTrace();
-			}
-		}
-
 		SchemaConfiguration classDescriptor = entity.getSchemaClass().getDescriptor();
 
 		XmlFieldAnnotation parentDescriptor = null;
+
+		FeatureLoader.loadFieldFeatures(this, parentDescriptor);
+		if (classDescriptor != null && classDescriptor.getType() != null) {
+			// SEARCH FORM DEFINITION IN DESCRIPTOR
+			parentDescriptor = classDescriptor.getType().getField(name);
+		}
 
 		// BROWSE ALL ASPECTS
 		for (Aspect aspect : Roma.aspects()) {
 			// COMPOSE ANNOTATION NAME BY ASPECT
 			parentDescriptor = null;
-
-			if (classDescriptor != null && classDescriptor.getType() != null && classDescriptor.getType().getFields() != null) {
-				// SEARCH FORM DEFINITION IN DESCRIPTOR
-				for (XmlFieldAnnotation tmpDescr : classDescriptor.getType().getFields()) {
-					if (tmpDescr.getName().equals(name)) {
-						// FOUND XML NODE
-						parentDescriptor = tmpDescr;
-						break;
-					}
-				}
-			}
 
 			// CONFIGURE THE SCHEMA OBJECT WITH CURRENT ASPECT
 			aspect.configField(this, null, null, null, parentDescriptor);
@@ -114,8 +100,7 @@ public class SchemaFieldVirtual extends SchemaField {
 				if (sourceDescr != null) {
 					fieldSchemaDescr = new EmbeddedSchemaConfiguration(subClass);
 
-					setType(Roma.schema().createSchemaClass(getEntity().getSchemaClass().getName() + "." + getName(),
-							getType().getSchemaClass(), fieldSchemaDescr));
+					setType(Roma.schema().createSchemaClass(getEntity().getSchemaClass().getName() + "." + getName(), getType().getSchemaClass(), fieldSchemaDescr));
 				}
 			}
 
@@ -148,12 +133,12 @@ public class SchemaFieldVirtual extends SchemaField {
 
 			VirtualObject pojo = getVPojo(iObject);
 
-			List<UserObjectEventListener> listeners = Controller.getInstance().getListeners(UserObjectEventListener.class);
+			List<SchemaFieldListener> listeners = Controller.getInstance().getListeners(SchemaFieldListener.class);
 
 			// CALL ALL LISTENERS BEFORE TO RETURN THE VALUE
 			Object value = invokeCallbackBeforeFieldRead(listeners, iObject);
 
-			if (value != UserObjectEventListener.IGNORED)
+			if (value != SchemaFieldListener.IGNORED)
 				return value;
 
 			value = pojo.getValue(name);

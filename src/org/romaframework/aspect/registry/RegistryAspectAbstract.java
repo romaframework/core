@@ -21,8 +21,8 @@ import org.romaframework.aspect.registry.annotation.RegistryClass;
 import org.romaframework.aspect.registry.feature.RegistryClassFeatures;
 import org.romaframework.core.module.SelfRegistrantConfigurableModule;
 import org.romaframework.core.schema.SchemaClassDefinition;
+import org.romaframework.core.schema.reflection.SchemaClassReflection;
 import org.romaframework.core.schema.xmlannotations.XmlClassAnnotation;
-import org.romaframework.core.util.DynaBean;
 
 public abstract class RegistryAspectAbstract extends SelfRegistrantConfigurableModule<String> implements RegistryAspect {
 
@@ -43,30 +43,24 @@ public abstract class RegistryAspectAbstract extends SelfRegistrantConfigurableM
 	}
 
 	public void configClass(SchemaClassDefinition iClass, Annotation iAnnotation, XmlClassAnnotation iXmlNode) {
-		DynaBean features = iClass.getFeatures(ASPECT_NAME);
-		if (features == null) {
-			// CREATE EMPTY FEATURES
-			features = new RegistryClassFeatures();
-			iClass.setFeatures(ASPECT_NAME, features);
-		}
 
-		readClassAnnotation(iAnnotation, features);
-	}
+		if (iClass instanceof SchemaClassReflection) {
+			Class<?> clazz = ((SchemaClassReflection) iClass).getLanguageType();
+			RegistryClass annotation = clazz.getAnnotation(RegistryClass.class);
 
-	private void readClassAnnotation(Annotation iAnnotation, DynaBean features) {
-		RegistryClass annotation = (RegistryClass) iAnnotation;
+			if (annotation != null) {
+				// PROCESS ANNOTATIONS
+				iClass.setFeature(RegistryClassFeatures.REG_URI, annotation.registryURI());
+				iClass.setFeature(RegistryClassFeatures.USERNAME, annotation.username());
+				iClass.setFeature(RegistryClassFeatures.PASSW, annotation.password());
+				iClass.setFeature(RegistryClassFeatures.SERVICE_DESC, annotation.serviceDesc());
+				iClass.setFeature(RegistryClassFeatures.ORGANIZATION, annotation.organizationPackage());
+				iClass.setFeature(RegistryClassFeatures.AUTHOR, annotation.author());
+				iClass.setFeature(RegistryClassFeatures.WSDLADDRESS, annotation.wsdlAddress());
+				iClass.setFeature(RegistryClassFeatures.ICONPATH, annotation.iconPath());
 
-		if (annotation != null) {
-			// PROCESS ANNOTATIONS
-			features.setAttribute(RegistryClassFeatures.REG_URI, annotation.registryURI());
-			features.setAttribute(RegistryClassFeatures.USERNAME, annotation.username());
-			features.setAttribute(RegistryClassFeatures.PASSW, annotation.password());
-			features.setAttribute(RegistryClassFeatures.SERVICE_DESC, annotation.serviceDesc());
-			features.setAttribute(RegistryClassFeatures.ORGANIZATION, annotation.organizationPackage());
-			features.setAttribute(RegistryClassFeatures.AUTHOR, annotation.author());
-			features.setAttribute(RegistryClassFeatures.WSDLADDRESS, annotation.wsdlAddress());
-			features.setAttribute(RegistryClassFeatures.ICONPATH, annotation.iconPath());
-
+			}
 		}
 	}
+
 }

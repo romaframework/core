@@ -16,13 +16,12 @@
 
 package org.romaframework.aspect.persistence.feature;
 
-import org.romaframework.core.util.DynaBean;
+import org.romaframework.aspect.persistence.PersistenceAspect;
+import org.romaframework.core.schema.Feature;
+import org.romaframework.core.schema.FeatureType;
 
-public class PersistenceFeatures extends DynaBean {
+public class PersistenceFeatures {
 
-	public static final String	MODE	= "mode";
+	public static final Feature<String>	MODE	= new Feature<String>(PersistenceAspect.ASPECT_NAME, "mode", FeatureType.ACTION, String.class);
 
-	public PersistenceFeatures() {
-		defineAttribute(MODE, null);
-	}
 }

@@ -18,11 +18,9 @@ package org.romaframework.aspect.serialization;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-import org.romaframework.aspect.core.CoreAspect;
 import org.romaframework.aspect.core.feature.CoreClassFeatures;
 import org.romaframework.aspect.core.feature.CoreFieldFeatures;
 import org.romaframework.aspect.serialization.exception.SerializationException;
-import org.romaframework.core.Roma;
 import org.romaframework.core.schema.SchemaClass;
 import org.romaframework.core.schema.SchemaFeatures;
 import org.romaframework.core.util.DynaBean;
@@ -38,19 +36,14 @@ public class SerializationHelper {
 	 * @param features
 	 */
 	public static void allowSerializeFeatures(SchemaFeatures features) {
-		DynaBean core = features.getFeatures(CoreAspect.ASPECT_NAME);
-		if (core != null && core.existAttribute(CoreFieldFeatures.EMBEDDED_TYPE)) {
-			SchemaClass schemaClass = (SchemaClass) core.getAttribute(CoreFieldFeatures.EMBEDDED_TYPE);
-			if (schemaClass != null) {
-				core.setAttribute(CoreFieldFeatures.EMBEDDED_TYPE, schemaClass.getName());
-			}
+		SchemaClass schemaClass = (SchemaClass) features.getFeature(CoreFieldFeatures.EMBEDDED_TYPE);
+		if (schemaClass != null) {
+			features.setFeature(CoreFieldFeatures.EMBEDDED_TYPE, schemaClass);
 		}
 		// DynaBean view = features.getFeatures("view");
-		if (core != null && core.existAttribute(CoreClassFeatures.ENTITY)) {
-			SchemaClass clazz = (SchemaClass) core.getAttribute(CoreClassFeatures.ENTITY);
-			if (clazz != null)
-				core.setAttribute(CoreClassFeatures.ENTITY, clazz.getName());
-		}
+		SchemaClass clazz = (SchemaClass) features.getFeature(CoreClassFeatures.ENTITY);
+		if (clazz != null)
+			features.setFeature(CoreClassFeatures.ENTITY, clazz);
 	}
 
 	/**
@@ -59,17 +52,6 @@ public class SerializationHelper {
 	 * @param features
 	 */
 	public static void reallineFeature(SchemaFeatures features) {
-		DynaBean core = features.getFeatures(CoreAspect.ASPECT_NAME);
-		if (core != null && core.existAttribute(CoreFieldFeatures.EMBEDDED_TYPE)) {
-			String schemaClassName = (String) core.getAttribute(CoreFieldFeatures.EMBEDDED_TYPE);
-			if (schemaClassName != null)
-				core.setAttribute(CoreFieldFeatures.EMBEDDED_TYPE, Roma.schema().getSchemaClass(schemaClassName));
-		}
-		if (core != null && core.existAttribute(CoreClassFeatures.ENTITY)) {
-			String clazz = (String) core.getAttribute(CoreClassFeatures.ENTITY);
-			if (clazz != null)
-				core.setAttribute(CoreClassFeatures.ENTITY, Roma.schema().getSchemaClass(clazz));
-		}
 	}
 
 	/**

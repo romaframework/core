@@ -16,18 +16,15 @@
 
 package org.romaframework.aspect.core.feature;
 
-import org.romaframework.core.util.DynaBean;
+import org.romaframework.aspect.core.CoreAspect;
+import org.romaframework.core.schema.Feature;
+import org.romaframework.core.schema.FeatureType;
+import org.romaframework.core.schema.SchemaClass;
 
-public class CoreClassFeatures extends DynaBean {
-	private static final long	serialVersionUID	= -5647021459946187979L;
+public class CoreClassFeatures {
 
-	public CoreClassFeatures() {
-		defineAttribute(ENTITY, null);
-		defineAttribute(ORDER_FIELDS, null);
-		defineAttribute(ORDER_ACTIONS, null);
-	}
+	public static final Feature<SchemaClass>	ENTITY				= new Feature<SchemaClass>(CoreAspect.ASPECT_NAME, "entity", FeatureType.CLASS, SchemaClass.class);
+	public static final Feature<String>				ORDER_FIELDS	= new Feature<String>(CoreAspect.ASPECT_NAME, "orderFields", FeatureType.CLASS, String.class);
+	public static final Feature<String>				ORDER_ACTIONS	= new Feature<String>(CoreAspect.ASPECT_NAME, "orderActions", FeatureType.CLASS, String.class);
 
-	public static final String	ENTITY				= "entity";
-	public static final String	ORDER_FIELDS	= "orderFields";
-	public static final String	ORDER_ACTIONS	= "orderActions";
 }

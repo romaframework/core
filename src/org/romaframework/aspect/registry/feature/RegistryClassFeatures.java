@@ -15,31 +15,18 @@
  */
 package org.romaframework.aspect.registry.feature;
 
-import org.romaframework.core.util.DynaBean;
+import org.romaframework.aspect.registry.RegistryAspect;
+import org.romaframework.core.schema.Feature;
+import org.romaframework.core.schema.FeatureType;
 
-public class RegistryClassFeatures extends DynaBean {
+public class RegistryClassFeatures {
 
-	private static final long	serialVersionUID	= 1L;
-
-	public RegistryClassFeatures() {
-		super();
-
-		defineAttribute(SERVICE_DESC, "");
-		defineAttribute(REG_URI, "");
-		defineAttribute(USERNAME, "");
-		defineAttribute(PASSW, "");
-		defineAttribute(ORGANIZATION, "");
-		defineAttribute(AUTHOR, "");
-		defineAttribute(WSDLADDRESS, "");
-		defineAttribute(ICONPATH, "");
-	}
-
-	public static final String	SERVICE_DESC	= "serviceDesc";
-	public static final String	REG_URI				= "registryURI";
-	public static final String	USERNAME			= "username";
-	public static final String	PASSW					= "password";
-	public static final String	ORGANIZATION	= "organization";
-	public static final String	AUTHOR				= "author";
-	public static final String	WSDLADDRESS		= "wsdlAddress";
-	public static final String  ICONPATH		  = "iconpath";
+	public static final Feature<String>	SERVICE_DESC	= new Feature<String>(RegistryAspect.ASPECT_NAME, "serviceDesc", FeatureType.CLASS, String.class, "");
+	public static final Feature<String>	REG_URI				= new Feature<String>(RegistryAspect.ASPECT_NAME, "registryURI", FeatureType.CLASS, String.class, "");
+	public static final Feature<String>	USERNAME			= new Feature<String>(RegistryAspect.ASPECT_NAME, "username", FeatureType.CLASS, String.class, "");
+	public static final Feature<String>	PASSW					= new Feature<String>(RegistryAspect.ASPECT_NAME, "password", FeatureType.CLASS, String.class, "");
+	public static final Feature<String>	ORGANIZATION	= new Feature<String>(RegistryAspect.ASPECT_NAME, "organization", FeatureType.CLASS, String.class, "");
+	public static final Feature<String>	AUTHOR				= new Feature<String>(RegistryAspect.ASPECT_NAME, "author", FeatureType.CLASS, String.class, "");
+	public static final Feature<String>	WSDLADDRESS		= new Feature<String>(RegistryAspect.ASPECT_NAME, "wsdlAddress", FeatureType.CLASS, String.class, "");
+	public static final Feature<String>	ICONPATH			= new Feature<String>(RegistryAspect.ASPECT_NAME, "iconpath", FeatureType.CLASS, String.class, "");
 }

@@ -16,22 +16,18 @@
 
 package org.romaframework.aspect.logging.feature;
 
-public class LoggingElementFeatures extends LoggingClassFeatures {
-	public LoggingElementFeatures() {
-		defineAttribute(LEVEL, null);
-		defineAttribute(CATEGORY, null);
+import org.romaframework.core.schema.Feature;
 
-		defineAttribute(EXCEPTION, null);
-		defineAttribute(EXCEPTIONS_TO_LOG, null);
-		defineAttribute(POST, null);
-	}
+public class LoggingElementFeatures {
 
-	public static final String	LEVEL							= "level";
-	public static final String	CATEGORY					= "category";
+	public static final Feature<Integer>	LEVEL							= LoggingFieldFeatures.LEVEL;
+	public static final Feature<String>		CATEGORY					= LoggingFieldFeatures.CATEGORY;
 
-	public static final String	EXCEPTION					= "exception";
-	public static final String	EXCEPTIONS_TO_LOG	= "exceptionsToLog";
+	public static final Feature<String>		EXCEPTION					= LoggingFieldFeatures.EXCEPTION;
+	public static final Feature<Class[]>	EXCEPTIONS_TO_LOG	= LoggingFieldFeatures.EXCEPTIONS_TO_LOG;
 
-	public static final String	POST							= "post";
+	public static final Feature<String>		POST							= LoggingFieldFeatures.POST;
+	public static final Feature<String>		MODE							= LoggingFieldFeatures.MODE;
+	public static final Feature<Boolean>	ENABLED						= LoggingFieldFeatures.ENABLED;
 
 }

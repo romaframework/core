@@ -11,35 +11,36 @@
 
 package org.romaframework.aspect.hook.feature;
 
-public class HookActionFeatures extends HookElementFeatures {
+import org.romaframework.aspect.hook.HookAspect;
+import org.romaframework.aspect.hook.annotation.HookScope;
+import org.romaframework.core.schema.Feature;
+import org.romaframework.core.schema.FeatureType;
 
-	private static final long	serialVersionUID	= -1371119906875820494L;
+public class HookActionFeatures {
 
-	public HookActionFeatures() {
-		defineAttribute(HOOK_AROUND_ACTION, null);
-		defineAttribute(HOOK_BEFORE_ACTION, null);
-		defineAttribute(HOOK_AFTER_ACTION, null);
-		defineAttribute(HOOK_AROUND_FIELD_READ, null);
-		defineAttribute(HOOK_BEFORE_FIELD_READ, null);
-		defineAttribute(HOOK_AFTER_FIELD_READ, null);
-		defineAttribute(HOOK_AROUND_FIELD_WRITE, null);
-		defineAttribute(HOOK_BEFORE_FIELD_WRITE, null);
-		defineAttribute(HOOK_AFTER_FIELD_WRITE, null);
-		defineAttribute(HOOK_AROUND_EVENT, null);
-		defineAttribute(HOOK_BEFORE_EVENT, null);
-		defineAttribute(HOOK_AFTER_EVENT, null);
-	}
-
-	public static final String	HOOK_AROUND_ACTION			= "hookAroundAction";
-	public static final String	HOOK_BEFORE_ACTION			= "hookBeforeAction";
-	public static final String	HOOK_AFTER_ACTION				= "hookAfterAction";
-	public static final String	HOOK_AROUND_FIELD_READ	= "hookAroundFieldRead";
-	public static final String	HOOK_BEFORE_FIELD_READ	= "hookBeforeFieldRead";
-	public static final String	HOOK_AFTER_FIELD_READ		= "hookAfterFieldRead";
-	public static final String	HOOK_AROUND_FIELD_WRITE	= "hookAroundFieldWrite";
-	public static final String	HOOK_BEFORE_FIELD_WRITE	= "hookBeforeFieldWrite";
-	public static final String	HOOK_AFTER_FIELD_WRITE	= "hookAfterFieldWrite";
-	public static final String	HOOK_AROUND_EVENT				= "hookAroundEvent";
-	public static final String	HOOK_BEFORE_EVENT				= "hookBeforeEvent";
-	public static final String	HOOK_AFTER_EVENT				= "hookAfterEvent";
+	public static final Feature<HookScope>	SCOPE										= new Feature<HookScope>(HookAspect.ASPECT_NAME, "scope", FeatureType.ACTION, HookScope.class);
+	public static final Feature<String>			HOOK_AROUND_ACTION			= new Feature<String>(HookAspect.ASPECT_NAME, "hookAroundAction", FeatureType.ACTION,
+																																			String.class);
+	public static final Feature<String>			HOOK_BEFORE_ACTION			= new Feature<String>(HookAspect.ASPECT_NAME, "hookBeforeAction", FeatureType.ACTION,
+																																			String.class);
+	public static final Feature<String>			HOOK_AFTER_ACTION				= new Feature<String>(HookAspect.ASPECT_NAME, "hookAfterAction", FeatureType.ACTION,
+																																			String.class);
+	public static final Feature<String>			HOOK_AROUND_FIELD_READ	= new Feature<String>(HookAspect.ASPECT_NAME, "hookAroundFieldRead", FeatureType.ACTION,
+																																			String.class);
+	public static final Feature<String>			HOOK_BEFORE_FIELD_READ	= new Feature<String>(HookAspect.ASPECT_NAME, "hookBeforeFieldRead", FeatureType.ACTION,
+																																			String.class);
+	public static final Feature<String>			HOOK_AFTER_FIELD_READ		= new Feature<String>(HookAspect.ASPECT_NAME, "hookAfterFieldRead", FeatureType.ACTION,
+																																			String.class);
+	public static final Feature<String>			HOOK_AROUND_FIELD_WRITE	= new Feature<String>(HookAspect.ASPECT_NAME, "hookAroundFieldWrite", FeatureType.ACTION,
+																																			String.class);
+	public static final Feature<String>			HOOK_BEFORE_FIELD_WRITE	= new Feature<String>(HookAspect.ASPECT_NAME, "hookBeforeFieldWrite", FeatureType.ACTION,
+																																			String.class);
+	public static final Feature<String>			HOOK_AFTER_FIELD_WRITE	= new Feature<String>(HookAspect.ASPECT_NAME, "hookAfterFieldWrite", FeatureType.ACTION,
+																																			String.class);
+	public static final Feature<String>			HOOK_AROUND_EVENT				= new Feature<String>(HookAspect.ASPECT_NAME, "hookAroundEvent", FeatureType.ACTION,
+																																			String.class);
+	public static final Feature<String>			HOOK_BEFORE_EVENT				= new Feature<String>(HookAspect.ASPECT_NAME, "hookBeforeEvent", FeatureType.ACTION,
+																																			String.class);
+	public static final Feature<String>			HOOK_AFTER_EVENT				= new Feature<String>(HookAspect.ASPECT_NAME, "hookAfterEvent", FeatureType.ACTION,
+																																			String.class);
 }

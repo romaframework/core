@@ -33,6 +33,7 @@ import org.romaframework.aspect.session.SessionInfo;
 import org.romaframework.aspect.validation.ValidationAspect;
 import org.romaframework.core.aspect.Aspect;
 import org.romaframework.core.aspect.AspectManager;
+import org.romaframework.core.exception.ConfigurationException;
 import org.romaframework.core.exception.ConfigurationNotFoundException;
 import org.romaframework.core.factory.GenericFactory;
 import org.romaframework.core.flow.Controller;
@@ -41,10 +42,14 @@ import org.romaframework.core.handler.RomaObjectHandler;
 import org.romaframework.core.module.Module;
 import org.romaframework.core.module.ModuleManager;
 import org.romaframework.core.repository.GenericRepository;
+import org.romaframework.core.schema.Feature;
+import org.romaframework.core.schema.FeatureRegistry;
+import org.romaframework.core.schema.FeatureType;
 import org.romaframework.core.schema.SchemaClass;
+import org.romaframework.core.schema.SchemaFeatures;
+import org.romaframework.core.schema.SchemaFeaturesChangeListener;
 import org.romaframework.core.schema.SchemaManager;
 import org.romaframework.core.schema.SchemaObject;
-import org.romaframework.core.util.DynaBean;
 
 /**
  * Helper class that acts as unique entry point to the user to access to the Roma functionalities.
@@ -150,7 +155,15 @@ public class Roma implements ScriptingAspectListener {
 		ObjectContext.getInstance().fieldChanged(iUserObject, iFieldNames);
 	}
 
-	public SchemaObject getSchemaObject(Object iUserObject) throws ConfigurationNotFoundException {
+	/**
+	 * Get the schema object associated to the current POJO.
+	 * 
+	 * @param iUserObject
+	 *          User POJO
+	 * @return SchemaObject instance
+	 * @throws ConfigurationNotFoundException
+	 */
+	public static SchemaObject getSchemaObject(Object iUserObject) throws ConfigurationNotFoundException {
 		return ObjectContext.getInstance().getSchemaObject(iUserObject);
 	}
 
@@ -184,47 +197,123 @@ public class Roma implements ScriptingAspectListener {
 		return handlers;
 	}
 
-	public static DynaBean getClassFeatures(Object iUserObject, String iAspectName) throws ConfigurationNotFoundException {
-		return ObjectContext.getInstance().getClassFeatures(iUserObject, iAspectName);
+	@Deprecated
+	@SuppressWarnings("rawtypes")
+	public static boolean setFieldFeature(Object iUserObject, String iAspectName, String iFieldName, String iFeatureName, Object iFeatureValue)
+			throws ConfigurationNotFoundException {
+		Feature fae = FeatureRegistry.getFeature(iAspectName, FeatureType.FIELD, iFeatureName);
+		return setFeature(iUserObject, iFieldName, fae, iFeatureValue);
 	}
 
-	public static boolean setFieldFeature(Object iUserObject, String iAspectName, String iFieldName, String iFeatureName,
-			Object iFeatureValue) throws ConfigurationNotFoundException {
-		return ObjectContext.getInstance().setFieldFeature(iUserObject, iAspectName, iFieldName, iFeatureName, iFeatureValue);
-	}
-
+	@Deprecated
 	public static Object getFieldFeature(Object iUserObject, String iAspectName, String iFieldName, String iFeatureName) {
-		DynaBean features = ObjectContext.getInstance().getFieldFeatures(iUserObject, iAspectName, iFieldName);
-		if (features == null) {
-			return null;
-		}
-		return features.getAttribute(iFeatureName);
+		Feature<?> fae = FeatureRegistry.getFeature(iAspectName, FeatureType.FIELD, iFeatureName);
+		return getFeature(iUserObject, iFieldName, fae);
 	}
 
+	@Deprecated
+	@SuppressWarnings("rawtypes")
 	public static boolean setClassFeature(Object iUserObject, String iAspectName, String iFeatureName, Object iFeatureValue)
 			throws ConfigurationNotFoundException {
-		return ObjectContext.getInstance().setClassFeature(iUserObject, iAspectName, iFeatureName, iFeatureValue);
+		Feature fae = FeatureRegistry.getFeature(iAspectName, FeatureType.CLASS, iFeatureName);
+		return setFeature(iUserObject, fae, iFeatureValue);
 	}
 
+	@Deprecated
 	public static Object getClassFeature(Object iUserObject, String iAspectName, String iFeatureName) {
-		DynaBean features = ObjectContext.getInstance().getClassFeatures(iUserObject, iAspectName);
-		if (features == null) {
-			return null;
-		}
-		return features.getAttribute(iFeatureName);
+		Feature<?> fae = FeatureRegistry.getFeature(iAspectName, FeatureType.CLASS, iFeatureName);
+		return getFeature(iUserObject, fae);
 	}
 
-	public static boolean setActionFeature(Object iUserObject, String iAspectName, String iActionName, String iFeatureName,
-			Object iFeatureValue) throws ConfigurationNotFoundException {
-		return ObjectContext.getInstance().setActionFeature(iUserObject, iAspectName, iActionName, iFeatureName, iFeatureValue);
+	@SuppressWarnings("rawtypes")
+	@Deprecated
+	public static boolean setActionFeature(Object iUserObject, String iAspectName, String iActionName, String iFeatureName, Object iFeatureValue)
+			throws ConfigurationNotFoundException {
+		Feature fae = FeatureRegistry.getFeature(iAspectName, FeatureType.ACTION, iFeatureName);
+		return setFeature(iUserObject, fae, iFeatureValue);
 	}
 
-	public static Object getActionFeature(Object iUserObject, String iAspectName, String iActionName, String iFeatureName) {
-		DynaBean features = ObjectContext.getInstance().getActionFeatures(iUserObject, iAspectName, iActionName);
-		if (features == null) {
+	private static <T> SchemaFeatures getSchemaFeature(Object iUserObject, String elementName, Feature<T> feature) {
+		SchemaObject schema = ObjectContext.getInstance().getSchemaObject(iUserObject);
+		if (schema == null)
 			return null;
+		SchemaFeatures features = null;
+		if (FeatureType.ACTION.equals(feature.getType())) {
+			if (elementName == null)
+				return null;
+			features = schema.getAction(elementName);
+			if (features == null) {
+				if (schema.getSchemaClass().getAction(elementName) == null)
+					throw new ConfigurationException("Action '" + elementName + "' not found in class '" + schema + "'");
+			}
+		} else if (FeatureType.FIELD.equals(feature.getType())) {
+			if (elementName == null)
+				return null;
+			features = schema.getField(elementName);
+			if (features == null) {
+				if (schema.getSchemaClass().getField(elementName) == null)
+					throw new ConfigurationException("Field '" + elementName + "' not found in class '" + schema + "'");
+			}
+		} else if (FeatureType.CLASS.equals(feature.getType()))
+			features = schema;
+		else if (FeatureType.EVENT.equals(feature.getType())) {
+			if (elementName == null)
+				return null;
+			features = schema.getEvent(elementName);
 		}
-		return features.getAttribute(iFeatureName);
+
+		return features;
+	}
+
+	public static <T> T getFeature(Object iUserObject, String elementName, Feature<T> feature) {
+		SchemaFeatures features = getSchemaFeature(iUserObject, elementName, feature);
+		if (features == null)
+			return null;
+		return features.getFeature(feature);
+	}
+
+	public static <T> boolean setFeature(Object iUserObject, Feature<T> feature, T value) {
+		if (!FeatureType.CLASS.equals(feature.getType()))
+			return false;
+		return setFeature(iUserObject, null, feature, value);
+	}
+
+	public static <T> T getFeature(Object iUserObject, Feature<T> feature) {
+		if (!FeatureType.CLASS.equals(feature.getType()))
+			return null;
+		return getFeature(iUserObject, feature);
+	}
+
+	public static <T> boolean setFeature(Object iUserObject, String elementName, Feature<T> feature, T value) {
+		SchemaFeatures features = getSchemaFeature(iUserObject, elementName, feature);
+
+		if (features == null)
+			return false;
+		T oldValue = features.getFeature(feature);
+		features.setFeature(feature, value);
+		// BROADCAST CHANGES TO ALL REGISTERED LISTENERS
+		List<SchemaFeaturesChangeListener> listeners = Controller.getInstance().getListeners(SchemaFeaturesChangeListener.class);
+		if (listeners != null)
+			switch (feature.getType()) {
+			case ACTION:
+				for (SchemaFeaturesChangeListener listener : listeners) {
+					listener.signalChangeAction(iUserObject, elementName, feature, oldValue, value);
+				}
+
+				break;
+			case FIELD:
+				for (SchemaFeaturesChangeListener listener : listeners) {
+					listener.signalChangeField(iUserObject, elementName, feature, oldValue, value);
+				}
+			case EVENT:
+			case CLASS:
+				for (SchemaFeaturesChangeListener listener : listeners) {
+					listener.signalChangeClass(iUserObject, feature, oldValue, value);
+				}
+			default:
+				break;
+			}
+		return true;
 	}
 
 	public static SessionAspect session() {
@@ -306,7 +395,7 @@ public class Roma implements ScriptingAspectListener {
 		if (schemaManager == null) {
 			synchronized (Roma.class) {
 				if (schemaManager == null) {
-					schemaManager = ObjectContext.getInstance().getComponent(SchemaManager.class);
+					schemaManager = Roma.component(SchemaManager.class);
 				}
 			}
 		}
@@ -317,7 +406,7 @@ public class Roma implements ScriptingAspectListener {
 		if (aspectManager == null) {
 			synchronized (Roma.class) {
 				if (aspectManager == null) {
-					aspectManager = ObjectContext.getInstance().getComponent(AspectManager.class);
+					aspectManager = Roma.component(AspectManager.class);
 				}
 			}
 		}

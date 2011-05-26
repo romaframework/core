@@ -18,7 +18,6 @@ package org.romaframework.core.flow;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,7 +33,6 @@ import org.romaframework.core.exception.ConfigurationException;
 import org.romaframework.core.exception.UserException;
 import org.romaframework.core.schema.SchemaAction;
 import org.romaframework.core.schema.SchemaClass;
-import org.romaframework.core.schema.SchemaClassElement;
 import org.romaframework.core.util.ListenerManager;
 
 @SuppressWarnings("unchecked")
@@ -62,7 +60,6 @@ public class Controller extends ListenerManager<Class<?>> {
 			iAction.invoke(iContent);
 		} catch (InvocationTargetException ex) {
 			Throwable nestedExc = ex.getTargetException();
-			invokeOnExceptionCallBacks(iContent, iAction, ex.getTargetException());
 			if (nestedExc == null || !(nestedExc instanceof UserException) && !(nestedExc instanceof MultiValidationException)) {
 
 				String errorLabel = I18NAspect.VARNAME_PREFIX + iAction.getName() + ERROR_LABEL;
@@ -75,13 +72,6 @@ public class Controller extends ListenerManager<Class<?>> {
 			}
 			// THROW THE NESTED EXCEPTION (BYPASS THE REFLECTION)
 			throw nestedExc;
-		}
-	}
-
-	private void invokeOnExceptionCallBacks(Object iContent, SchemaClassElement iAction, Throwable iThrowable) {
-		List<UserObjectEventListener> listeners = getListeners(UserObjectEventListener.class);
-		for (UserObjectEventListener listener : listeners) {
-			listener.onException(iContent, iAction, iThrowable);
 		}
 	}
 
