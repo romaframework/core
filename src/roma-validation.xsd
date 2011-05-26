@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://www.romaframework.org/xml/roma" xmlns="http://www.romaframework.org/xml/roma"
+	version="2.0" attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<xsd:complexType name="aspectFieldTypeValidation">
+		<xsd:attribute name="enabled" type="xsd:boolean" use="optional" default="true" />
+		<xsd:attribute name="match" type="xsd:string" use="optional" />
+		<xsd:attribute name="min" type="xsd:int" use="optional" />
+		<xsd:attribute name="max" type="xsd:int" use="optional" />
+		<xsd:attribute name="required" type="xsd:boolean" use="optional" default="true" />
+	</xsd:complexType>
+	<xsd:complexType name="aspectActionTypeValidation">
+		<xsd:attribute name="enabled" type="xsd:boolean" use="optional" default="true" />
+	</xsd:complexType>
+</xsd:schema>

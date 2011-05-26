@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.romaframework.org/xml/roma"
+	xmlns:tns="http://www.romaframework.org/xml/roma" elementFormDefault="qualified">
+
+	<complexType name="aspectClassTypeSecurity">
+		<attribute name="readRoles" type="string" />
+		<attribute name="writeRoles" type="string" />
+		<attribute name="executeRoles" type="string" />
+		<attribute name="encrypt" type="string" />
+		<attribute name="encryptionAlgorithm" type="string" />
+	</complexType>
+	<complexType name="aspectFieldTypeSecurity">
+		<attribute name="readRoles" type="string" />
+		<attribute name="writeRoles" type="string" />
+		<attribute name="encrypt" type="string" />
+		<attribute name="encryptionAlgorithm" type="string" />
+	</complexType>
+	<complexType name="aspectActionTypeSecurity">
+		<attribute name="roles" type="string" />
+	</complexType>
+	<complexType name="aspectEventTypeSecurity">
+		<attribute name="roles" type="string" />
+	</complexType>
+
+</schema>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://www.romaframework.org/xml/roma" xmlns="http://www.romaframework.org/xml/roma"
+	version="2.0" attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<xsd:complexType name="aspectClassTypeLogging">
+		<xsd:attribute name="enabled" type="xsd:boolean" use="optional" default="true" />
+		<xsd:attribute name="mode" type="xsd:string" use="optional" default="true" />
+	</xsd:complexType>
+	<xsd:complexType name="aspectActionTypeLogging">
+		<xsd:attribute name="enabled" type="xsd:boolean" use="optional" default="true" />
+		<xsd:attribute name="level" type="xsd:integer" use="optional" />
+		<xsd:attribute name="category" type="xsd:string" use="optional" />
+		<xsd:attribute name="mode" type="xsd:string" use="optional" />
+		<xsd:attribute name="pre" type="xsd:string" use="optional" />
+		<xsd:attribute name="post" type="xsd:string" use="optional" />
+		<xsd:attribute name="exception" type="xsd:string" use="optional" />
+		<xsd:attribute name="exceptionsToLog" type="xsd:string" use="optional" />
+	</xsd:complexType>
+	<xsd:complexType name="exceptionsToLogType">
+		<xsd:sequence>
+			<xsd:element name="exceptionName" type="xsd:string" minOccurs="1" maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="aspectFieldTypeLogging">
+		<xsd:attribute name="enabled" type="xsd:boolean" use="optional" default="true" />
+		<xsd:attribute name="level" type="xsd:integer" use="optional" />
+		<xsd:attribute name="category" type="xsd:string" use="optional" />
+		<xsd:attribute name="mode" type="xsd:string" use="optional" />
+		<xsd:attribute name="post" type="xsd:string" use="optional" />
+		<xsd:attribute name="exception" type="xsd:string" use="optional" />
+		<xsd:attribute name="exceptionsToLog" type="xsd:string" use="optional" />
+	</xsd:complexType>
+</xsd:schema>

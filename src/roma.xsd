@@ -1,0 +1,156 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://www.romaframework.org/xml/roma" xmlns="http://www.romaframework.org/xml/roma"
+	version="2.0" attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<xsd:include schemaLocation="roma-core.xsd" />
+	<xsd:include schemaLocation="roma-flow.xsd" />
+	<xsd:include schemaLocation="roma-i18n.xsd" />
+	<xsd:include schemaLocation="roma-logging.xsd" />
+	<xsd:include schemaLocation="roma-module.xsd" />
+	<xsd:include schemaLocation="roma-monitoring.xsd" />
+	<xsd:include schemaLocation="roma-persistence.xsd" />
+	<xsd:include schemaLocation="roma-profiling.xsd" />
+	<xsd:include schemaLocation="roma-reporting.xsd" />
+	<xsd:include schemaLocation="roma-scripting.xsd" />
+	<xsd:include schemaLocation="roma-semantic.xsd" />
+	<xsd:include schemaLocation="roma-service.xsd" />
+	<xsd:include schemaLocation="roma-serialization.xsd" />
+	<xsd:include schemaLocation="roma-view.xsd" />
+	<xsd:include schemaLocation="roma-map.xsd" />
+	<xsd:include schemaLocation="roma-validation.xsd" />
+	<xsd:include schemaLocation="roma-security.xsd" />
+	<xsd:element name="class" type="classType" />
+
+	<xsd:complexType name="classType">
+		<xsd:sequence>
+			<xsd:element name="aspects" maxOccurs="1" minOccurs="0">
+				<xsd:complexType>
+					<xsd:choice maxOccurs="unbounded">
+						<xsd:element name="core" type="aspectClassTypeCore" minOccurs="0" maxOccurs="1" />
+						<xsd:element name="logging" type="aspectClassTypeLogging" minOccurs="0" maxOccurs="1" />
+						<xsd:element name="module" type="aspectElementTypeModule" minOccurs="0" maxOccurs="unbounded" />
+						<xsd:element name="monitoring" type="aspectClassTypeMonitoring" minOccurs="0" maxOccurs="1" />
+						<xsd:element name="profiling" type="aspectClassTypeProfiling" minOccurs="0" maxOccurs="1" />
+						<xsd:element name="reporting" type="aspectClassTypeReporting" minOccurs="0" maxOccurs="1" />
+						<xsd:element name="scripting" type="aspectClassTypeScripting" minOccurs="0" maxOccurs="1" />
+						<xsd:element name="security" type="aspectClassTypeSecurity" minOccurs="0" maxOccurs="1" />
+						<xsd:element name="semantic" type="aspectClassTypeSemantic" minOccurs="0" maxOccurs="1" />
+						<xsd:element name="serialization" type="aspectClassTypeSerialization" minOccurs="0" maxOccurs="1" />
+						<xsd:element name="service" type="aspectClassTypeService" minOccurs="0" maxOccurs="1" />
+						<xsd:element name="view" type="aspectClassTypeView" minOccurs="0" maxOccurs="1" />
+					</xsd:choice>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="fields" maxOccurs="1" minOccurs="0">
+				<xsd:complexType>
+					<xsd:sequence minOccurs="0" maxOccurs="1">
+						<xsd:element type="fieldType" name="field" maxOccurs="unbounded" minOccurs="0" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="actions" minOccurs="0" maxOccurs="1">
+				<xsd:complexType>
+					<xsd:sequence minOccurs="0" maxOccurs="1">
+						<xsd:element type="actionType" name="action" maxOccurs="unbounded" minOccurs="0" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="events" minOccurs="0" maxOccurs="1">
+				<xsd:complexType>
+					<xsd:sequence minOccurs="0" maxOccurs="1">
+						<xsd:element type="eventType" name="event" maxOccurs="unbounded" minOccurs="0" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="extends" type="xsd:string" use="optional" />
+		<xsd:attribute name="implements" type="xsd:string" use="optional" />
+	</xsd:complexType>
+	<xsd:complexType name="fieldType">
+		<xsd:sequence>
+			<xsd:element name="aspects" minOccurs="0" maxOccurs="1">
+				<xsd:complexType>
+					<xsd:choice maxOccurs="unbounded">
+						<xsd:element name="core" type="aspectFieldTypeCore" minOccurs="0" maxOccurs="1" />
+						<xsd:element name="i18n" type="aspectFieldTypeI18n" minOccurs="0" maxOccurs="1" />
+						<xsd:element name="logging" type="aspectFieldTypeLogging" minOccurs="0" maxOccurs="1" />
+						<xsd:element name="map" type="aspectFieldTypeMap" minOccurs="0" maxOccurs="1" />
+						<xsd:element name="module" type="aspectElementTypeModule" minOccurs="0" maxOccurs="unbounded" />
+						<xsd:element name="monitoring" type="aspectFieldTypeMonitoring" minOccurs="0" maxOccurs="1" />
+						<xsd:element name="persistence" type="aspectTypePersistence" minOccurs="0" maxOccurs="1" />
+						<xsd:element name="reporting" type="aspectFieldTypeReporting" minOccurs="0" maxOccurs="1" />
+						<xsd:element name="semantic" type="aspectFieldTypeSemantic" minOccurs="0" maxOccurs="1" />
+						<xsd:element name="security" type="aspectFieldTypeSecurity" minOccurs="0" maxOccurs="1" />
+						<xsd:element name="serialization" type="aspectFieldTypeSerialization" minOccurs="0" maxOccurs="1" />
+						<xsd:element name="validation" type="aspectFieldTypeValidation" minOccurs="0" maxOccurs="1" />
+						<xsd:element name="view" type="aspectFieldTypeView" minOccurs="0" maxOccurs="1" />
+					</xsd:choice>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element ref="class" minOccurs="0" maxOccurs="1" />
+			<xsd:element name="events" minOccurs="0" maxOccurs="1">
+				<xsd:complexType>
+					<xsd:sequence minOccurs="0" maxOccurs="1">
+						<xsd:element type="eventType" name="event" maxOccurs="unbounded" minOccurs="0" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="value" type="xsd:string" minOccurs="0" maxOccurs="1" />
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+		<xsd:attribute name="type" type="xsd:string" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>Use standard types: string, integer, float, date, short, byte, char or custom types as well
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+	<xsd:complexType name="actionType">
+		<xsd:sequence>
+			<xsd:element name="parameters" minOccurs="0">
+				<xsd:complexType>
+					<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+						<xsd:element name="param" type="paramType" minOccurs="0" maxOccurs="1" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="aspects" minOccurs="0" maxOccurs="1">
+				<xsd:complexType>
+					<xsd:choice maxOccurs="unbounded">
+						<xsd:element name="flow" type="aspectActionTypeFlow" minOccurs="0" maxOccurs="1" />
+						<xsd:element name="logging" type="aspectActionTypeLogging" minOccurs="0" maxOccurs="1" />
+						<xsd:element name="module" type="aspectElementTypeModule" minOccurs="0" maxOccurs="unbounded" />
+						<xsd:element name="monitoring" type="aspectActionTypeMonitoring" minOccurs="0" maxOccurs="1" />
+						<xsd:element name="persistence" type="aspectTypePersistence" minOccurs="0" maxOccurs="1" />
+						<xsd:element name="profiling" type="aspectActionTypeProfiling" minOccurs="0" maxOccurs="1" />
+						<xsd:element name="scripting" type="aspectActionTypeScripting" minOccurs="0" maxOccurs="1" />
+						<xsd:element name="security" type="aspectActionTypeSecurity" minOccurs="0" maxOccurs="1" />
+						<xsd:element name="validation" type="aspectActionTypeValidation" minOccurs="0" maxOccurs="1" />
+						<xsd:element name="view" type="aspectActionTypeView" minOccurs="0" maxOccurs="1" />
+					</xsd:choice>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+	</xsd:complexType>
+
+	<xsd:complexType name="paramType">
+		<xsd:attribute name="name" type="xsd:string" use="optional" />
+		<xsd:attribute name="type" type="xsd:string" use="optional" />
+	</xsd:complexType>
+
+	<xsd:complexType name="eventType">
+		<xsd:sequence>
+			<xsd:element name="aspects" minOccurs="0" maxOccurs="1">
+				<xsd:complexType>
+					<xsd:choice maxOccurs="unbounded">
+						<xsd:element name="flow" type="aspectActionTypeFlow" minOccurs="0" maxOccurs="1" />
+						<xsd:element name="logging" type="aspectActionTypeLogging" minOccurs="0" maxOccurs="1" />
+						<xsd:element name="security" type="aspectActionTypeSecurity" minOccurs="0" maxOccurs="1" />
+						<xsd:element name="scripting" type="aspectEventTypeScripting" minOccurs="0" maxOccurs="1" />
+					</xsd:choice>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+	</xsd:complexType>
+</xsd:schema>
