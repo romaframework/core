@@ -28,6 +28,7 @@ import org.apache.commons.logging.LogFactory;
 import org.romaframework.core.Roma;
 import org.romaframework.core.flow.Controller;
 import org.romaframework.core.flow.SchemaActionListener;
+import org.romaframework.core.schema.xmlannotations.XmlActionAnnotation;
 
 /**
  * Generic abstract class that represents an Action.
@@ -42,6 +43,7 @@ public abstract class SchemaAction extends SchemaClassElement {
 	private Map<String, SchemaParameter>	parameters				= new HashMap<String, SchemaParameter>();
 	private List<SchemaParameter>					orderedParameters	= new ArrayList<SchemaParameter>();
 	private SchemaClass										returnType;
+	protected XmlActionAnnotation					descriptorInfo;
 
 	public SchemaAction(SchemaClassDefinition iEntity, String iName) {
 		super(iEntity, iName, FeatureType.ACTION);
@@ -83,6 +85,7 @@ public abstract class SchemaAction extends SchemaClassElement {
 
 			Object value = null;
 			try {
+
 				value = invokeFinal(iContent, params);
 				for (SchemaActionListener listener : listeners) {
 					try {
@@ -166,6 +169,10 @@ public abstract class SchemaAction extends SchemaClassElement {
 		this.returnType = returnType;
 	}
 
+	public XmlActionAnnotation getDescriptorInfo() {
+		return descriptorInfo;
+	}
+	
 	public static String getSignature(String name, String[] paramNames) {
 		StringBuilder methodSignature = new StringBuilder();
 		methodSignature.append(name);

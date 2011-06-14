@@ -131,6 +131,8 @@ public class SchemaObject extends SchemaClassDefinition {
 		if (iSource == null)
 			return;
 
+		this.features = null;
+		this.parent = iSource;
 		try {
 			Roma.context().create();
 

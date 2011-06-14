@@ -165,9 +165,9 @@ public class SchemaClassReflection extends SchemaClass {
 			// JUMP STATIC FIELDS OR NOT PUBLIC FIELDS
 			if (isToIgnoreMethod(method))
 				continue;
-			if (isGetterForField(method, javaClass))
+			if (isGetterForField(method, iClass))
 				continue;
-			else if (isSetterForField(method, javaClass))
+			else if (isSetterForField(method, iClass))
 				continue;
 			else if (isEvent(method))
 				continue;
@@ -176,7 +176,7 @@ public class SchemaClassReflection extends SchemaClass {
 
 		}
 
-		Field[] javaFields = javaClass.getDeclaredFields();
+		Field[] javaFields = iClass.getDeclaredFields();
 		for (Field curField : javaFields) {
 			SchemaField sf = getField(curField.getName());
 			if (sf != null && sf instanceof SchemaFieldReflection) {
@@ -184,7 +184,7 @@ public class SchemaClassReflection extends SchemaClass {
 				if (sf.getType() == null || fieldSchemaClass.isAssignableAs(fieldSchemaClass)) {
 					sf.setType(fieldSchemaClass);
 					((SchemaFieldReflection) sf).field = curField;
-					((SchemaFieldReflection) sf).languageType = curField.getType();
+					((SchemaFieldReflection) sf).languageType = SchemaHelper.resolveClassFromType(curField.getGenericType());
 				}
 			}
 		}
@@ -265,12 +265,14 @@ public class SchemaClassReflection extends SchemaClass {
 			return false;
 
 		fieldName = firstToLower(fieldName.substring(prefixLength));
-		Class<?> javaFieldType = method.getReturnType();
+
+		Class<?> javaFieldClass = SchemaHelper.resolveClassFromType(method.getGenericReturnType());
+
 		SchemaFieldReflection fieldInfo = (SchemaFieldReflection) getField(fieldName);
 		if (fieldInfo == null) {
-			fieldInfo = createField(fieldName, javaFieldType);
+			fieldInfo = createField(fieldName, javaFieldClass);
 			fieldInfo.getterMethod = method;
-		} else if (fieldInfo instanceof SchemaFieldReflection && javaFieldType.isAssignableFrom(((SchemaFieldReflection) fieldInfo).getLanguageType())) {
+		} else if (fieldInfo instanceof SchemaFieldReflection && javaFieldClass.isAssignableFrom(((SchemaFieldReflection) fieldInfo).getLanguageType())) {
 			fieldInfo.getterMethod = method;
 		}
 
@@ -285,12 +287,12 @@ public class SchemaClassReflection extends SchemaClass {
 			return false;
 
 		fieldName = firstToLower(fieldName.substring(SET_METHOD.length()));
-		Class<?> javaFieldType = method.getParameterTypes()[0];
+		Class<?> javaFieldClass = SchemaHelper.resolveClassFromType(method.getGenericParameterTypes()[0]);
 		SchemaFieldReflection fieldInfo = (SchemaFieldReflection) getField(fieldName);
 		if (fieldInfo == null) {
-			fieldInfo = createField(fieldName, javaFieldType);
+			fieldInfo = createField(fieldName, javaFieldClass);
 			fieldInfo.setterMethod = method;
-		} else if (fieldInfo instanceof SchemaFieldReflection && ((SchemaFieldReflection) fieldInfo).getLanguageType().isAssignableFrom(javaFieldType)) {
+		} else if (fieldInfo instanceof SchemaFieldReflection && ((SchemaFieldReflection) fieldInfo).getLanguageType().isAssignableFrom(javaFieldClass)) {
 			fieldInfo.setterMethod = method;
 		}
 		return true;

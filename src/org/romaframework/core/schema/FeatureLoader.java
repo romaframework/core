@@ -70,10 +70,9 @@ public class FeatureLoader {
 			if (value == null && additionalAnnotatedElement != null) {
 				value = getAnnotationValue(additionalAnnotatedElement, additionalAnnotations, feature);
 			}
-			if (value == null)
-				value = feature.getDefaultValue();
 
-			schemaFeatures.setFeature(feature, value);
+			if (value != null)
+				schemaFeatures.setFeature(feature, value);
 
 		}
 	}
@@ -105,6 +104,7 @@ public class FeatureLoader {
 				Method mt = annInstance.getClass().getMethod(feature.getName());
 				return readAnnotationValue(feature, mt.invoke(annInstance));
 			} catch (Exception e) {
+				log.error("Problem on reading of declared feature:" + feature.getName() + " on Annotation:" + annInstance, e);
 				throw new ConfigurationException("Problem on reading of declared feature:" + feature.getName() + " on Annotation:" + annInstance, e);
 			}
 		}
@@ -203,6 +203,9 @@ public class FeatureLoader {
 				return "true".equalsIgnoreCase((String) value) || "1".equals(value) || "t".equalsIgnoreCase((String) value);
 		}
 		if (SchemaClass.class.equals(valueType)) {
+			if (value instanceof String) {
+				return Roma.schema().getSchemaClass((String) value);
+			}
 			return Roma.schema().getSchemaClass(value);
 		}
 

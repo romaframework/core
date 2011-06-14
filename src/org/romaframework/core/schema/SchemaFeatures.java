@@ -21,7 +21,11 @@ import java.io.Serializable;
 public abstract class SchemaFeatures implements Cloneable, Serializable {
 	private static final long		serialVersionUID	= -4789886810661429988L;
 
-	private static final Object	UNSETTED_VALUE		= new Object();
+	private static final Object	UNSETTED_VALUE		= new Object() {
+																									public String toString() {
+																										return "Unsetted value";
+																									}
+																								};
 
 	protected Object[][]				features;
 	protected SchemaFeatures		parent;
@@ -65,8 +69,23 @@ public abstract class SchemaFeatures implements Cloneable, Serializable {
 			}
 		}
 		if (parent == null)
-			return null;
+			return feature.getDefaultValue();
 		return (T) parent.getFeature(feature);
+	}
+
+	public <T> boolean isSettedFeature(Feature<T> feature) {
+		if (features != null) {
+			Object[] aspectFeature = features[feature.getAspectId()];
+			if (aspectFeature != null) {
+				Object value = aspectFeature[feature.getFeatureId()];
+				if (value != UNSETTED_VALUE) {
+					return true;
+				}
+			}
+		}
+		if (parent == null)
+			return false;
+		return parent.isSettedFeature(feature);
 	}
 
 	public FeatureType getFeatureType() {

@@ -71,7 +71,7 @@ public class SchemaActionReflection extends SchemaAction {
 
 		}
 		FeatureLoader.loadActionFeatures(this, parentDescriptor);
-
+		this.descriptorInfo = parentDescriptor;
 		// BROWSE ALL ASPECTS
 		for (Aspect aspect : Roma.aspects()) {
 			// CONFIGURE THE SCHEMA OBJECT WITH CURRENT ASPECT

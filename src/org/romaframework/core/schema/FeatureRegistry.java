@@ -127,7 +127,7 @@ public class FeatureRegistry {
 		if (types == null) {
 			return null;
 		}
-		Map<String, Feature> aspects = types.get(featureName);
+		Map<String, Feature> aspects = types.get(aspectName);
 		if (aspects == null) {
 			return null;
 		}

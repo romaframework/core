@@ -42,17 +42,17 @@ import org.romaframework.core.schema.xmlannotations.XmlFieldAnnotation;
  */
 public abstract class SchemaClass extends SchemaClassDefinition implements Comparable<SchemaClass> {
 
-	private static final long	serialVersionUID	= 5613421165403906360L;
+	private static final long			serialVersionUID	= 5613421165403906360L;
 
 	protected String							name;
 
 	protected SchemaClass					superClass;
 	protected SchemaConfiguration	descriptor;
-	protected boolean							reloadingStatus	= false;
+	protected boolean							reloadingStatus		= false;
 	protected Set<SchemaClass>		dependentClasses;
 	protected Set<SchemaClass>		implementedInterfaces;
 
-	private static Log						log							= LogFactory.getLog(SchemaClass.class);
+	private static Log						log								= LogFactory.getLog(SchemaClass.class);
 
 	public SchemaClass(String iName) {
 		name = iName;
@@ -104,7 +104,8 @@ public abstract class SchemaClass extends SchemaClassDefinition implements Compa
 	public void copyDefinition(SchemaClassDefinition iSource) {
 		if (iSource == null)
 			return;
-
+		this.features = null;
+		this.parent = iSource;
 		try {
 			cloneFields(iSource, null);
 			cloneActions(iSource, null);

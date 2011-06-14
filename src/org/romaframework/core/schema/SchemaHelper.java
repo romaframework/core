@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -747,9 +748,10 @@ public class SchemaHelper {
 		if (params == null || params.length == 0)
 			return null;
 		type = params[0];
-		if (!(type instanceof Class<?>))
+		Class<?> cl = resolveClassFromType(type);
+		if (cl == null)
 			return null;
-		return Roma.schema().getSchemaClass((Class<?>) type);
+		return Roma.schema().getSchemaClass(cl);
 	}
 
 	public static SchemaClass getSuperInterfaceGenericType(Class<?> clazz) {
@@ -763,10 +765,9 @@ public class SchemaHelper {
 				Type[] params = ((ParameterizedType) type).getActualTypeArguments();
 				if (params == null || params.length == 0)
 					return null;
-				type = params[0];
-				if (!(type instanceof Class<?>))
-					return null;
-				return Roma.schema().getSchemaClass((Class<?>) type);
+				Class<?> cl = resolveClassFromType(params[0]);
+				if (cl != null)
+					return Roma.schema().getSchemaClass(cl);
 			} else {
 				Type[] implementedInterfaces = ((Class<?>) type).getGenericInterfaces();
 				if (implementedInterfaces != null && implementedInterfaces.length > 0) {
@@ -862,24 +863,10 @@ public class SchemaHelper {
 			if (classType.isArray()) {
 				returnClass = (Class<?>) targs[0];
 			} else if (java.util.Collection.class.isAssignableFrom((Class<?>) rtype)) {
-				Object arg = targs[0];
-				if (arg instanceof Class<?>) {
-					returnClass = (Class<?>) arg;
-				} else if (arg instanceof ParameterizedType) {
-					ParameterizedType embType = (ParameterizedType) arg;
-					Type embRType = embType.getRawType();
-					returnClass = (Class<?>) embRType;
-				} else if (arg instanceof GenericArrayType) {
-					// GenericArrayType embType = (GenericArrayType) arg;
-					// returnClass = (Class<?>)
-					// embType.getGenericComponentType();
-					returnClass = Array.class;
-				} else if (arg instanceof TypeVariable<?>) {
-					TypeVariable<?> embType = (TypeVariable<?>) arg;
-					returnClass = (Class<?>) embType.getGenericDeclaration();
-				} else {
+				returnClass = resolveClassFromType(targs[0]);
+				if (returnClass == null)
 					returnClass = Object.class;
-				}
+
 			} else if (java.util.Map.class.isAssignableFrom((Class<?>) rtype)) {
 				returnClass = classType.getDeclaredClasses()[0];
 			} else if (targs[0] instanceof Class<?>) {
@@ -1204,6 +1191,29 @@ public class SchemaHelper {
 			throw new IllegalArgumentException("Action " + schemaClass.getName() + "." + action + "(" + Utility.array2String(params) + ") was not found");
 
 		return schemaAction.invoke(target, params);
+	}
+
+	public static Class<?> resolveClassFromType(Type type) {
+		if (type instanceof Class<?>)
+			return (Class<?>) type;
+		if (type instanceof ParameterizedType) {
+			return resolveClassFromType(((ParameterizedType) type).getRawType());
+		}
+		if (type instanceof GenericArrayType) {
+			GenericArrayType gat = (GenericArrayType) type;
+			Class<?> arrItemp = resolveClassFromType(gat.getGenericComponentType());
+			return Array.newInstance(arrItemp, 0).getClass();
+		}
+		if (type instanceof TypeVariable<?>) {
+			TypeVariable<?> t = (TypeVariable<?>) type;
+			Type[] bounds = t.getBounds();
+			if (bounds.length == 1)
+				return resolveClassFromType(bounds[0]);
+		}
+		if(type instanceof  WildcardType){
+			//TODO:
+		}
+		return null;
 	}
 
 }

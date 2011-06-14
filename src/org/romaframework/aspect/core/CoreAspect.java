@@ -33,6 +33,7 @@ import org.romaframework.core.classloader.ClassLoaderListener;
 import org.romaframework.core.config.ApplicationConfiguration;
 import org.romaframework.core.config.RomaApplicationListener;
 import org.romaframework.core.config.Serviceable;
+import org.romaframework.core.domain.entity.ComposedEntity;
 import org.romaframework.core.flow.Controller;
 import org.romaframework.core.module.SelfRegistrantModule;
 import org.romaframework.core.resource.AutoReloadManager;
@@ -44,6 +45,8 @@ import org.romaframework.core.schema.SchemaClassResolver;
 import org.romaframework.core.schema.SchemaEvent;
 import org.romaframework.core.schema.SchemaField;
 import org.romaframework.core.schema.SchemaHelper;
+import org.romaframework.core.schema.config.EmbeddedSchemaConfiguration;
+import org.romaframework.core.schema.config.SchemaConfiguration;
 import org.romaframework.core.schema.reflection.SchemaFieldReflection;
 import org.romaframework.core.schema.xmlannotations.XmlActionAnnotation;
 import org.romaframework.core.schema.xmlannotations.XmlClassAnnotation;
@@ -119,7 +122,27 @@ public class CoreAspect extends SelfRegistrantModule implements Aspect, RomaAppl
 
 	public void configField(SchemaField iField, Annotation iFieldAnnotation, Annotation iGenericAnnotation, Annotation iGetterAnnotation,
 			XmlFieldAnnotation iXmlNode) {
+
 		if (iField instanceof SchemaFieldReflection) {
+			if (iField.getEntity().getSchemaClass().isComposedEntity() && iField.getName().endsWith(ComposedEntity.NAME)) {
+				SchemaClass embeddedType = iField.getEntity().getFeature(CoreClassFeatures.ENTITY);
+				if (embeddedType != null) {
+					SchemaConfiguration sourceDescr = iField.getEntity().getSchemaClass().getDescriptor();
+					if (sourceDescr != null) {
+						SchemaClass entity = iField.getEntity().getSchemaClass();
+						SchemaConfiguration conf = null;
+						if (iField.getDescriptorInfo() != null && iField.getDescriptorInfo().getClassAnnotation() != null)
+							conf = new EmbeddedSchemaConfiguration(iField.getDescriptorInfo().getClassAnnotation());
+						else
+							conf = embeddedType.getDescriptor();
+						iField.setType(Roma.schema().createSchemaClass(entity.getName() + "." + iField.getName(), embeddedType, conf));
+						((SchemaFieldReflection) iField).setLanguageType((Class<?>) embeddedType.getLanguageType());
+					} else {
+						iField.setType(Roma.schema().getSchemaClassIfExist((Class<?>) iField.getLanguageType()));
+					}
+				}
+			}
+
 			SchemaFieldReflection ref = (SchemaFieldReflection) iField;
 			SchemaClass[] embeddedTypeGenerics = null;
 			Type embType = null;
