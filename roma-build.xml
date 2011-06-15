@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project basedir="." default="compile" name="roma-core" xmlns:ivy="antlib:org.apache.ivy.ant">
+<project basedir="." default="compile" xmlns:ivy="antlib:org.apache.ivy.ant">
 	<property environment="env" />
 
 	<property name="project.src" value="src" />
@@ -82,6 +82,11 @@
 			</classpath>
 		</javac>
 
+		<available file="${project.build.test}" property="test.dir.exist" />
+		<antcall target="compile-test" />
+	</target>
+
+	<target name="compile-test" unless="test.dir.exist">
 		<javac destdir="${project.build.test}" debug="{project.is-debug}" source="${project.targetComp}" target="${project.targetComp}">
 			<src path="${project.test}" />
 			<classpath>
@@ -91,6 +96,7 @@
 			</classpath>
 		</javac>
 	</target>
+
 
 	<target name="dist" depends="compile,install-ivy">
 		<ivy:info />
