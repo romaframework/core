@@ -22,6 +22,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -160,19 +161,21 @@ public class SchemaClassReflection extends SchemaClass {
 	private void readClass() {
 		Class<?> iClass = (Class<?>) (javaClass != null ? javaClass : baseClass.getLanguageType());
 
+		ParameterizedType type = SchemaHelper.resolveParameterizedType(iClass);
+
 		List<Method> methods = SchemaHelper.getMethods(iClass);
 		for (Method method : methods) {
 			// JUMP STATIC FIELDS OR NOT PUBLIC FIELDS
 			if (isToIgnoreMethod(method))
 				continue;
-			if (isGetterForField(method, iClass))
+			if (isGetterForField(method, type))
 				continue;
-			else if (isSetterForField(method, iClass))
+			else if (isSetterForField(method, type))
 				continue;
 			else if (isEvent(method))
 				continue;
 			else
-				createAction(method);
+				createAction(method, type);
 
 		}
 
@@ -184,7 +187,7 @@ public class SchemaClassReflection extends SchemaClass {
 				if (sf.getType() == null || fieldSchemaClass.isAssignableAs(fieldSchemaClass)) {
 					sf.setType(fieldSchemaClass);
 					((SchemaFieldReflection) sf).field = curField;
-					((SchemaFieldReflection) sf).languageType = SchemaHelper.resolveClassFromType(curField.getGenericType());
+					((SchemaFieldReflection) sf).languageType = SchemaHelper.resolveClassFromType(curField.getGenericType(), type);
 				}
 			}
 		}
@@ -220,7 +223,7 @@ public class SchemaClassReflection extends SchemaClass {
 		Collections.sort(orderedActions);
 	}
 
-	private void createAction(Method method) {
+	private void createAction(Method method, ParameterizedType params) {
 		String methodSignature = getMethodSignature(method);
 		log.debug("[SchemaClassReflection] Class " + getName() + " found method: " + methodSignature);
 
@@ -236,7 +239,8 @@ public class SchemaClassReflection extends SchemaClass {
 			actionInfo.method = method;
 			setAction(methodSignature, actionInfo);
 		}
-		actionInfo.setReturnType(Roma.schema().getSchemaClassIfExist(method.getReturnType()));
+		actionInfo.method = method;
+		actionInfo.setReturnType(Roma.schema().getSchemaClassIfExist(SchemaHelper.resolveClassFromType(method.getGenericReturnType(), params)));
 	}
 
 	private SchemaFieldReflection createField(String fieldName, Class<?> javaFieldType) {
@@ -250,7 +254,7 @@ public class SchemaClassReflection extends SchemaClass {
 		return fieldInfo;
 	}
 
-	public Boolean isGetterForField(Method method, Class<?> owner) {
+	public Boolean isGetterForField(Method method, ParameterizedType owner) {
 		int prefixLength;
 		String fieldName = method.getName();
 		if (fieldName.startsWith(GET_METHOD) && checkIfFirstCharAfterPrefixIsUpperCase(fieldName, GET_METHOD))
@@ -266,7 +270,7 @@ public class SchemaClassReflection extends SchemaClass {
 
 		fieldName = firstToLower(fieldName.substring(prefixLength));
 
-		Class<?> javaFieldClass = SchemaHelper.resolveClassFromType(method.getGenericReturnType());
+		Class<?> javaFieldClass = SchemaHelper.resolveClassFromType(method.getGenericReturnType(), owner);
 
 		SchemaFieldReflection fieldInfo = (SchemaFieldReflection) getField(fieldName);
 		if (fieldInfo == null) {
@@ -279,7 +283,7 @@ public class SchemaClassReflection extends SchemaClass {
 		return true;
 	}
 
-	public boolean isSetterForField(Method method, Class<?> owner) {
+	public boolean isSetterForField(Method method, ParameterizedType owner) {
 		String fieldName = method.getName();
 		if (!fieldName.startsWith(SET_METHOD) || !checkIfFirstCharAfterPrefixIsUpperCase(fieldName, SET_METHOD))
 			return false;
@@ -287,7 +291,7 @@ public class SchemaClassReflection extends SchemaClass {
 			return false;
 
 		fieldName = firstToLower(fieldName.substring(SET_METHOD.length()));
-		Class<?> javaFieldClass = SchemaHelper.resolveClassFromType(method.getGenericParameterTypes()[0]);
+		Class<?> javaFieldClass = SchemaHelper.resolveClassFromType(method.getGenericParameterTypes()[0], owner);
 		SchemaFieldReflection fieldInfo = (SchemaFieldReflection) getField(fieldName);
 		if (fieldInfo == null) {
 			fieldInfo = createField(fieldName, javaFieldClass);
@@ -399,10 +403,32 @@ public class SchemaClassReflection extends SchemaClass {
 			makeDependency(superClass);
 	}
 
+	@Override
+	protected void makeDependency(SchemaClass iClass) {
+
+		super.makeDependency(iClass);
+		Class<?> clazz = (Class<?>) (javaClass != null ? javaClass : baseClass.getLanguageType());
+		ParameterizedType type = SchemaHelper.resolveParameterizedType(clazz);
+		for (SchemaField schemaField : fields.values()) {
+			if (schemaField instanceof SchemaField) {
+				SchemaFieldReflection schemaFieldReflection = (SchemaFieldReflection) schemaField;
+				Class<?> javaFieldClass = null;
+				if (schemaFieldReflection.getterMethod != null) {
+					javaFieldClass = SchemaHelper.resolveClassFromType(schemaFieldReflection.getterMethod.getGenericReturnType(), type);
+				} else if (schemaFieldReflection.field != null) {
+					javaFieldClass = SchemaHelper.resolveClassFromType(schemaFieldReflection.field.getGenericType(), type);
+				}
+				if (javaFieldClass != null)
+					schemaFieldReflection.setType(Roma.schema().getSchemaClass(javaFieldClass));
+			}
+
+		}
+	}
+
 	protected void readAllAnnotations() {
 		FeatureLoader.loadClassFeatures(this, descriptor);
 		for (Aspect aspect : Roma.aspects()) {
-			aspect.configClass(this, null, null);
+			aspect.configClass(this);
 		}
 	}
 
@@ -455,16 +481,35 @@ public class SchemaClassReflection extends SchemaClass {
 		String methodName = currentMethod.getName();
 		// CHECK FOR FIXED NAMES TO IGNORE
 		for (int ignoreId = 0; ignoreId < IGNORE_METHOD_NAMES.length; ++ignoreId) {
-			if (SchemaAction.ignoreMethod(IGNORE_METHOD_NAMES[ignoreId], methodName))
+			if (ignoreMethod(IGNORE_METHOD_NAMES[ignoreId], methodName))
 				return true;
 		}
 
 		if (Roma.existComponent(SchemaManager.class))
 			// CHECK FOR CUSTOM NAMES TO IGNORE, IF ANY
 			for (Iterator<String> it = Roma.schema().getIgnoreActions().iterator(); it.hasNext();) {
-				if (SchemaAction.ignoreMethod(it.next(), methodName))
+				if (ignoreMethod(it.next(), methodName))
 					return true;
 			}
+
+		return false;
+	}
+
+	private static boolean ignoreMethod(String iItem, String iMethodName) {
+		if (iItem.endsWith("^*")) {
+			String trunk = iItem.substring(0, iItem.length() - 2);
+			if (iMethodName.startsWith(trunk) && Character.isUpperCase(iMethodName.charAt(trunk.length())))
+				return true;
+		} else if (iItem.endsWith("*")) {
+			if (iMethodName.startsWith(iItem.substring(0, iItem.length() - 1)))
+				return true;
+		} else if (iItem.startsWith("*")) {
+			if (iMethodName.endsWith(iItem.substring(1)))
+				return true;
+		} else {
+			if (iMethodName.equals(iItem))
+				return true;
+		}
 
 		return false;
 	}

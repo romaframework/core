@@ -16,19 +16,14 @@
 
 package org.romaframework.aspect.validation;
 
-import java.lang.annotation.Annotation;
 
 import org.romaframework.aspect.validation.feature.ValidationFieldFeatures;
 import org.romaframework.core.module.SelfRegistrantConfigurableModule;
 import org.romaframework.core.schema.Feature;
+import org.romaframework.core.schema.SchemaAction;
 import org.romaframework.core.schema.SchemaClassDefinition;
-import org.romaframework.core.schema.SchemaClassElement;
 import org.romaframework.core.schema.SchemaEvent;
 import org.romaframework.core.schema.SchemaField;
-import org.romaframework.core.schema.xmlannotations.XmlActionAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlClassAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlEventAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlFieldAnnotation;
 
 public abstract class ValidationAspectAbstract extends SelfRegistrantConfigurableModule<String> implements ValidationAspect {
 
@@ -42,11 +37,10 @@ public abstract class ValidationAspectAbstract extends SelfRegistrantConfigurabl
 	public void endConfigClass(SchemaClassDefinition iClass) {
 	}
 
-	public void configClass(SchemaClassDefinition iClass, Annotation iAnnotation, XmlClassAnnotation iXmlNode) {
+	public void configClass(SchemaClassDefinition iClass) {
 	}
 
-	public void configField(SchemaField iField, Annotation iFieldAnnotation, Annotation iGenericAnnotation, Annotation iGetterAnnotation,
-			XmlFieldAnnotation iXmlNode) {
+	public void configField(SchemaField iField) {
 
 		if (checkFeature(iField, ValidationFieldFeatures.MATCH) && checkFeature(iField, ValidationFieldFeatures.ENABLED)
 				&& checkFeature(iField, ValidationFieldFeatures.MAX) && checkFeature(iField, ValidationFieldFeatures.MIN)
@@ -60,11 +54,11 @@ public abstract class ValidationAspectAbstract extends SelfRegistrantConfigurabl
 		return field.getFeature(feature) != feature.getDefaultValue();
 	}
 
-	public void configAction(SchemaClassElement iAction, Annotation iActionAnnotation, Annotation iGenericAnnotation, XmlActionAnnotation iXmlNode) {
+	public void configAction(SchemaAction iAction) {
 
 	}
 
-	public void configEvent(SchemaEvent event, Annotation eventAnnotation, Annotation genericAnnotation, XmlEventAnnotation node) {
+	public void configEvent(SchemaEvent event) {
 	}
 
 	public Object getUnderlyingComponent() {

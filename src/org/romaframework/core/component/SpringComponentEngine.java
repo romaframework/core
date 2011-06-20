@@ -1,7 +1,6 @@
 package org.romaframework.core.component;
 
 import java.io.File;
-import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Map;
 
@@ -10,14 +9,10 @@ import org.romaframework.core.Utility;
 import org.romaframework.core.config.AbstractServiceable;
 import org.romaframework.core.config.ContextException;
 import org.romaframework.core.config.RomaApplicationContext;
+import org.romaframework.core.schema.SchemaAction;
 import org.romaframework.core.schema.SchemaClassDefinition;
-import org.romaframework.core.schema.SchemaClassElement;
 import org.romaframework.core.schema.SchemaEvent;
 import org.romaframework.core.schema.SchemaField;
-import org.romaframework.core.schema.xmlannotations.XmlActionAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlClassAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlEventAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlFieldAnnotation;
 import org.romaframework.core.util.FileUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
@@ -106,16 +101,16 @@ public class SpringComponentEngine extends AbstractServiceable implements Compon
 	public void endConfigClass(SchemaClassDefinition iClass) {
 	}
 
-	public void configAction(SchemaClassElement action, Annotation actionAnnotation, Annotation genericAnnotation, XmlActionAnnotation node) {
+	public void configAction(SchemaAction action) {
 	}
 
-	public void configClass(SchemaClassDefinition class1, Annotation annotation, XmlClassAnnotation node) {
+	public void configClass(SchemaClassDefinition class1) {
 	}
 
-	public void configEvent(SchemaEvent event, Annotation eventAnnotation, Annotation genericAnnotation, XmlEventAnnotation node) {
+	public void configEvent(SchemaEvent event) {
 	}
 
-	public void configField(SchemaField field, Annotation fieldAnnotation, Annotation genericAnnotation, Annotation getterAnnotation, XmlFieldAnnotation node) {
+	public void configField(SchemaField field) {
 	}
 
 	public Object getUnderlyingComponent() {

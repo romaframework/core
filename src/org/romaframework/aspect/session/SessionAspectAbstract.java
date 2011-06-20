@@ -16,17 +16,12 @@
 
 package org.romaframework.aspect.session;
 
-import java.lang.annotation.Annotation;
 
 import org.romaframework.core.module.SelfRegistrantConfigurableModule;
+import org.romaframework.core.schema.SchemaAction;
 import org.romaframework.core.schema.SchemaClassDefinition;
-import org.romaframework.core.schema.SchemaClassElement;
 import org.romaframework.core.schema.SchemaEvent;
 import org.romaframework.core.schema.SchemaField;
-import org.romaframework.core.schema.xmlannotations.XmlActionAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlClassAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlEventAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlFieldAnnotation;
 
 public abstract class SessionAspectAbstract extends SelfRegistrantConfigurableModule<String> implements SessionAspect {
 
@@ -37,18 +32,16 @@ public abstract class SessionAspectAbstract extends SelfRegistrantConfigurableMo
 	public void beginConfigClass(SchemaClassDefinition iClass) {
 	}
 
-	public void configAction(SchemaClassElement action, Annotation actionAnnotation, Annotation genericAnnotation,
-			XmlActionAnnotation node) {
+	public void configAction(SchemaAction action) {
 	}
 
-	public void configClass(SchemaClassDefinition class1, Annotation annotation, XmlClassAnnotation node) {
+	public void configClass(SchemaClassDefinition class1) {
 	}
 
-	public void configEvent(SchemaEvent event, Annotation eventAnnotation, Annotation genericAnnotation, XmlEventAnnotation node) {
+	public void configEvent(SchemaEvent event) {
 	}
 
-	public void configField(SchemaField field, Annotation fieldAnnotation, Annotation genericAnnotation, Annotation getterAnnotation,
-			XmlFieldAnnotation node) {
+	public void configField(SchemaField field) {
 	}
 
 	public void endConfigClass(SchemaClassDefinition iClass) {

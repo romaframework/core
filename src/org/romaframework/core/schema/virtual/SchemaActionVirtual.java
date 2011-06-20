@@ -90,7 +90,7 @@ public class SchemaActionVirtual extends SchemaAction {
 		// BROWSE ALL ASPECTS
 		for (Aspect aspect : Roma.aspects()) {
 			// CONFIGURE THE SCHEMA OBJECT WITH CURRENT ASPECT
-			aspect.configAction(this, null, null, parentDescriptor);
+			aspect.configAction(this);
 		}
 	}
 }

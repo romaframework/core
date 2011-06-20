@@ -15,15 +15,11 @@
  */
 package org.romaframework.aspect.semantic;
 
-import java.lang.annotation.Annotation;
 
 import org.romaframework.core.module.SelfRegistrantConfigurableModule;
+import org.romaframework.core.schema.SchemaAction;
 import org.romaframework.core.schema.SchemaClassDefinition;
-import org.romaframework.core.schema.SchemaClassElement;
 import org.romaframework.core.schema.SchemaField;
-import org.romaframework.core.schema.xmlannotations.XmlActionAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlClassAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlFieldAnnotation;
 
 /**
  * IMPORTANT: PLEASE DO NOT RELY ON THIS RESOURCE, IT IS UNDER DEFINITION AND HEAVY DEVELOPMENT
@@ -39,15 +35,14 @@ public abstract class SemanticAspectAbstract extends SelfRegistrantConfigurableM
 	public void endConfigClass(SchemaClassDefinition iClass) {
 	}
 
-	public void configClass(SchemaClassDefinition iClass, Annotation iAnnotation, XmlClassAnnotation iXmlNode) {
+	public void configClass(SchemaClassDefinition iClass) {
 
 	}
 
-	public void configField(SchemaField iField, Annotation iFieldAnnotation, Annotation iGenericAnnotation, Annotation iGetterAnnotation,
-			XmlFieldAnnotation iXmlNode) {
+	public void configField(SchemaField iField) {
 	}
 
-	public void configAction(SchemaClassElement iAction, Annotation iActionAnnotation, Annotation iGenericAnnotation, XmlActionAnnotation iNode) {
+	public void configAction(SchemaAction iAction) {
 		// Semantic cannot be used on actions
 	}
 

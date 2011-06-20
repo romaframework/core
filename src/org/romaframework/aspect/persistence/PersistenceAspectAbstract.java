@@ -16,21 +16,17 @@
 
 package org.romaframework.aspect.persistence;
 
-import java.lang.annotation.Annotation;
 
 import org.romaframework.aspect.persistence.annotation.Persistence;
 import org.romaframework.aspect.persistence.feature.PersistenceFeatures;
 import org.romaframework.core.Roma;
+import org.romaframework.core.schema.SchemaAction;
 import org.romaframework.core.schema.SchemaClassDefinition;
 import org.romaframework.core.schema.SchemaClassElement;
 import org.romaframework.core.schema.SchemaEvent;
 import org.romaframework.core.schema.SchemaField;
 import org.romaframework.core.schema.reflection.SchemaActionReflection;
 import org.romaframework.core.schema.reflection.SchemaFieldReflection;
-import org.romaframework.core.schema.xmlannotations.XmlActionAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlClassAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlEventAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlFieldAnnotation;
 
 /**
  * Persistence aspect. Manages application objects in datastore.
@@ -45,18 +41,18 @@ public abstract class PersistenceAspectAbstract implements PersistenceAspect {
 	public void endConfigClass(SchemaClassDefinition iClass) {
 	}
 
-	public void configField(SchemaField iField, Annotation iAnnotation, Annotation iGenericAnnotation, Annotation getterAnnotation, XmlFieldAnnotation iXmlNode) {
-		configCommonAnnotations(iField, iAnnotation, iGenericAnnotation);
+	public void configField(SchemaField iField) {
+		configCommonAnnotations(iField);
 	}
 
-	public void configAction(SchemaClassElement iAction, Annotation iActionAnnotation, Annotation iGenericAnnotation, XmlActionAnnotation iXmlNode) {
-		configCommonAnnotations(iAction, iActionAnnotation, iGenericAnnotation);
+	public void configAction(SchemaAction iAction) {
+		configCommonAnnotations(iAction);
 	}
 
-	public void configClass(SchemaClassDefinition class1, Annotation annotation, XmlClassAnnotation node) {
+	public void configClass(SchemaClassDefinition class1) {
 	}
 
-	private void configCommonAnnotations(SchemaClassElement iElement, Annotation iAnnotation, Annotation iGenericAnnotation) {
+	private void configCommonAnnotations(SchemaClassElement iElement) {
 		Persistence annotation = null;
 		if (iElement instanceof SchemaFieldReflection && ((SchemaFieldReflection) iElement).getGetterMethod() != null) {
 			annotation = (Persistence) ((SchemaFieldReflection) iElement).getGetterMethod().getAnnotation(Persistence.class);
@@ -77,8 +73,8 @@ public abstract class PersistenceAspectAbstract implements PersistenceAspect {
 
 	}
 
-	public void configEvent(SchemaEvent iEvent, Annotation iEventAnnotation, Annotation iGenericAnnotation, XmlEventAnnotation iXmlNode) {
-		configAction(iEvent, iEventAnnotation, iGenericAnnotation, iXmlNode);
+	public void configEvent(SchemaEvent iEvent) {
+		configAction(iEvent);
 	}
 
 	public String aspectName() {

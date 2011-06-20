@@ -16,7 +16,6 @@
 
 package org.romaframework.aspect.hook;
 
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,10 +45,6 @@ import org.romaframework.core.schema.SchemaClassDefinition;
 import org.romaframework.core.schema.SchemaClassElement;
 import org.romaframework.core.schema.SchemaEvent;
 import org.romaframework.core.schema.SchemaField;
-import org.romaframework.core.schema.xmlannotations.XmlActionAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlClassAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlEventAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlFieldAnnotation;
 
 /**
  * Aspect that intercepts events against POJO and call the registrant.
@@ -87,11 +82,10 @@ public class HookAspect extends SelfRegistrantModule implements Aspect, FieldRef
 	public void endConfigClass(SchemaClassDefinition iClass) {
 	}
 
-	public void configClass(SchemaClassDefinition iClass, Annotation iAnnotation, XmlClassAnnotation iXmlNode) {
+	public void configClass(SchemaClassDefinition iClass) {
 	}
 
-	public void configField(SchemaField iField, Annotation iFieldAnnotation, Annotation iGenericAnnotation, Annotation iGetterAnnotation,
-			XmlFieldAnnotation iXmlNode) {
+	public void configField(SchemaField iField) {
 
 		HookScope scope = iField.getFeature(HookFieldFeatures.SCOPE);
 		if (scope != null)
@@ -101,7 +95,7 @@ public class HookAspect extends SelfRegistrantModule implements Aspect, FieldRef
 
 	}
 
-	public void configAction(SchemaClassElement iAction, Annotation iActionAnnotation, Annotation iGenericAnnotation, XmlActionAnnotation iXmlNode) {
+	public void configAction(SchemaAction iAction) {
 
 		HookScope scope = iAction.getFeature(HookActionFeatures.SCOPE) != null ? iAction.getFeature(HookActionFeatures.SCOPE) : HookScope.SESSION;
 
@@ -155,7 +149,7 @@ public class HookAspect extends SelfRegistrantModule implements Aspect, FieldRef
 		entries.add(new HookEntry(iElement, iScope));
 	}
 
-	public void configEvent(SchemaEvent event, Annotation annotation, Annotation iGenericAnnotation, XmlEventAnnotation node) {
+	public void configEvent(SchemaEvent event) {
 	}
 
 	public String aspectName() {

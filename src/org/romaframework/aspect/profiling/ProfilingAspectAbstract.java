@@ -16,15 +16,11 @@
 
 package org.romaframework.aspect.profiling;
 
-import java.lang.annotation.Annotation;
 
 import org.romaframework.core.module.SelfRegistrantConfigurableModule;
+import org.romaframework.core.schema.SchemaAction;
 import org.romaframework.core.schema.SchemaClassDefinition;
-import org.romaframework.core.schema.SchemaClassElement;
 import org.romaframework.core.schema.SchemaEvent;
-import org.romaframework.core.schema.xmlannotations.XmlActionAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlClassAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlEventAnnotation;
 
 /**
  * Abstract implementation for Profiling Aspect.
@@ -33,15 +29,15 @@ import org.romaframework.core.schema.xmlannotations.XmlEventAnnotation;
  */
 public abstract class ProfilingAspectAbstract extends SelfRegistrantConfigurableModule<String> implements ProfilingAspect {
 
-	public void configClass(SchemaClassDefinition iClass, Annotation iAnnotation, XmlClassAnnotation iXmlNode) {
+	public void configClass(SchemaClassDefinition iClass) {
 
 	}
 
-	public void configAction(SchemaClassElement iAction, Annotation iActionAnnotation, Annotation iGenericAnnotation, XmlActionAnnotation iXmlNode) {
+	public void configAction(SchemaAction iAction) {
 	}
 
-	public void configEvent(SchemaEvent iEvent, Annotation iEventAnnotation, Annotation iGenericAnnotation, XmlEventAnnotation iXmlNode) {
-		configAction(iEvent, iEventAnnotation, iGenericAnnotation, iXmlNode);
+	public void configEvent(SchemaEvent iEvent) {
+		configAction(iEvent);
 	}
 
 	public String aspectName() {

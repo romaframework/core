@@ -24,4 +24,6 @@ public class CoreFieldFeatures {
 																																	Boolean.FALSE);
 	public static final Feature<Boolean>			USE_RUNTIME_TYPE	= new Feature<Boolean>(CoreAspect.ASPECT_NAME, "useRuntimeType", FeatureType.FIELD,
 																																	Boolean.class, Boolean.FALSE);
+	public static final Feature<Boolean>			EXPAND						= new Feature<Boolean>(CoreAspect.ASPECT_NAME, "expand", FeatureType.FIELD, Boolean.class,
+																																	Boolean.FALSE);
 }

@@ -16,7 +16,6 @@
 
 package org.romaframework.aspect.authentication;
 
-import java.lang.annotation.Annotation;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -24,15 +23,11 @@ import org.romaframework.aspect.session.SessionInfo;
 import org.romaframework.core.Roma;
 import org.romaframework.core.Utility;
 import org.romaframework.core.module.SelfRegistrantConfigurableModule;
+import org.romaframework.core.schema.SchemaAction;
 import org.romaframework.core.schema.SchemaClassDefinition;
-import org.romaframework.core.schema.SchemaClassElement;
 import org.romaframework.core.schema.SchemaClassResolver;
 import org.romaframework.core.schema.SchemaEvent;
 import org.romaframework.core.schema.SchemaField;
-import org.romaframework.core.schema.xmlannotations.XmlActionAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlClassAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlEventAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlFieldAnnotation;
 
 /**
  * Base abstract class implementing Authentication Aspect interface. Encryption uses the well know MD5 algorithm.
@@ -98,19 +93,16 @@ public abstract class AuthenticationAspectAbstract extends SelfRegistrantConfigu
 	public void endConfigClass(SchemaClassDefinition iClass) {
 	}
 
-	public void configAction(final SchemaClassElement action, final Annotation actionAnnotation, final Annotation genericAnnotation,
-			XmlActionAnnotation node) {
+	public void configAction(final SchemaAction action) {
 	}
 
-	public void configClass(final SchemaClassDefinition class1, final Annotation annotation, final XmlClassAnnotation node) {
+	public void configClass(final SchemaClassDefinition class1) {
 	}
 
-	public void configEvent(final SchemaEvent event, final Annotation eventAnnotation, final Annotation genericAnnotation,
-			final XmlEventAnnotation node) {
+	public void configEvent(final SchemaEvent event) {
 	}
 
-	public void configField(SchemaField field, Annotation fieldAnnotation, Annotation genericAnnotation, Annotation getterAnnotation,
-			final XmlFieldAnnotation node) {
+	public void configField(SchemaField field) {
 	}
 
 	public Object getUnderlyingComponent() {

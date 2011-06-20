@@ -16,7 +16,6 @@
 
 package org.romaframework.aspect.core;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -38,9 +37,9 @@ import org.romaframework.core.flow.Controller;
 import org.romaframework.core.module.SelfRegistrantModule;
 import org.romaframework.core.resource.AutoReloadManager;
 import org.romaframework.core.schema.FeatureType;
+import org.romaframework.core.schema.SchemaAction;
 import org.romaframework.core.schema.SchemaClass;
 import org.romaframework.core.schema.SchemaClassDefinition;
-import org.romaframework.core.schema.SchemaClassElement;
 import org.romaframework.core.schema.SchemaClassResolver;
 import org.romaframework.core.schema.SchemaEvent;
 import org.romaframework.core.schema.SchemaField;
@@ -48,10 +47,6 @@ import org.romaframework.core.schema.SchemaHelper;
 import org.romaframework.core.schema.config.EmbeddedSchemaConfiguration;
 import org.romaframework.core.schema.config.SchemaConfiguration;
 import org.romaframework.core.schema.reflection.SchemaFieldReflection;
-import org.romaframework.core.schema.xmlannotations.XmlActionAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlClassAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlEventAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlFieldAnnotation;
 
 public class CoreAspect extends SelfRegistrantModule implements Aspect, RomaApplicationListener, ClassLoaderListener {
 
@@ -112,34 +107,27 @@ public class CoreAspect extends SelfRegistrantModule implements Aspect, RomaAppl
 	public void endConfigClass(SchemaClassDefinition iClass) {
 	}
 
-	public void configClass(SchemaClassDefinition iClass, Annotation iAnnotation, XmlClassAnnotation iXmlNode) {
+	public void configClass(SchemaClassDefinition iClass) {
 
-		if (iClass.getSchemaClass().isComposedEntity()) {
-			iClass.setFeature(CoreClassFeatures.ENTITY, SchemaHelper.getSuperclassGenericType(iClass));
+		if (iClass.isSettedFeature(CoreClassFeatures.ENTITY) && iClass.getSchemaClass().isComposedEntity()) {
+			iClass.getField(ComposedEntity.NAME).setType(iClass.getFeature(CoreClassFeatures.ENTITY));
 		}
-
 	}
 
-	public void configField(SchemaField iField, Annotation iFieldAnnotation, Annotation iGenericAnnotation, Annotation iGetterAnnotation,
-			XmlFieldAnnotation iXmlNode) {
+	public void configField(SchemaField iField) {
 
 		if (iField instanceof SchemaFieldReflection) {
 			if (iField.getEntity().getSchemaClass().isComposedEntity() && iField.getName().endsWith(ComposedEntity.NAME)) {
-				SchemaClass embeddedType = iField.getEntity().getFeature(CoreClassFeatures.ENTITY);
-				if (embeddedType != null) {
-					SchemaConfiguration sourceDescr = iField.getEntity().getSchemaClass().getDescriptor();
-					if (sourceDescr != null) {
-						SchemaClass entity = iField.getEntity().getSchemaClass();
-						SchemaConfiguration conf = null;
-						if (iField.getDescriptorInfo() != null && iField.getDescriptorInfo().getClassAnnotation() != null)
-							conf = new EmbeddedSchemaConfiguration(iField.getDescriptorInfo().getClassAnnotation());
-						else
-							conf = embeddedType.getDescriptor();
-						iField.setType(Roma.schema().createSchemaClass(entity.getName() + "." + iField.getName(), embeddedType, conf));
-						((SchemaFieldReflection) iField).setLanguageType((Class<?>) embeddedType.getLanguageType());
-					} else {
-						iField.setType(Roma.schema().getSchemaClassIfExist((Class<?>) iField.getLanguageType()));
-					}
+				SchemaConfiguration sourceDescr = iField.getEntity().getSchemaClass().getDescriptor();
+				if (sourceDescr != null) {
+					SchemaClass entity = iField.getEntity().getSchemaClass();
+					SchemaConfiguration conf = null;
+					if (iField.getDescriptorInfo() != null && iField.getDescriptorInfo().getClassAnnotation() != null)
+						conf = new EmbeddedSchemaConfiguration(iField.getDescriptorInfo().getClassAnnotation());
+					else
+						conf = iField.getType().getSchemaClass().getDescriptor();
+					iField.setType(Roma.schema().createSchemaClass(entity.getName() + "." + iField.getName(), iField.getType().getSchemaClass(), conf));
+					((SchemaFieldReflection) iField).setLanguageType((Class<?>) iField.getType().getSchemaClass().getLanguageType());
 				}
 			}
 
@@ -191,10 +179,10 @@ public class CoreAspect extends SelfRegistrantModule implements Aspect, RomaAppl
 		return embClass != null ? iType : null;
 	}
 
-	public void configAction(SchemaClassElement iAction, Annotation iActionAnnotation, Annotation iGenericAnnotation, XmlActionAnnotation iXmlNode) {
+	public void configAction(SchemaAction iAction) {
 	}
 
-	public void configEvent(SchemaEvent event, Annotation annotation, Annotation iGenericAnnotation, XmlEventAnnotation node) {
+	public void configEvent(SchemaEvent event) {
 	}
 
 	public String aspectName() {

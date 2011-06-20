@@ -15,7 +15,6 @@
  */
 package org.romaframework.aspect.enterprise;
 
-import java.lang.annotation.Annotation;
 
 import org.romaframework.aspect.enterprise.annotation.BpelClass;
 import org.romaframework.aspect.enterprise.annotation.ConsumerRegistrationClass;
@@ -29,7 +28,6 @@ import org.romaframework.core.module.SelfRegistrantConfigurableModule;
 import org.romaframework.core.schema.SchemaClassDefinition;
 import org.romaframework.core.schema.SchemaClassResolver;
 import org.romaframework.core.schema.reflection.SchemaClassReflection;
-import org.romaframework.core.schema.xmlannotations.XmlClassAnnotation;
 
 public abstract class EnterpriseAspectAbstract extends SelfRegistrantConfigurableModule<String> implements EnterpriseAspect {
 
@@ -53,7 +51,7 @@ public abstract class EnterpriseAspectAbstract extends SelfRegistrantConfigurabl
 	public void endConfigClass(SchemaClassDefinition iClass) {
 	}
 
-	public void configClass(SchemaClassDefinition iClass, Annotation iAnnotation, XmlClassAnnotation iXmlNode) {
+	public void configClass(SchemaClassDefinition iClass) {
 
 		readClassAnnotation(iClass);
 

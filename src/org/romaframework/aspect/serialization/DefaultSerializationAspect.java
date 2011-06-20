@@ -19,7 +19,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
@@ -31,17 +30,12 @@ import org.romaframework.aspect.serialization.exception.SerializationException;
 import org.romaframework.aspect.serialization.feature.SerializationClassFeatures;
 import org.romaframework.aspect.serialization.feature.SerializationFieldFeatures;
 import org.romaframework.core.module.SelfRegistrantConfigurableModule;
+import org.romaframework.core.schema.SchemaAction;
 import org.romaframework.core.schema.SchemaClassDefinition;
-import org.romaframework.core.schema.SchemaClassElement;
 import org.romaframework.core.schema.SchemaEvent;
 import org.romaframework.core.schema.SchemaField;
 import org.romaframework.core.schema.reflection.SchemaClassReflection;
 import org.romaframework.core.schema.reflection.SchemaFieldReflection;
-import org.romaframework.core.schema.xmlannotations.XmlActionAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlAspectAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlClassAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlEventAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlFieldAnnotation;
 
 /**
  * @author Emanuele Tagliaferri (emanuele.tagliaferri--at--assetdata.it)
@@ -156,12 +150,12 @@ public class DefaultSerializationAspect extends SelfRegistrantConfigurableModule
 	public void endConfigClass(SchemaClassDefinition iClass) {
 	}
 
-	public void configAction(SchemaClassElement iAction, Annotation iActionAnnotation, Annotation iGenericAnnotation, XmlActionAnnotation iNode) {
+	public void configAction(SchemaAction iAction) {
 		// TODO Auto-generated method stub
 
 	}
 
-	public void configClass(SchemaClassDefinition iClass, Annotation iAnnotation, XmlClassAnnotation iNode) {
+	public void configClass(SchemaClassDefinition iClass) {
 		if (iClass instanceof SchemaClassReflection) {
 			String name;
 			Class<?> clazz = ((SchemaClassReflection) iClass).getLanguageType();
@@ -174,29 +168,18 @@ public class DefaultSerializationAspect extends SelfRegistrantConfigurableModule
 		}
 	}
 
-	public void configEvent(SchemaEvent iEvent, Annotation iEventAnnotation, Annotation iGenericAnnotation, XmlEventAnnotation iNode) {
+	public void configEvent(SchemaEvent iEvent) {
 		// TODO Auto-generated method stub
 
 	}
 
-	public void configField(SchemaField iField, Annotation iFieldAnnotation, Annotation iGenericAnnotation, Annotation iGetterAnnotation, XmlFieldAnnotation iNode) {
+	public void configField(SchemaField iField) {
 
 		if (iField instanceof SchemaFieldReflection) {
 			Field field = ((SchemaFieldReflection) iField).getField();
 			if (field != null) {
 				Boolean trans = Modifier.isTransient(field.getModifiers());
 				iField.setFeature(SerializationFieldFeatures.TRANSIENT, trans);
-			}
-		}
-
-		if (iNode != null) {
-			XmlAspectAnnotation descriptor = iNode.aspect(SerializationAspect.ASPECT_NAME);
-
-			if (descriptor != null) {
-				String trans = descriptor.getAttribute(SerializationFieldFeatures.TRANSIENT.getName());
-				if (trans != null) {
-					iField.setFeature(SerializationFieldFeatures.TRANSIENT, Boolean.parseBoolean(trans));
-				}
 			}
 		}
 	}

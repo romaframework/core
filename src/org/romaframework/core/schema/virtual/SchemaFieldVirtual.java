@@ -87,7 +87,7 @@ public class SchemaFieldVirtual extends SchemaField {
 			parentDescriptor = null;
 
 			// CONFIGURE THE SCHEMA OBJECT WITH CURRENT ASPECT
-			aspect.configField(this, null, null, null, parentDescriptor);
+			aspect.configField(this);
 		}
 
 		if (parentDescriptor != null) {

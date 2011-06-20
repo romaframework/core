@@ -152,7 +152,7 @@ public class SchemaClassVirtual extends SchemaClass {
 	protected void readAllAnnotations() {
 		FeatureLoader.loadClassFeatures(this, descriptor);
 		for (Aspect aspect : Roma.aspects()) {
-			aspect.configClass(this, null, null);
+			aspect.configClass(this);
 		}
 	}
 

@@ -36,9 +36,8 @@ import org.romaframework.core.schema.xmlannotations.XmlActionAnnotation;
  * @author Luca Garulli (luca.garulli--at--assetdata.it)
  */
 public class SchemaActionReflection extends SchemaAction {
-	private static final long			serialVersionUID	= -6572077296198245321L;
-	protected Method							method;
-	final static public Object[]	NO_PARAMETERS			= new Object[] {};
+	private static final long	serialVersionUID	= -6572077296198245321L;
+	protected Method					method;
 
 	public SchemaActionReflection(SchemaClassDefinition iEntity, String iName, List<SchemaParameter> iOrderedParameters) {
 		super(iEntity, iName, iOrderedParameters);
@@ -52,13 +51,6 @@ public class SchemaActionReflection extends SchemaAction {
 		return method.invoke(iContent, params);
 	}
 
-	@Override
-	public Object clone() throws CloneNotSupportedException {
-		SchemaActionReflection copy = (SchemaActionReflection) super.clone();
-		copy.method = method;
-		return copy;
-	}
-
 	public void configure() {
 
 		SchemaConfiguration classDescriptor = entity.getSchemaClass().getDescriptor();
@@ -70,12 +62,12 @@ public class SchemaActionReflection extends SchemaAction {
 			parentDescriptor = classDescriptor.getType().getAction(name);
 
 		}
-		FeatureLoader.loadActionFeatures(this, parentDescriptor);
 		this.descriptorInfo = parentDescriptor;
+		FeatureLoader.loadActionFeatures(this, parentDescriptor);
 		// BROWSE ALL ASPECTS
 		for (Aspect aspect : Roma.aspects()) {
 			// CONFIGURE THE SCHEMA OBJECT WITH CURRENT ASPECT
-			aspect.configAction(this, null, null, parentDescriptor);
+			aspect.configAction(this);
 		}
 	}
 

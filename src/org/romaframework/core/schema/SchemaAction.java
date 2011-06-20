@@ -126,25 +126,6 @@ public abstract class SchemaAction extends SchemaClassElement {
 		return super.toString() + getFullName();
 	}
 
-	public static boolean ignoreMethod(String iItem, String iMethodName) {
-		if (iItem.endsWith("^*")) {
-			String trunk = iItem.substring(0, iItem.length() - 2);
-			if (iMethodName.startsWith(trunk) && Character.isUpperCase(iMethodName.charAt(trunk.length())))
-				return true;
-		} else if (iItem.endsWith("*")) {
-			if (iMethodName.startsWith(iItem.substring(0, iItem.length() - 1)))
-				return true;
-		} else if (iItem.startsWith("*")) {
-			if (iMethodName.endsWith(iItem.substring(1)))
-				return true;
-		} else {
-			if (iMethodName.equals(iItem))
-				return true;
-		}
-
-		return false;
-	}
-
 	public Iterator<SchemaParameter> getParameterIterator() {
 		return orderedParameters.iterator();
 	}
@@ -172,7 +153,7 @@ public abstract class SchemaAction extends SchemaClassElement {
 	public XmlActionAnnotation getDescriptorInfo() {
 		return descriptorInfo;
 	}
-	
+
 	public static String getSignature(String name, String[] paramNames) {
 		StringBuilder methodSignature = new StringBuilder();
 		methodSignature.append(name);

@@ -79,7 +79,7 @@ public class SchemaEventVirtual extends SchemaEvent {
 		// BROWSE ALL ASPECTS
 		for (Aspect aspect : Roma.aspects()) {
 			// CONFIGURE THE SCHEMA OBJECT WITH CURRENT ASPECT
-			aspect.configEvent(this, null, null, null);
+			aspect.configEvent(this);
 		}
 	}
 }

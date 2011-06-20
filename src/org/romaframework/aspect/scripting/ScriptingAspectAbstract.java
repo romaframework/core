@@ -16,17 +16,12 @@
 
 package org.romaframework.aspect.scripting;
 
-import java.lang.annotation.Annotation;
 
 import org.romaframework.core.module.SelfRegistrantConfigurableModule;
+import org.romaframework.core.schema.SchemaAction;
 import org.romaframework.core.schema.SchemaClassDefinition;
-import org.romaframework.core.schema.SchemaClassElement;
 import org.romaframework.core.schema.SchemaEvent;
 import org.romaframework.core.schema.SchemaField;
-import org.romaframework.core.schema.xmlannotations.XmlActionAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlClassAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlEventAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlFieldAnnotation;
 
 public abstract class ScriptingAspectAbstract extends SelfRegistrantConfigurableModule<String> implements ScriptingAspect {
 
@@ -43,17 +38,17 @@ public abstract class ScriptingAspectAbstract extends SelfRegistrantConfigurable
 	/**
 	 * Used to define the constructor.
 	 */
-	public void configClass(SchemaClassDefinition iClass, Annotation annotation, XmlClassAnnotation iXmlNode) {
+	public void configClass(SchemaClassDefinition iClass) {
 
 	}
 
-	public void configAction(SchemaClassElement action, Annotation actionAnnotation, Annotation genericAnnotation, XmlActionAnnotation iXmlNode) {
+	public void configAction(SchemaAction action) {
 	}
 
-	public void configEvent(SchemaEvent event, Annotation eventAnnotation, Annotation genericAnnotation, XmlEventAnnotation iXmlNode) {
+	public void configEvent(SchemaEvent event) {
 	}
 
-	public void configField(SchemaField field, Annotation fieldAnnotation, Annotation genericAnnotation, Annotation getterAnnotation, XmlFieldAnnotation node) {
+	public void configField(SchemaField field) {
 	}
 
 }

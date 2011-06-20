@@ -16,7 +16,6 @@
 
 package org.romaframework.aspect.i18n;
 
-import java.lang.annotation.Annotation;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -32,16 +31,12 @@ import org.romaframework.core.Utility;
 import org.romaframework.core.flow.Controller;
 import org.romaframework.core.flow.SchemaFieldListener;
 import org.romaframework.core.module.SelfRegistrantConfigurableModule;
+import org.romaframework.core.schema.SchemaAction;
 import org.romaframework.core.schema.SchemaClass;
 import org.romaframework.core.schema.SchemaClassDefinition;
-import org.romaframework.core.schema.SchemaClassElement;
 import org.romaframework.core.schema.SchemaEvent;
 import org.romaframework.core.schema.SchemaField;
 import org.romaframework.core.schema.SchemaObject;
-import org.romaframework.core.schema.xmlannotations.XmlActionAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlClassAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlEventAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlFieldAnnotation;
 import org.romaframework.core.util.parser.ObjectVariableResolver;
 
 /**
@@ -68,8 +63,7 @@ public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModul
 	public void endConfigClass(SchemaClassDefinition iClass) {
 	}
 
-	public void configField(SchemaField iField, Annotation iFieldAnnotation, Annotation iGenericAnnotation, Annotation iGetterAnnotation,
-			XmlFieldAnnotation iXmlNode) {
+	public void configField(SchemaField iField) {
 
 		setFieldDefaults(iField);
 	}
@@ -240,13 +234,13 @@ public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModul
 		return currentValue;
 	}
 
-	public void configAction(SchemaClassElement action, Annotation actionAnnotation, Annotation genericAnnotation, XmlActionAnnotation node) {
+	public void configAction(SchemaAction action) {
 	}
 
-	public void configClass(SchemaClassDefinition class1, Annotation annotation, XmlClassAnnotation node) {
+	public void configClass(SchemaClassDefinition class1) {
 	}
 
-	public void configEvent(SchemaEvent event, Annotation eventAnnotation, Annotation genericAnnotation, XmlEventAnnotation node) {
+	public void configEvent(SchemaEvent event) {
 	}
 
 	public Object getUnderlyingComponent() {

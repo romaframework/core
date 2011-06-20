@@ -16,16 +16,11 @@
 
 package org.romaframework.core.aspect;
 
-import java.lang.annotation.Annotation;
 
+import org.romaframework.core.schema.SchemaAction;
 import org.romaframework.core.schema.SchemaClassDefinition;
-import org.romaframework.core.schema.SchemaClassElement;
 import org.romaframework.core.schema.SchemaEvent;
 import org.romaframework.core.schema.SchemaField;
-import org.romaframework.core.schema.xmlannotations.XmlActionAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlClassAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlEventAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlFieldAnnotation;
 
 /**
  * Interface to define an Aspect. An Aspect is a Java interface that define a generic behavior.
@@ -37,15 +32,13 @@ public interface Aspect {
 
 	public void beginConfigClass(SchemaClassDefinition iClass);
 
-	public void configClass(SchemaClassDefinition iClass, Annotation iAnnotation, XmlClassAnnotation iNode);
+	public void configClass(SchemaClassDefinition iClass);
 
-	public void configField(SchemaField iField, Annotation iFieldAnnotation, Annotation iGenericAnnotation,
-			Annotation iGetterAnnotation, XmlFieldAnnotation iNode);
+	public void configField(SchemaField iField);
 
-	public void configAction(SchemaClassElement iAction, Annotation iActionAnnotation, Annotation iGenericAnnotation,
-			XmlActionAnnotation iNode);
+	public void configAction(SchemaAction iAction);
 
-	public void configEvent(SchemaEvent iEvent, Annotation iEventAnnotation, Annotation iGenericAnnotation, XmlEventAnnotation iNode);
+	public void configEvent(SchemaEvent iEvent);
 
 	public void endConfigClass(SchemaClassDefinition iClass);
 

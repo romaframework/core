@@ -418,6 +418,7 @@ public abstract class SchemaClass extends SchemaClassDefinition implements Compa
 
 		try {
 			copyDefinition(iClass);
+
 		} catch (Exception e) {
 			log.error("Error on making dependency between class " + name + " and " + iClass.getName(), e);
 		}

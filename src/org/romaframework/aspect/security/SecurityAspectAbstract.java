@@ -15,21 +15,16 @@
  */
 package org.romaframework.aspect.security;
 
-import java.lang.annotation.Annotation;
 
 import org.romaframework.aspect.authentication.UserObjectPermissionListener;
 import org.romaframework.core.flow.Controller;
 import org.romaframework.core.flow.SchemaActionListener;
 import org.romaframework.core.flow.SchemaFieldListener;
 import org.romaframework.core.module.SelfRegistrantConfigurableModule;
+import org.romaframework.core.schema.SchemaAction;
 import org.romaframework.core.schema.SchemaClassDefinition;
-import org.romaframework.core.schema.SchemaClassElement;
 import org.romaframework.core.schema.SchemaEvent;
 import org.romaframework.core.schema.SchemaField;
-import org.romaframework.core.schema.xmlannotations.XmlActionAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlClassAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlEventAnnotation;
-import org.romaframework.core.schema.xmlannotations.XmlFieldAnnotation;
 
 public abstract class SecurityAspectAbstract extends SelfRegistrantConfigurableModule<String> implements SecurityAspect, UserObjectPermissionListener,
 		SchemaActionListener, SchemaFieldListener {
@@ -47,19 +42,18 @@ public abstract class SecurityAspectAbstract extends SelfRegistrantConfigurableM
 	public void endConfigClass(SchemaClassDefinition iClass) {
 	}
 
-	public void configClass(SchemaClassDefinition iClass, Annotation iAnnotation, XmlClassAnnotation iXmlNode) {
+	public void configClass(SchemaClassDefinition iClass) {
 
 	}
 
-	public void configField(SchemaField iField, Annotation iFieldAnnotation, Annotation iGenericAnnotation, Annotation iGetterAnnotation,
-			XmlFieldAnnotation iXmlNode) {
+	public void configField(SchemaField iField) {
 	}
 
-	public void configEvent(SchemaEvent iEvent, Annotation iEventAnnotation, Annotation iGenericAnnotation, XmlEventAnnotation iNode) {
+	public void configEvent(SchemaEvent iEvent) {
 
 	}
 
-	public void configAction(SchemaClassElement iAction, Annotation iActionAnnotation, Annotation iGenericAnnotation, XmlActionAnnotation iNode) {
+	public void configAction(SchemaAction iAction) {
 
 	}
 

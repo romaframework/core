@@ -40,10 +40,6 @@ public class SerializationHelper {
 		if (schemaClass != null) {
 			features.setFeature(CoreFieldFeatures.EMBEDDED_TYPE, schemaClass);
 		}
-		// DynaBean view = features.getFeatures("view");
-		SchemaClass clazz = (SchemaClass) features.getFeature(CoreClassFeatures.ENTITY);
-		if (clazz != null)
-			features.setFeature(CoreClassFeatures.ENTITY, clazz);
 	}
 
 	/**

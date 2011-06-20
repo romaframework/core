@@ -56,7 +56,7 @@ public class SchemaFieldReflection extends SchemaField {
 
 		// BROWSE ALL ASPECTS
 		for (Aspect aspect : Roma.aspects()) {
-			aspect.configField(this, null, null, null, parentDescriptor);
+			aspect.configField(this);
 		}
 
 		if (parentDescriptor != null && parentDescriptor.getEvents() != null) {

@@ -15,14 +15,12 @@
  */
 package org.romaframework.aspect.registry;
 
-import java.lang.annotation.Annotation;
 
 import org.romaframework.aspect.registry.annotation.RegistryClass;
 import org.romaframework.aspect.registry.feature.RegistryClassFeatures;
 import org.romaframework.core.module.SelfRegistrantConfigurableModule;
 import org.romaframework.core.schema.SchemaClassDefinition;
 import org.romaframework.core.schema.reflection.SchemaClassReflection;
-import org.romaframework.core.schema.xmlannotations.XmlClassAnnotation;
 
 public abstract class RegistryAspectAbstract extends SelfRegistrantConfigurableModule<String> implements RegistryAspect {
 
@@ -42,7 +40,7 @@ public abstract class RegistryAspectAbstract extends SelfRegistrantConfigurableM
 	public void endConfigClass(SchemaClassDefinition iClass) {
 	}
 
-	public void configClass(SchemaClassDefinition iClass, Annotation iAnnotation, XmlClassAnnotation iXmlNode) {
+	public void configClass(SchemaClassDefinition iClass) {
 
 		if (iClass instanceof SchemaClassReflection) {
 			Class<?> clazz = ((SchemaClassReflection) iClass).getLanguageType();

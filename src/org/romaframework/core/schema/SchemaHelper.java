@@ -734,28 +734,17 @@ public class SchemaHelper {
 			return null;
 
 		SchemaClassReflection schemaClassReflection = (SchemaClassReflection) schemaClassDefinition.getSchemaClass();
-		Type type = schemaClassReflection.getLanguageType();
-
-		while (!(type instanceof ParameterizedType) && type != null) {
-			if (type instanceof Class<?>) {
-				type = ((Class<?>) type).getGenericSuperclass();
-			} else
-				return null;
-		}
+		Type type = resolveParameterizedType(schemaClassReflection.getLanguageType());
 		if (type == null)
 			return null;
 		Type[] params = ((ParameterizedType) type).getActualTypeArguments();
 		if (params == null || params.length == 0)
 			return null;
 		type = params[0];
-		Class<?> cl = resolveClassFromType(type);
+		Class<?> cl = resolveClassFromType(type, null);
 		if (cl == null)
 			return null;
 		return Roma.schema().getSchemaClass(cl);
-	}
-
-	public static SchemaClass getSuperInterfaceGenericType(Class<?> clazz) {
-		return getSuperInterfaceGenericType((Type) clazz);
 	}
 
 	public static SchemaClass getSuperInterfaceGenericType(Type clazz) {
@@ -765,7 +754,7 @@ public class SchemaHelper {
 				Type[] params = ((ParameterizedType) type).getActualTypeArguments();
 				if (params == null || params.length == 0)
 					return null;
-				Class<?> cl = resolveClassFromType(params[0]);
+				Class<?> cl = resolveClassFromType(params[0], null);
 				if (cl != null)
 					return Roma.schema().getSchemaClass(cl);
 			} else {
@@ -804,14 +793,7 @@ public class SchemaHelper {
 			return null;
 
 		SchemaClassReflection schemaClassReflection = (SchemaClassReflection) schemaClassDefinition.getSchemaClass();
-		Type type = schemaClassReflection.getLanguageType();
-
-		while (!(type instanceof ParameterizedType) && type != null) {
-			if (type instanceof Class<?>) {
-				type = ((Class<?>) type).getGenericSuperclass();
-			} else
-				return null;
-		}
+		Type type = resolveParameterizedType(schemaClassReflection.getLanguageType());
 		if (type == null)
 			return null;
 
@@ -863,7 +845,7 @@ public class SchemaHelper {
 			if (classType.isArray()) {
 				returnClass = (Class<?>) targs[0];
 			} else if (java.util.Collection.class.isAssignableFrom((Class<?>) rtype)) {
-				returnClass = resolveClassFromType(targs[0]);
+				returnClass = resolveClassFromType(targs[0], null);
 				if (returnClass == null)
 					returnClass = Object.class;
 
@@ -1193,27 +1175,51 @@ public class SchemaHelper {
 		return schemaAction.invoke(target, params);
 	}
 
-	public static Class<?> resolveClassFromType(Type type) {
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static Class<?> resolveClassFromType(Type type, ParameterizedType params) {
 		if (type instanceof Class<?>)
 			return (Class<?>) type;
 		if (type instanceof ParameterizedType) {
-			return resolveClassFromType(((ParameterizedType) type).getRawType());
+			return resolveClassFromType(((ParameterizedType) type).getRawType(), (ParameterizedType) type);
 		}
 		if (type instanceof GenericArrayType) {
 			GenericArrayType gat = (GenericArrayType) type;
-			Class<?> arrItemp = resolveClassFromType(gat.getGenericComponentType());
+			Class<?> arrItemp = resolveClassFromType(gat.getGenericComponentType(), null);
 			return Array.newInstance(arrItemp, 0).getClass();
 		}
 		if (type instanceof TypeVariable<?>) {
 			TypeVariable<?> t = (TypeVariable<?>) type;
+			if (params != null) {
+				Class<?> cl = resolveClassFromType(params.getRawType(), null);
+				if (cl != null) {
+
+					TypeVariable<Class<?>>[] var = ((Class) cl).getTypeParameters();
+					int i = 0;
+					for (; i < var.length; i++) {
+						if (var[i].getName().equals(t.getName())) {
+							return resolveClassFromType(params.getActualTypeArguments()[i],resolveParameterizedType(params.getOwnerType()));
+						}
+					}
+				}
+			}
 			Type[] bounds = t.getBounds();
 			if (bounds.length == 1)
-				return resolveClassFromType(bounds[0]);
+				return resolveClassFromType(bounds[0], params);
 		}
-		if(type instanceof  WildcardType){
-			//TODO:
+		if (type instanceof WildcardType) {
+			// TODO:
 		}
 		return null;
+	}
+
+	public static ParameterizedType resolveParameterizedType(Type type) {
+		while (!(type instanceof ParameterizedType) && type != null) {
+			if (type instanceof Class<?>) {
+				type = ((Class<?>) type).getGenericSuperclass();
+			} else
+				return null;
+		}
+		return (ParameterizedType) type;
 	}
 
 }
