@@ -168,4 +168,8 @@ public abstract class SchemaAction extends SchemaClassElement {
 		}
 		return methodSignature.toString();
 	}
+
+	public Map<String, SchemaParameter> getParameters() {
+		return parameters;
+	}
 }

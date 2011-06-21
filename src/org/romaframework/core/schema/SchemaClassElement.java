@@ -25,6 +25,7 @@ public abstract class SchemaClassElement extends SchemaElement {
 	private static final long				serialVersionUID	= 7431417848849742385L;
 
 	protected SchemaClassDefinition	entity;
+	protected String fullName;
 
 	public SchemaClassElement(SchemaClassDefinition iEntity, FeatureType featureType) {
 		this(iEntity, null, featureType);
@@ -39,8 +40,20 @@ public abstract class SchemaClassElement extends SchemaElement {
 		return entity;
 	}
 
+	public String getFullName() {
+		if (fullName == null) {
+			fullName = getEntity().getName() + "." + getName();
+		}
+		return fullName;
+	}
+
 	@Override
 	public String toString() {
 		return (entity != null ? entity.getName() : "?(null)") + ".";
+	}
+
+	protected void setEntity(SchemaClassDefinition entity) {
+		fullName = null;
+		this.entity = entity;
 	}
 }

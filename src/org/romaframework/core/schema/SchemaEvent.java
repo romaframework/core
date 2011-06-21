@@ -70,9 +70,12 @@ public abstract class SchemaEvent extends SchemaAction {
 
 	@Override
 	public String getFullName() {
-		if (field != null)
-			return field.getName() + "." + getName();
-		return getName();
+		if (fullName == null) {
+			if (field != null)
+				fullName = field.getName() + "." + getName();
+			fullName = getName();
+		}
+		return fullName;
 	}
 
 	protected void setEventOwner(SchemaClassDefinition eventOwner) {

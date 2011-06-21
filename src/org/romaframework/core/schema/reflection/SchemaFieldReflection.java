@@ -37,13 +37,13 @@ public class SchemaFieldReflection extends SchemaField {
 
 	@Override
 	public boolean isArray() {
-		return languageType.isArray();
+		return getLanguageType().isArray();
 	}
 
 	public void configure() {
 
 		SchemaConfiguration classDescriptor = entity.getSchemaClass().getDescriptor();
-		
+
 		XmlFieldAnnotation parentDescriptor = null;
 
 		if (classDescriptor != null && classDescriptor.getType() != null && classDescriptor.getType().getFields() != null) {
@@ -52,7 +52,6 @@ public class SchemaFieldReflection extends SchemaField {
 		}
 
 		FeatureLoader.loadFieldFeatures(this, parentDescriptor);
-		
 
 		// BROWSE ALL ASPECTS
 		for (Aspect aspect : Roma.aspects()) {
@@ -153,16 +152,6 @@ public class SchemaFieldReflection extends SchemaField {
 	}
 
 	@Override
-	public Object clone() throws CloneNotSupportedException {
-		SchemaFieldReflection copy = (SchemaFieldReflection) super.clone();
-		copy.languageType = languageType;
-		copy.field = field;
-		copy.getterMethod = getterMethod;
-		copy.setterMethod = setterMethod;
-		return copy;
-	}
-
-	@Override
 	public String toString() {
 		return name + " (field:" + field + ")";
 	}
@@ -189,7 +178,7 @@ public class SchemaFieldReflection extends SchemaField {
 
 	@Override
 	protected SchemaClass getSchemaClassFromLanguageType() {
-		return Roma.schema().getSchemaClass(languageType);
+		return Roma.schema().getSchemaClass(getLanguageType());
 	}
-	
+
 }

@@ -291,7 +291,7 @@ public class HookAspect extends SelfRegistrantModule implements Aspect, FieldRef
 	}
 
 	private String getHookKey(Feature<String> iHookType, SchemaClassElement iElement, SchemaClass cls) {
-		return iHookType.getName() + " " + cls.getName() + "." + iElement.getFullName();
+		return iHookType.getName() + " " + iElement.getFullName();
 	}
 
 	private boolean hookMatches(String iSource, String iMatch) {

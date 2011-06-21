@@ -19,12 +19,14 @@ package org.romaframework.aspect.core;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.romaframework.aspect.core.annotation.CoreClass;
 import org.romaframework.aspect.core.feature.CoreClassFeatures;
+import org.romaframework.aspect.core.feature.CoreFieldFeatures;
 import org.romaframework.core.Roma;
 import org.romaframework.core.Utility;
 import org.romaframework.core.aspect.Aspect;
@@ -44,8 +46,9 @@ import org.romaframework.core.schema.SchemaClassResolver;
 import org.romaframework.core.schema.SchemaEvent;
 import org.romaframework.core.schema.SchemaField;
 import org.romaframework.core.schema.SchemaHelper;
-import org.romaframework.core.schema.config.EmbeddedSchemaConfiguration;
-import org.romaframework.core.schema.config.SchemaConfiguration;
+import org.romaframework.core.schema.reflection.SchemaActionDelegate;
+import org.romaframework.core.schema.reflection.SchemaEventDelegate;
+import org.romaframework.core.schema.reflection.SchemaFieldDelegate;
 import org.romaframework.core.schema.reflection.SchemaFieldReflection;
 
 public class CoreAspect extends SelfRegistrantModule implements Aspect, RomaApplicationListener, ClassLoaderListener {
@@ -109,27 +112,44 @@ public class CoreAspect extends SelfRegistrantModule implements Aspect, RomaAppl
 
 	public void configClass(SchemaClassDefinition iClass) {
 
-		if (iClass.isSettedFeature(CoreClassFeatures.ENTITY) && iClass.getSchemaClass().isComposedEntity()) {
+		if (iClass.isSettedFeature(CoreClassFeatures.ENTITY) && iClass.getSchemaClass().isComposedEntity() && iClass.getField(ComposedEntity.NAME) != null) {
 			iClass.getField(ComposedEntity.NAME).setType(iClass.getFeature(CoreClassFeatures.ENTITY));
 		}
 	}
 
+	private void expandField(SchemaField iField) {
+		SchemaClass cl = iField.getType().getSchemaClass();
+		//iField.getEntity().getFields().remove(iField.getName());
+		Iterator<SchemaField> fields = cl.getFieldIterator();
+		while (fields.hasNext()) {
+			SchemaField sf = fields.next();
+			SchemaFieldDelegate sfd = new SchemaFieldDelegate(iField.getEntity(), iField, sf);
+			sfd.configure();
+			iField.getEntity().setField(sf.getName(), sfd);
+		}
+		Iterator<SchemaAction> actions = cl.getActionIterator();
+		while (actions.hasNext()) {
+			SchemaAction sa = actions.next();
+			SchemaActionDelegate sad = new SchemaActionDelegate(iField.getEntity(), iField, sa);
+			sad.configure();
+			iField.getEntity().setAction(sa.getName(), sad);
+		}
+		Iterator<SchemaEvent> events = cl.getEventIterator();
+		while (events.hasNext()) {
+			SchemaEvent se = events.next();
+			SchemaEventDelegate sed = new SchemaEventDelegate(iField.getEntity(), iField, se);
+			sed.configure();
+			iField.getEntity().setEvent(se.getName(), sed);
+		}
+
+	}
+
 	public void configField(SchemaField iField) {
 
+		if (iField.getFeature(CoreFieldFeatures.EXPAND)) {
+			expandField(iField);
+		}
 		if (iField instanceof SchemaFieldReflection) {
-			if (iField.getEntity().getSchemaClass().isComposedEntity() && iField.getName().endsWith(ComposedEntity.NAME)) {
-				SchemaConfiguration sourceDescr = iField.getEntity().getSchemaClass().getDescriptor();
-				if (sourceDescr != null) {
-					SchemaClass entity = iField.getEntity().getSchemaClass();
-					SchemaConfiguration conf = null;
-					if (iField.getDescriptorInfo() != null && iField.getDescriptorInfo().getClassAnnotation() != null)
-						conf = new EmbeddedSchemaConfiguration(iField.getDescriptorInfo().getClassAnnotation());
-					else
-						conf = iField.getType().getSchemaClass().getDescriptor();
-					iField.setType(Roma.schema().createSchemaClass(entity.getName() + "." + iField.getName(), iField.getType().getSchemaClass(), conf));
-					((SchemaFieldReflection) iField).setLanguageType((Class<?>) iField.getType().getSchemaClass().getLanguageType());
-				}
-			}
 
 			SchemaFieldReflection ref = (SchemaFieldReflection) iField;
 			SchemaClass[] embeddedTypeGenerics = null;

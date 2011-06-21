@@ -192,30 +192,30 @@ public class SchemaClassReflection extends SchemaClass {
 			}
 		}
 
-		List<SchemaField> toRemove = new ArrayList<SchemaField>();
-		for (SchemaField field : fields.values()) {
-			if (field instanceof SchemaFieldReflection && ((SchemaFieldReflection) field).getGetterMethod() == null)
-				toRemove.add(field);
-			else {
+		List<SchemaField> curFields = new ArrayList<SchemaField>(fields.values());
+		for (SchemaField field : curFields) {
+			if (field instanceof SchemaFieldReflection && ((SchemaFieldReflection) field).getGetterMethod() == null) {
+				fields.remove(field.getName());
+				orderedFields.remove(field);
+			} else {
 				if (field instanceof SchemaFieldReflection)
 					((SchemaFieldReflection) field).configure();
 				field.setOrder(getFieldOrder(field));
 			}
 		}
-		for (SchemaField schemaField : toRemove) {
-			fields.remove(schemaField.getName());
-			orderedFields.remove(schemaField);
-		}
 		Collections.sort(orderedFields);
 
-		for (SchemaAction action : actions.values()) {
+		List<SchemaAction> curActions = new ArrayList<SchemaAction>(actions.values());
+
+		for (SchemaAction action : curActions) {
 			if (action instanceof SchemaActionReflection)
 				((SchemaActionReflection) action).configure();
 			action.setOrder(getActionOrder(action));
 		}
 		Collections.sort(orderedActions);
 
-		for (SchemaEvent event : events.values()) {
+		List<SchemaEvent> curEvents = new ArrayList<SchemaEvent>(events.values());
+		for (SchemaEvent event : curEvents) {
 			if (event instanceof SchemaEventReflection)
 				((SchemaEventReflection) event).configure();
 			event.setOrder(getActionOrder(event));

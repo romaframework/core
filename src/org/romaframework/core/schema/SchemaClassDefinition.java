@@ -244,7 +244,7 @@ public abstract class SchemaClassDefinition extends SchemaFeatures {
 			}
 
 			event = (SchemaEvent) sourceSchemaEvent.clone();
-			event.entity = this;
+			event.setEntity(this);
 			setEvent(event.getName(), event);
 		}
 	}
@@ -320,8 +320,10 @@ public abstract class SchemaClassDefinition extends SchemaFeatures {
 			}
 
 			field = (SchemaField) sourceSchemaField.clone();
-			field.entity = this;
+			field.setEntity(this);
 			setField(field.getName(), field);
 		}
 	}
+	
+	
 }

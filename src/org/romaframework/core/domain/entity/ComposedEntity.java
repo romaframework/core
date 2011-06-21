@@ -16,8 +16,10 @@
 
 package org.romaframework.core.domain.entity;
 
+import org.romaframework.aspect.core.annotation.AnnotationConstants;
 import org.romaframework.aspect.core.annotation.CoreClass;
 import org.romaframework.aspect.core.annotation.CoreClass.LOADING_MODE;
+import org.romaframework.aspect.core.annotation.CoreField;
 import org.romaframework.aspect.security.Secure;
 
 /**
@@ -33,6 +35,7 @@ public interface ComposedEntity<T> extends Secure {
 
 	public static final String	NAME	= "entity";
 
+	@CoreField(expand = AnnotationConstants.TRUE)
 	public T getEntity();
 
 	public void setEntity(T iEntity);

@@ -18,7 +18,6 @@ package org.romaframework.aspect.serialization;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-import org.romaframework.aspect.core.feature.CoreClassFeatures;
 import org.romaframework.aspect.core.feature.CoreFieldFeatures;
 import org.romaframework.aspect.serialization.exception.SerializationException;
 import org.romaframework.core.schema.SchemaClass;
