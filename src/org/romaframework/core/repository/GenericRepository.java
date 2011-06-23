@@ -39,6 +39,8 @@ public interface GenericRepository<T> {
 
 	public void delete(T iObject);
 
+	public long countByCriteria(Query iCriteria);
+
 	public List<T> findByCriteria(Query iCriteria);
 
 	public List<T> findByExample(T iExample);

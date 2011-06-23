@@ -260,9 +260,9 @@ public class FileUtils {
 		while ((entry = zis.getNextEntry()) != null) {
 			if (entry.getName().equals(iFileName)) {
 				log.info("Decompressing file: " + entry.getName());
-				File file = new File(sessionId + "_" + entry.getName());
+				attachment = new File(sessionId + "_" + entry.getName());
 				// write the files to the disk
-				IOUtils.copy(zis, new FileOutputStream(file));
+				IOUtils.copy(zis, new FileOutputStream(attachment));
 			}
 		}
 		if (attachment != null)
@@ -429,8 +429,7 @@ public class FileUtils {
 		zipDirectory(out, iDirectory, iDirectory.getName(), iRecursive);
 	}
 
-	public static void zipDirectory(ZipOutputStream out, File iDirectory, String iRelativePath, boolean iRecursive)
-			throws IOException {
+	public static void zipDirectory(ZipOutputStream out, File iDirectory, String iRelativePath, boolean iRecursive) throws IOException {
 
 		if (iRelativePath == null)
 			iRelativePath = "";

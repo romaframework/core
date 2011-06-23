@@ -212,6 +212,16 @@ public interface PersistenceAspect extends Aspect {
 	public <T> T queryOne(Query iQuery) throws PersistenceException;
 
 	/**
+	 * Execute a count query against the repository and get return the count of elements that match query conditions.
+	 * 
+	 * @param iQuery
+	 *          An implementation of the Query interface: QueryByFilter, QueryByExample, QueryByText or others.
+	 * @return The count of element that match query conditions.
+	 * @throws PersistenceException
+	 */
+	public long queryCount(Query iQuery) throws PersistenceException;
+
+	/**
 	 * Tell if the object is locally modified. Many implementation call the object "dirty" in this case.
 	 * 
 	 * @param iObject
@@ -253,6 +263,7 @@ public interface PersistenceAspect extends Aspect {
 
 	/**
 	 * Tell if the field of the specified class is persistent or not
+	 * 
 	 * @param iField
 	 *          The field to check
 	 * 

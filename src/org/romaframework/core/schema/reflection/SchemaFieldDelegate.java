@@ -63,7 +63,7 @@ public class SchemaFieldDelegate extends SchemaFieldReflection {
 	@Override
 	protected void setValueFinal(Object iObject, Object iValue) throws IllegalAccessException, InvocationTargetException {
 		if (this.setterMethod != null) {
-			super.setValue(iObject, iValue);
+			super.setValueFinal(iObject, iValue);
 			return;
 		}
 		iObject = this.object.getValue(iObject);

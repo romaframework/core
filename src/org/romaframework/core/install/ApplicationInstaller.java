@@ -37,26 +37,20 @@ public abstract class ApplicationInstaller extends SelfRegistrantModule {
 	 * 
 	 * @return
 	 */
-	public abstract boolean install();
+	public abstract void install();
 
 	/**
-	 * Makes all the operation needed for the application installation
+	 * Check if the installer was already performed.
 	 * 
-	 * @param obj
-	 *          If admin or users module is added the object must be casted to a realm
-	 * @return
+	 * @return true if already performed otherwise false.
 	 */
-	public abstract boolean install(Object obj);
-
-	/**
-	 * Execute a code once. Is useful when you need to execute a portion of code only once and then you can remove it by the method
-	 * after its execution.
-	 */
-	public void executeOnce() {
-	}
+	public abstract boolean checkInstall();
 
 	@Override
 	public void startup() throws RuntimeException {
+		if (checkInstall()) {
+			install();
+		}
 	}
 
 	@Override

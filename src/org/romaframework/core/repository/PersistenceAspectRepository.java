@@ -101,6 +101,10 @@ public abstract class PersistenceAspectRepository<T> implements GenericRepositor
 		return db.query(query);
 	}
 
+	public long countByCriteria(Query iCriteria) {
+		return Roma.context().persistence().queryCount(iCriteria);
+	}
+
 	public T findFirstByCriteria(Query iCriteria) {
 		return (T) findFirstByCriteria(Roma.context().persistence(), iCriteria);
 	}

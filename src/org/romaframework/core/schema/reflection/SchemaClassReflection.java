@@ -298,6 +298,7 @@ public class SchemaClassReflection extends SchemaClass {
 			fieldInfo.setterMethod = method;
 		} else if (fieldInfo instanceof SchemaFieldReflection && ((SchemaFieldReflection) fieldInfo).getLanguageType().isAssignableFrom(javaFieldClass)) {
 			fieldInfo.setterMethod = method;
+			fieldInfo.setType(Roma.schema().getSchemaClassIfExist(javaFieldClass));
 		}
 		return true;
 

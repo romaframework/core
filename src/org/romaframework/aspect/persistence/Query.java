@@ -16,7 +16,6 @@
 
 package org.romaframework.aspect.persistence;
 
-import java.util.List;
 
 public class Query {
   protected int     totalItems     = -1;
@@ -26,7 +25,6 @@ public class Query {
 
   protected String  mode;
   protected boolean subClasses     = false;
-  protected List    result;
 
   public byte getStrategy() {
     return retrievingMode;
@@ -34,14 +32,6 @@ public class Query {
 
   public void setStrategy(byte retrievingMode) {
     this.retrievingMode = retrievingMode;
-  }
-
-  public List getResult() {
-    return result;
-  }
-
-  public void setResult(List result) {
-    this.result = result;
   }
 
   public void setRangeFrom(int iRangeFrom, int iRangeTo) {
