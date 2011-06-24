@@ -22,8 +22,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.romaframework.aspect.authentication.UserObjectPermissionListener;
 import org.romaframework.core.Roma;
 import org.romaframework.core.Utility;
@@ -38,7 +36,6 @@ public abstract class SchemaClassDefinition extends SchemaFeatures {
 	protected List<SchemaField>					orderedFields;
 	protected List<SchemaAction>				orderedActions;
 
-	private static Log									log								= LogFactory.getLog(SchemaClassDefinition.class);
 
 	public SchemaClassDefinition() {
 		super(FeatureType.CLASS);

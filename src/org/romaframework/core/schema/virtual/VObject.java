@@ -74,8 +74,6 @@ public class VObject implements VirtualObject {
 
 		loadFields(iClass);
 
-		iClass.assignDefaultFieldValues(this);
-
 		try {
 			invokeConstructor();
 		} catch (ScriptingException e) {

@@ -24,7 +24,7 @@ import org.romaframework.core.schema.SchemaClass;
 public class CoreClassFeatures {
 
 	public static final Feature<SchemaClass>	ENTITY				= new Feature<SchemaClass>(CoreAspect.ASPECT_NAME, "entity", FeatureType.CLASS, SchemaClass.class);
-	public static final Feature<String>				ORDER_FIELDS	= new Feature<String>(CoreAspect.ASPECT_NAME, "orderFields", FeatureType.CLASS, String.class);
-	public static final Feature<String>				ORDER_ACTIONS	= new Feature<String>(CoreAspect.ASPECT_NAME, "orderActions", FeatureType.CLASS, String.class);
+	public static final Feature<String[]>			ORDER_FIELDS	= new Feature<String[]>(CoreAspect.ASPECT_NAME, "orderFields", FeatureType.CLASS, String[].class);
+	public static final Feature<String[]>			ORDER_ACTIONS	= new Feature<String[]>(CoreAspect.ASPECT_NAME, "orderActions", FeatureType.CLASS, String[].class);
 
 }

@@ -19,7 +19,6 @@ package org.romaframework.core.schema;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -135,21 +134,9 @@ public abstract class SchemaField extends SchemaClassElement {
 	public XmlFieldAnnotation getDescriptorInfo() {
 		SchemaConfiguration classDescriptor = entity.getSchemaClass().getDescriptor();
 
-		if (classDescriptor == null || classDescriptor.getType() == null || classDescriptor.getType().getFields() == null)
+		if (classDescriptor == null || classDescriptor.getType() == null)
 			return null;
-
-		// SEARCH FORM DEFINITION IN DESCRIPTOR
-		Collection<XmlFieldAnnotation> allFields = classDescriptor.getType().getFields();
-		short fieldNum = 0;
-		for (XmlFieldAnnotation descriptor : allFields) {
-			if (descriptor.getName().equals(name)) {
-				// FOUND: SET THE ORDER AND RETURN IT
-				setOrder(fieldNum);
-				return descriptor;
-			}
-			fieldNum++;
-		}
-		return null;
+		return classDescriptor.getType().getField(name);
 	}
 
 	public SchemaEvent getEvent(String iEventName) {

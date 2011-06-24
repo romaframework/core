@@ -52,7 +52,7 @@ public interface Module extends Serviceable {
 	 * @return the ObjectHandler instance to handle the object if is handled by this module otherwise null
 	 */
 	public RomaObjectHandler getObjectHandler(Object iUserObject);
-
+	
 	/**
 	 * Display the module's configuration
 	 */

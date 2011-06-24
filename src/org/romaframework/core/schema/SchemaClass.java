@@ -21,7 +21,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.StringTokenizer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -82,15 +81,9 @@ public abstract class SchemaClass extends SchemaClassDefinition implements Compa
 		try {
 			// CREATE THE CONTEXT BEFORE TO CALL THE ACTION
 			Roma.context().create();
-
-			Object instance = newInstanceFinal(iArgs);
-
-			assignDefaultFieldValues(instance);
-
-			return instance;
+			return newInstanceFinal(iArgs);
 
 		} finally {
-
 			// ASSURE TO DESTROY THE CONTEXT
 			Roma.context().destroy();
 		}
@@ -112,22 +105,6 @@ public abstract class SchemaClass extends SchemaClassDefinition implements Compa
 			cloneEvents(iSource, null);
 		} catch (CloneNotSupportedException e) {
 			log.error("[SchemaClass.copyDefinition] Can't clone element", e);
-		}
-	}
-
-	public void assignDefaultFieldValues(Object instance) {
-		// BROWSE ALL THE CLASS'S FIELDS AND PRESET VALUES IF DEFINED IN DESCRIPTOR
-		String fieldStringValue;
-		for (SchemaField field : fields.values()) {
-			if (field.getDescriptorInfo() == null)
-				continue;
-
-			fieldStringValue = field.getDescriptorInfo().getText();
-
-			if (fieldStringValue == null || fieldStringValue.length() == 0)
-				continue;
-
-			field.setValue(instance, fieldStringValue);
 		}
 	}
 
@@ -287,25 +264,21 @@ public abstract class SchemaClass extends SchemaClassDefinition implements Compa
 		return name;
 	}
 
-	protected int getFieldOrder(SchemaField iField) {
-		String orderedValues = getFeature(CoreClassFeatures.ORDER_FIELDS);
+	public int getFieldOrder(SchemaField iField) {
+		String[] orderedValues = getFeature(CoreClassFeatures.ORDER_FIELDS);
 
 		if (orderedValues != null) {
-			StringTokenizer tokenizer = new StringTokenizer(orderedValues, " ");
-			for (int fieldNum = 0; tokenizer.hasMoreTokens(); ++fieldNum) {
-				if (tokenizer.nextToken().equals(iField.getName()))
-					// FOUND: RETURN THE ORDER
+			for (int fieldNum = 0; fieldNum < orderedValues.length; ++fieldNum) {
+				if (orderedValues[fieldNum].equals(iField.getName()))
 					return fieldNum;
 			}
 		}
 
 		if (descriptor != null && descriptor.getType() != null && descriptor.getType().getFields() != null) {
-			// SEARCH FORM DEFINITION IN DESCRIPTOR
 			Collection<XmlFieldAnnotation> allFields = descriptor.getType().getFields();
 			int fieldNum = 0;
 			for (XmlFieldAnnotation field : allFields) {
 				if (field.getName().equals(iField.getName())) {
-					// FOUND: RETURN THE ORDER
 					return fieldNum;
 				}
 				fieldNum++;
@@ -315,25 +288,21 @@ public abstract class SchemaClass extends SchemaClassDefinition implements Compa
 		return iField.getOrder();
 	}
 
-	protected int getActionOrder(SchemaClassElement iAction) {
-		String orderedValues = getFeature(CoreClassFeatures.ORDER_ACTIONS);
+	public int getActionOrder(SchemaClassElement iAction) {
+		String orderedValues[] = getFeature(CoreClassFeatures.ORDER_ACTIONS);
 
 		if (orderedValues != null) {
-			StringTokenizer tokenizer = new StringTokenizer(orderedValues, " ");
-			for (int actionNum = 0; tokenizer.hasMoreTokens(); ++actionNum) {
-				if (tokenizer.nextToken().equals(iAction.getName()))
-					// FOUND: RETURN THE ORDER
+			for (int actionNum = 0; actionNum < orderedValues.length; ++actionNum) {
+				if (orderedValues[actionNum].equals(iAction.getName()))
 					return actionNum;
 			}
 		}
 
 		if (descriptor != null && descriptor.getType() != null && descriptor.getType().getActions() != null) {
-			// SEARCH FORM DEFINITION IN DESCRIPTOR
 			Collection<XmlActionAnnotation> allActions = descriptor.getType().getActions();
 			short actionNum = 0;
 			for (XmlActionAnnotation action : allActions) {
 				if (action.getName().equals(iAction.getName())) {
-					// FOUND: RETURN THE ORDER
 					return actionNum;
 				}
 				actionNum++;

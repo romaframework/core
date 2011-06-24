@@ -16,7 +16,6 @@
 
 package org.romaframework.core.schema;
 
-
 /**
  * Represent a base element for an entity.
  * 
@@ -26,29 +25,15 @@ public abstract class SchemaElement extends SchemaFeatures implements Comparable
 	private static final long	serialVersionUID	= -4789886810661429988L;
 
 	protected String					name;
-	protected int							order;
-
-	public final static int		DEF_ORDER					= -1;
+	protected int							order							= -1;
 
 	public SchemaElement(String iName, FeatureType featureType) {
 		super(featureType);
-		order = DEF_ORDER;
 		name = iName;
 	}
 
 	public int compareTo(SchemaElement iField) {
-		int otherOrder = iField.getOrder();
-
-		if (otherOrder == order)
-			return 0;
-
-		if (otherOrder == -1)
-			return 1;
-
-		if (order == -1)
-			return -1;
-
-		return order > otherOrder ? 1 : -1;
+		return order - iField.getOrder();
 	}
 
 	public String getName() {

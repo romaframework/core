@@ -25,55 +25,55 @@ import org.romaframework.core.GlobalConstants;
 
 public class Configurable<T> {
 
-  protected Map<String, T>   configuration  = new LinkedHashMap<String, T>();
+	protected Map<String, T>		configuration;
 
-  public static final String DEFAULT_CONFIG = GlobalConstants.ROOT_CLASS;
+	public static final String	DEFAULT_CONFIG	= GlobalConstants.ROOT_CLASS;
 
-  public Configurable() {
-    this(false);
-  }
+	public Configurable() {
+		this(false);
+	}
 
-  public Configurable(boolean iSorted) {
-    if (iSorted)
-      configuration = new TreeMap<String, T>();
-    else
-      configuration = new LinkedHashMap<String, T>();
-  }
+	public Configurable(boolean iSorted) {
+		if (iSorted)
+			configuration = new TreeMap<String, T>();
+		else
+			configuration = new LinkedHashMap<String, T>();
+	}
 
-  public Collection<T> getConfigurationValues() {
-    return configuration.values();
-  }
+	public Collection<T> getConfigurationValues() {
+		return configuration.values();
+	}
 
-  public T getConfiguration(String iObjectName) {
-    return configuration.get(iObjectName);
-  }
+	public T getConfiguration(String iObjectName) {
+		return configuration.get(iObjectName);
+	}
 
-  /**
-   * Add an object registering it with key equals to toString() result.
-   * 
-   * @param iObjectName
-   * @param iObject
-   */
-  public void addConfiguration(T iObject) {
-    configuration.put(iObject.toString(), iObject);
-  }
+	/**
+	 * Add an object registering it with key equals to toString() result.
+	 * 
+	 * @param iObjectName
+	 * @param iObject
+	 */
+	public void addConfiguration(T iObject) {
+		configuration.put(iObject.toString(), iObject);
+	}
 
-  /**
-   * Add an onbject
-   * 
-   * @param iObjectName
-   * @param iObject
-   */
-  public void addConfiguration(String iObjectName, T iObject) {
-    configuration.put(iObjectName, iObject);
-  }
+	/**
+	 * Add an onbject
+	 * 
+	 * @param iObjectName
+	 * @param iObject
+	 */
+	public void addConfiguration(String iObjectName, T iObject) {
+		configuration.put(iObjectName, iObject);
+	}
 
-  /**
-   * Set multiple objects in one shot. This method it's callable by spring to set multiple references.
-   * 
-   * @param iConfig
-   */
-  public void setConfiguration(Map<String, T> iConfig) {
-    configuration.putAll(iConfig);
-  }
+	/**
+	 * Set multiple objects in one shot. This method it's callable by spring to set multiple references.
+	 * 
+	 * @param iConfig
+	 */
+	public void setConfiguration(Map<String, T> iConfig) {
+		configuration.putAll(iConfig);
+	}
 }

@@ -38,12 +38,12 @@ public @interface CoreClass {
 	/*
 	 * Order of fields. Field names must be separated by spaces.
 	 */
-	String orderFields() default AnnotationConstants.DEF_VALUE;
+	String[] orderFields() default AnnotationConstants.DEF_VALUE;
 
 	/*
 	 * Order of action. Action names must be separated by spaces.
 	 */
-	String orderActions() default AnnotationConstants.DEF_VALUE;
+	String[] orderActions() default AnnotationConstants.DEF_VALUE;
 
 	/*
 	 * Loading mode. By default is LAZY. Declaring as EARLY means configure the class on startup.

@@ -119,12 +119,14 @@ public class CoreAspect extends SelfRegistrantModule implements Aspect, RomaAppl
 
 	private void expandField(SchemaField iField) {
 		SchemaClass cl = iField.getType().getSchemaClass();
-		//iField.getEntity().getFields().remove(iField.getName());
+		//TODO :Verify to remove expanded field
+		// iField.getEntity().getFields().remove(iField.getName());
 		Iterator<SchemaField> fields = cl.getFieldIterator();
 		while (fields.hasNext()) {
 			SchemaField sf = fields.next();
 			SchemaFieldDelegate sfd = new SchemaFieldDelegate(iField.getEntity(), iField, sf);
 			sfd.configure();
+			sfd.setOrder(iField.getEntity().getSchemaClass().getFieldOrder(sfd));
 			iField.getEntity().setField(sf.getName(), sfd);
 		}
 		Iterator<SchemaAction> actions = cl.getActionIterator();
@@ -132,6 +134,7 @@ public class CoreAspect extends SelfRegistrantModule implements Aspect, RomaAppl
 			SchemaAction sa = actions.next();
 			SchemaActionDelegate sad = new SchemaActionDelegate(iField.getEntity(), iField, sa);
 			sad.configure();
+			sad.setOrder(iField.getEntity().getSchemaClass().getActionOrder(sad));
 			iField.getEntity().setAction(sa.getName(), sad);
 		}
 		Iterator<SchemaEvent> events = cl.getEventIterator();

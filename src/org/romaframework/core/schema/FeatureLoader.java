@@ -147,10 +147,10 @@ public class FeatureLoader {
 			return Short.parseShort(value);
 		}
 		if (String[].class.equals(valueType)) {
-			return value.split(" ,");
+			return value.split(" |,");
 		}
 		if (Class[].class.equals(valueType)) {
-			String[] classNames = value.split(" ,");
+			String[] classNames = value.split(" |,");
 			if (classNames != null) {
 				Class<?>[] classes = new Class[classNames.length];
 				int i = 0;
@@ -216,10 +216,18 @@ public class FeatureLoader {
 		}
 
 		if (String[].class.equals(valueType)) {
-			if (value instanceof String[])
-				return (String[]) value;
-			if (value instanceof String)
-				return ((String) value).split(" ,");
+			if (value instanceof String[]) {
+				String arrayValue[] = (String[]) value;
+				if (arrayValue.length == 1) {
+					if (!AnnotationConstants.DEF_VALUE.equals(arrayValue[0]))
+						return arrayValue[0].split(" |,");
+					return null;
+				}
+				return arrayValue;
+			}
+			if (value instanceof String && !AnnotationConstants.DEF_VALUE.equals(value))
+				return ((String) value).split(" |,");
+			return null;
 		}
 
 		if (Integer.class.equals(valueType)) {
