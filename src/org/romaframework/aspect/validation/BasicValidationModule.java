@@ -23,7 +23,6 @@ import org.romaframework.aspect.validation.feature.ValidationFieldFeatures;
 import org.romaframework.core.Roma;
 import org.romaframework.core.flow.Controller;
 import org.romaframework.core.flow.SchemaActionListener;
-import org.romaframework.core.handler.RomaObjectHandler;
 import org.romaframework.core.schema.FeatureRegistry;
 import org.romaframework.core.schema.FeatureType;
 import org.romaframework.core.schema.SchemaAction;
@@ -50,49 +49,25 @@ public class BasicValidationModule extends ValidationAspectAbstract implements S
 	 * @param pojo
 	 * @return a MultiValidationException object with the sum of exceptions, if any
 	 */
-	public MultiValidationException validateAndCollectExceptions(Object pojo) {
-		return validateAndCollectExceptions(Roma.getHandler(pojo), pojo);
-	}
-
-	/**
-	 * Validate a form.
-	 * 
-	 * @param form
-	 *          RomaObjectHandler instance containing the field where the pojo is rendered
-	 * @return a MultiValidationException object with the sum of exceptions, if any
-	 */
-	public MultiValidationException validateAndCollectExceptions(RomaObjectHandler form) {
-		return validateAndCollectExceptions(form, form.getContent());
-	}
-
-	/**
-	 * Validate a form with a pojo as content.
-	 * 
-	 * @param form
-	 *          RomaObjectHandler instance containing the field where the pojo is rendered
-	 * @param pojo
-	 *          Content pojo
-	 * @return a MultiValidationException object with the sum of exceptions, if any
-	 */
-	public MultiValidationException validateAndCollectExceptions(RomaObjectHandler form, Object pojo) throws ValidationException, MultiValidationException {
+	public MultiValidationException validateAndCollectExceptions(Object pojo) throws ValidationException, MultiValidationException {
 		MultiValidationException multiException = new MultiValidationException();
-		validate(form, pojo, Roma.schema().getSchemaClass(pojo), multiException);
+		validate(pojo, Roma.schema().getSchemaClass(pojo), multiException);
 		return multiException;
 	}
 
-	protected void validate(RomaObjectHandler form, Object pojo, SchemaClassDefinition schemaObject, MultiValidationException multiException) {
+	protected void validate(Object pojo, SchemaClassDefinition schemaObject, MultiValidationException multiException) {
 		if (pojo == null)
 			return;
 
-		SchemaClassDefinition schemaInstance = form != null ? form.getSchemaObject() : schemaObject;
+		SchemaClassDefinition schemaInstance = Roma.session().getSchemaObject(pojo);
 
 		if (schemaInstance != null)
-			validateFields(form, pojo, multiException, schemaInstance);
+			validateFields(pojo, multiException, schemaInstance);
 		else {
 			if (SchemaHelper.isMultiValueObject(pojo)) {
 				// VALIDATE EVERY SINGLE ITEM OF COLLECTION/ARRAY/MAP
 				for (Object o : SchemaHelper.getObjectArrayForMultiValueObject(pojo)) {
-					validate(form, o, schemaInstance, multiException);
+					validate(o, schemaInstance, multiException);
 				}
 			}
 		}
@@ -106,26 +81,19 @@ public class BasicValidationModule extends ValidationAspectAbstract implements S
 				// HANDLE MULTI VALIDATION EXCEPTION
 				for (Iterator<ValidationException> it = me.getDetailIterator(); it.hasNext();) {
 					ValidationException ve = it.next();
-					Object fieldComponent = null;
-					if (form != null)
-						fieldComponent = form.getFieldComponent(ve.getFieldName());
-					handleValidationException(ve.getObject(), fieldComponent, multiException, ve.getFieldName(), ve.getMessage(), ve.getRefValue());
+					handleValidationException(ve.getObject(), multiException, ve.getFieldName(), ve.getMessage(), ve.getRefValue());
 				}
 			} catch (ValidationException ve) {
-				// HANDLE SINGLE VALIDATION EXCEPTION
-				Object fieldComponent = null;
-				if (form != null)
-					fieldComponent = form.getFieldComponent(ve.getFieldName());
-				handleValidationException(ve.getObject(), fieldComponent, multiException, ve.getFieldName(), ve.getMessage(), ve.getRefValue());
+				handleValidationException(ve.getObject(), multiException, ve.getFieldName(), ve.getMessage(), ve.getRefValue());
 			} catch (Exception ex) {
-				handleValidationException(pojo, null, multiException, null, ex.toString(), null);
+				handleValidationException(pojo, multiException, null, ex.toString(), null);
 			} finally {
 				Roma.context().destroy();
 			}
 		}
 	}
 
-	protected void validateFields(RomaObjectHandler form, Object pojo, MultiValidationException multiException, SchemaClassDefinition schemaInstance) {
+	protected void validateFields(Object pojo, MultiValidationException multiException, SchemaClassDefinition schemaInstance) {
 		SchemaField fieldInfo;
 
 		for (Iterator<SchemaField> it = schemaInstance.getFieldIterator(); it.hasNext();) {
@@ -135,38 +103,29 @@ public class BasicValidationModule extends ValidationAspectAbstract implements S
 			if (!fieldInfo.getFeature(ValidationFieldFeatures.ENABLED))
 				continue;
 
-			Object fieldComponent = null;
-			if (form != null)
-				fieldComponent = form.getFieldComponent(fieldInfo.getName());
-
 			Object fieldValue = SchemaHelper.getFieldValue(fieldInfo, pojo);
 
 			if (SchemaHelper.isMultiValueObject(fieldValue)) {
-				validateFieldComponent(pojo, multiException, fieldInfo, fieldComponent, fieldValue);
+				validateFieldComponent(pojo, multiException, fieldInfo, fieldValue);
 
 				// VALIDATE EVERY SINGLE ITEM OF COLLECTION/ARRAY/MAP
 				for (Object o : SchemaHelper.getObjectArrayForMultiValueObject(fieldValue)) {
-					validate(Roma.getHandler(o), o, Roma.schema().getSchemaClass(o), multiException);
+					validate(o, Roma.schema().getSchemaClass(o), multiException);
 				}
 			} else if (fieldValue != null && !SchemaHelper.isJavaType(fieldValue.getClass())) {
 
-				if (fieldComponent != null && fieldComponent instanceof RomaObjectHandler) {
-					// EMBEDDED FORM: CALL ITS VALIDATION
-					if (fieldValue instanceof CustomValidation) {
-						validate(Roma.getHandler(fieldValue), fieldValue, Roma.schema().getSchemaClass(fieldValue), multiException);
-					} else {
-						validateFields((RomaObjectHandler) fieldComponent, fieldValue, multiException, Roma.schema().getSchemaClass(fieldValue));
-					}
-				} else
-					// EMBEDDED OBJECT: CALL ITS VALIDATION
-					validate(Roma.getHandler(fieldValue), fieldValue, Roma.schema().getSchemaClass(fieldValue), multiException);
-
+				// EMBEDDED FORM: CALL ITS VALIDATION
+				if (fieldValue instanceof CustomValidation) {
+					validate(fieldValue, Roma.schema().getSchemaClass(fieldValue), multiException);
+				} else {
+					validateFields(fieldValue, multiException, Roma.schema().getSchemaClass(fieldValue));
+				}
 			} else
-				validateFieldComponent(pojo, multiException, fieldInfo, fieldComponent, fieldValue);
+				validateFieldComponent(pojo, multiException, fieldInfo, fieldValue);
 		}
 	}
 
-	private void validateFieldComponent(Object pojo, MultiValidationException multiException, SchemaField fieldInfo, Object fieldComponent, Object fieldValue) {
+	private void validateFieldComponent(Object pojo, MultiValidationException multiException, SchemaField fieldInfo, Object fieldValue) {
 
 		String name = fieldInfo.getName();
 
@@ -176,64 +135,61 @@ public class BasicValidationModule extends ValidationAspectAbstract implements S
 		Class<?> fieldClass = (Class<?>) fieldInfo.getClassInfo().getLanguageType();
 
 		if (String.class.isAssignableFrom(fieldClass))
-			validateString(pojo, fieldComponent, multiException, fieldInfo, (String) fieldValue, name, required, annotationMin, annotationMax);
+			validateString(pojo, multiException, fieldInfo, (String) fieldValue, name, required, annotationMin, annotationMax);
 		else if (Number.class.isAssignableFrom(fieldClass))
-			validateNumber(pojo, fieldComponent, multiException, (Number) fieldValue, name, required, annotationMin, annotationMax);
+			validateNumber(pojo, multiException, (Number) fieldValue, name, required, annotationMin, annotationMax);
 		else if (SchemaHelper.isMultiValueObject(fieldValue))
-			validateMultiValue(pojo, fieldComponent, multiException, fieldValue, name, required, annotationMin, annotationMax,
-					SchemaHelper.getSizeForMultiValueObject(fieldValue), fieldInfo);
+			validateMultiValue(pojo, multiException, fieldValue, name, required, annotationMin, annotationMax, SchemaHelper.getSizeForMultiValueObject(fieldValue),
+					fieldInfo);
 	}
 
-	public void validateNumber(Object pojo, Object iFieldComponent, MultiValidationException iMultiException, Number fieldValue, String name, boolean required,
-			Integer annotationMin, Integer annotationMax) {
+	public void validateNumber(Object pojo, MultiValidationException iMultiException, Number fieldValue, String name, boolean required, Integer annotationMin,
+			Integer annotationMax) {
 		if (required && fieldValue == null)
-			handleValidationException(pojo, iFieldComponent, iMultiException, name, "$validation.required", null);
+			handleValidationException(pojo, iMultiException, name, "$validation.required", null);
 
 		if (annotationMin != null && fieldValue != null && fieldValue.intValue() < annotationMin)
-			handleValidationException(pojo, iFieldComponent, iMultiException, name, "$validation.minLength", String.valueOf(annotationMin));
+			handleValidationException(pojo, iMultiException, name, "$validation.minLength", String.valueOf(annotationMin));
 
 		if (annotationMax != null && fieldValue != null && fieldValue.intValue() > annotationMax)
-			handleValidationException(pojo, iFieldComponent, iMultiException, name, "$validation.maxLength", String.valueOf(annotationMax));
+			handleValidationException(pojo, iMultiException, name, "$validation.maxLength", String.valueOf(annotationMax));
 	}
 
 	@SuppressWarnings("unchecked")
-	public void validateMultiValue(Object pojo, Object iFieldComponent, MultiValidationException iMultiException, Object fieldValue, String name,
-			boolean required, Integer annotationMin, Integer annotationMax, int length, SchemaElement iElement) {
+	public void validateMultiValue(Object pojo, MultiValidationException iMultiException, Object fieldValue, String name, boolean required,
+			Integer annotationMin, Integer annotationMax, int length, SchemaElement iElement) {
 		if (required) {
 			// TODO: RESOLVE THIS DEPENDENCY IN MORE FAIR WAY
 			final String selectionField = (String) iElement.getFeature(FeatureRegistry.getFeature("view", FeatureType.FIELD, "selectionField"));
 
 			// CHECK IF THE SELECTION IS NULL
 			if (fieldValue == null || selectionField == null || SchemaHelper.getFieldValue(pojo, selectionField) == null)
-				handleValidationException(pojo, iFieldComponent, iMultiException, name, "$validation.required", null);
+				handleValidationException(pojo, iMultiException, name, "$validation.required", null);
 		}
 
 		if (annotationMin != null && length < annotationMin)
-			handleValidationException(pojo, iFieldComponent, iMultiException, name, "$validation.minLength", String.valueOf(annotationMin));
+			handleValidationException(pojo, iMultiException, name, "$validation.minLength", String.valueOf(annotationMin));
 
 		if (annotationMax != null && length > annotationMax)
-			handleValidationException(pojo, iFieldComponent, iMultiException, name, "$validation.maxLength", String.valueOf(annotationMax));
+			handleValidationException(pojo, iMultiException, name, "$validation.maxLength", String.valueOf(annotationMax));
 	}
 
-	public void validateString(Object pojo, Object iFieldComponent, MultiValidationException iMultiException, SchemaField fieldInfo, Object fieldValue,
-			String name, boolean required, Integer annotationMin, Integer annotationMax) {
+	public void validateString(Object pojo, MultiValidationException iMultiException, SchemaField fieldInfo, Object fieldValue, String name, boolean required,
+			Integer annotationMin, Integer annotationMax) {
 		String stringValue = (String) fieldValue;
 		if (required && (stringValue == null || stringValue.length() == 0))
-			handleValidationException(pojo, iFieldComponent, iMultiException, name, "$validation.required", null);
+			handleValidationException(pojo, iMultiException, name, "$validation.required", null);
 
 		if (annotationMin != null && (stringValue == null || stringValue.length() < annotationMin))
-			handleValidationException(pojo, iFieldComponent, iMultiException, name, "$validation.minLength", String.valueOf(annotationMin));
+			handleValidationException(pojo, iMultiException, name, "$validation.minLength", String.valueOf(annotationMin));
 
 		if (annotationMax != null && stringValue != null && stringValue.length() > annotationMax)
-			handleValidationException(pojo, iFieldComponent, iMultiException, name, "$validation.maxLength", String.valueOf(annotationMax));
+			handleValidationException(pojo, iMultiException, name, "$validation.maxLength", String.valueOf(annotationMax));
 	}
 
-	protected void handleValidationException(Object pojo, Object iComponent, MultiValidationException multiException, String iFieldName, String iRule,
-			String iRefValue) throws ValidationException {
+	protected void handleValidationException(Object pojo, MultiValidationException multiException, String iFieldName, String iRule, String iRefValue) throws ValidationException {
 		ValidationException e = new ValidationException(pojo, iFieldName, iRule, iRefValue);
 		multiException.addException(e);
-		if (iComponent != null)
-			e.setComponent(iComponent);
 	}
 
 	public void onAfterAction(Object iContent, SchemaAction iAction, Object returnedValue) {

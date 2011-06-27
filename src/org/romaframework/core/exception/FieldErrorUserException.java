@@ -32,14 +32,6 @@ public class FieldErrorUserException extends UserException {
 		return fieldName;
 	}
 
-	public Object getComponent() {
-		return component;
-	}
-
-	public void setComponent(Object component) {
-		this.component = component;
-	}
-
 	@Override
 	public String toString() {
 		StringBuilder buffer = new StringBuilder(super.toString());
@@ -52,4 +44,5 @@ public class FieldErrorUserException extends UserException {
 
 	protected Object	component;
 	protected String	fieldName;
+	protected Object	actualValue;
 }

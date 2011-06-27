@@ -62,14 +62,15 @@ public class AppSessionManager extends SessionAspectAbstract {
 		return null;
 	}
 
-	public Object getProperty(Object session, String key) {
+	@SuppressWarnings("unchecked")
+	public <T> T getProperty(Object session, String key) {
 		AppSessionInfo sess = (AppSessionInfo) sessions.get(session);
 		if (sess == null)
 			return null;
-		return sess.getProperty(key);
+		return (T) sess.getProperty(key);
 	}
 
-	public Object getProperty(String key) {
+	public <T> T getProperty(String key) {
 		return null;
 	}
 
@@ -85,14 +86,14 @@ public class AppSessionManager extends SessionAspectAbstract {
 		return sessions.remove(session);
 	}
 
-	public void setProperty(Object session, String key, Object value) {
+	public <T> void setProperty(Object session, String key, T value) {
 		AppSessionInfo sess = (AppSessionInfo) sessions.get(session);
 		if (sess == null)
 			return;
 		sess.setProperty(key, value);
 	}
 
-	public void setProperty(String key, Object value) {
+	public <T> void setProperty(String key, T value) {
 	}
 
 	public void setActiveLocale(Locale locale) {

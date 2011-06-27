@@ -16,14 +16,38 @@
 
 package org.romaframework.aspect.session;
 
+import java.util.Map;
 
+import org.romaframework.core.Roma;
 import org.romaframework.core.module.SelfRegistrantConfigurableModule;
 import org.romaframework.core.schema.SchemaAction;
 import org.romaframework.core.schema.SchemaClassDefinition;
 import org.romaframework.core.schema.SchemaEvent;
 import org.romaframework.core.schema.SchemaField;
+import org.romaframework.core.schema.SchemaObject;
 
 public abstract class SessionAspectAbstract extends SelfRegistrantConfigurableModule<String> implements SessionAspect {
+
+	private static final String	SESSION_SCHEMA_OBJECT	= "$$_SESSION_SCHEMA_OBJECT_$$";
+
+	@Override
+	public SchemaObject getSchemaObject(Object object) {
+		Map<Object, SchemaObject> so = getProperty(SESSION_SCHEMA_OBJECT);
+		if (so == null) {
+			so = new IdentityWeakHashMap<Object, SchemaObject>();
+			setProperty(SESSION_SCHEMA_OBJECT, so);
+		}
+		SchemaObject schemaObject = so.get(object);
+		if (schemaObject == null) {
+			if (object instanceof SchemaClassDefinition) {
+				object = ((SchemaClassDefinition) object).getSchemaClass();
+				schemaObject = new SchemaObject(((SchemaClassDefinition) object).getSchemaClass(), null);
+			} else
+				schemaObject = new SchemaObject(Roma.schema().getSchemaClass(object), object);
+			so.put(object, schemaObject);
+		}
+		return schemaObject;
+	}
 
 	public String aspectName() {
 		return ASPECT_NAME;

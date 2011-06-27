@@ -8,7 +8,6 @@ import org.romaframework.core.schema.SchemaField;
  *
  */
 public interface FieldRefreshListener {
-
 	
 	/**
 	 * Invoked when a field is changed outside Roma, usually from the user side.

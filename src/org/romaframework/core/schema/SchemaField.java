@@ -108,12 +108,10 @@ public abstract class SchemaField extends SchemaClassElement {
 	 * @return SchemaClassReflection if found, otherwise null
 	 */
 	public SchemaClass getClassInfo() {
-		// TRY TO SEARCH FOR INLINE SCHEMA DECLARATION
-		if (type != null)
-			return getType().getSchemaClass();
-
-		// SEARCH FOR CLASS DEFINITION
-		return getSchemaClassFromLanguageType();
+		SchemaClassDefinition def = getType();
+		if (def != null)
+			return def.getSchemaClass();
+		return null;
 	}
 
 	@Override
@@ -124,6 +122,13 @@ public abstract class SchemaField extends SchemaClassElement {
 	public SchemaClassDefinition getType() {
 		if (type == null)
 			type = getSchemaClassFromLanguageType();
+		if (entity instanceof SchemaObject && !(type instanceof SchemaObject)) {
+			Object value = getValue(((SchemaObject) entity).getInstance());
+			if (value != null)
+				setType(Roma.session().getSchemaObject(value));
+			else
+				setType(Roma.session().getSchemaObject(type));
+		}
 		return type;
 	}
 

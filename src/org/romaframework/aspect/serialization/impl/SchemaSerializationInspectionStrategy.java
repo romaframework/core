@@ -240,7 +240,7 @@ public class SchemaSerializationInspectionStrategy extends AbstractSerialization
 	 */
 	public void fill(Object toFill, SerializationData data) {
 		boolean copyFeatures = true;
-		SchemaClassDefinition definition = Roma.getSchemaObject(toFill);
+		SchemaClassDefinition definition = Roma.session().getSchemaObject(toFill);
 		if (definition == null) {
 			copyFeatures = false;
 			definition = Roma.schema().getSchemaClass(toFill.getClass());

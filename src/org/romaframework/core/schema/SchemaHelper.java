@@ -349,6 +349,7 @@ public class SchemaHelper {
 		return methodSum;
 	}
 
+	@Deprecated
 	public static Object invokeEvent(RomaObjectHandler iComponent, String eventName) throws IllegalArgumentException, IllegalAccessException,
 			InvocationTargetException {
 
@@ -419,40 +420,15 @@ public class SchemaHelper {
 
 	public static Object invokeEvent(Object iObject, String eventName) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 
-		// BROWSE UP UNTIL ROOT CONTENT COMPONENT SEARCHING THE EVENT
-		SchemaEvent event = null;
-		Object currentContent = iObject;
-
-		Object lastGoodContent = null;
-		SchemaEvent lastGoodEvent = null;
-
-		SchemaClass cls;
-
-		while (currentContent != null) {
-			cls = Roma.schema().getSchemaClass(currentContent);
-
-			event = cls.getEvent(eventName);
-			if (event != null) {
-				lastGoodEvent = event;
-				lastGoodContent = currentContent;
-				// FOUND: BREAK SEARCH
-				break;
-			}
-
-			if (!(currentContent instanceof ComposedEntity<?>)) {
-				break;
-			}
-
-			currentContent = ((ComposedEntity<?>) currentContent).getEntity();
-		}
-
-		// INVOKE THE FIELD EVENT IF ANY
-		if (lastGoodEvent != null) {
-			return lastGoodEvent.invoke(lastGoodContent);
+		SchemaClassDefinition def = Roma.session().getSchemaObject(iObject);
+		SchemaEvent schemaEvent = def.getEvent(eventName);
+		if (schemaEvent != null) {
+			return schemaEvent.invoke(iObject);
 		}
 		return FAILED_EVENT_INVOKE;
 	}
 
+	@Deprecated
 	public static Object invokeEvent(RomaObjectHandler romaObjectHandler, String fieldName, String eventName, Object... params) throws IllegalAccessException,
 			InvocationTargetException {
 
@@ -486,7 +462,7 @@ public class SchemaHelper {
 	public static Object invokeEvent(Object object, String fieldName, String eventName, Object... params) throws IllegalAccessException,
 			InvocationTargetException {
 		if (object != null) {
-			SchemaClass cls = Roma.schema().getSchemaClass(object.getClass());
+			SchemaClassDefinition cls = Roma.session().getSchemaObject(object);
 			SchemaField field = cls.getField(fieldName);
 			if (field != null) {
 
@@ -1197,7 +1173,7 @@ public class SchemaHelper {
 					int i = 0;
 					for (; i < var.length; i++) {
 						if (var[i].getName().equals(t.getName())) {
-							return resolveClassFromType(params.getActualTypeArguments()[i],resolveParameterizedType(params.getOwnerType()));
+							return resolveClassFromType(params.getActualTypeArguments()[i], resolveParameterizedType(params.getOwnerType()));
 						}
 					}
 				}

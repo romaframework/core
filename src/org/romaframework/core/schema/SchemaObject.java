@@ -16,7 +16,6 @@
 
 package org.romaframework.core.schema;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -39,17 +38,14 @@ public class SchemaObject extends SchemaClassDefinition {
 	private static Log				log								= LogFactory.getLog(SchemaObject.class);
 
 	public SchemaObject(SchemaClass iEntityInfo, Object iInstance) {
-		this(iEntityInfo);
 		instance = iInstance;
-
+		schemaClass = iEntityInfo;
+		copyDefinition(schemaClass);
 		invokeListeners();
 	}
 
 	public SchemaObject(SchemaClass iEntityInfo) {
-		schemaClass = iEntityInfo;
-		copyDefinition(schemaClass);
-
-		invokeListeners();
+		this(iEntityInfo, null);
 	}
 
 	/**
@@ -67,13 +63,14 @@ public class SchemaObject extends SchemaClassDefinition {
 			fieldName = iFieldName.substring(0, sepPos);
 
 		SchemaField field = fields.get(fieldName);
+		/*
 		if (field != null && field.getType() != null && !(field.getType() instanceof SchemaObject)) {
 			synchronized (field) {
 				if (field.getType() != null)
 					// COMPLEX CLASS: REPLACE IT WITH A SCHEMA OBJECT INSTANCE
 					field.setType(new SchemaObject(field.getType().getSchemaClass()));
 			}
-		}
+		}*/
 		if (sepPos > -1 && field != null) {
 			if (field.getType() == null)
 				return null;
@@ -81,11 +78,6 @@ public class SchemaObject extends SchemaClassDefinition {
 		}
 
 		return field;
-	}
-
-	@Override
-	public Iterator<SchemaField> getFieldIterator() {
-		return new SchemaObjectFieldIterator(super.getFieldIterator());
 	}
 
 	@Override

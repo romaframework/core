@@ -30,7 +30,6 @@ import org.romaframework.core.config.ContextException;
 import org.romaframework.core.config.RomaApplicationContext;
 import org.romaframework.core.exception.ConfigurationNotFoundException;
 import org.romaframework.core.exception.UserException;
-import org.romaframework.core.handler.RomaObjectHandler;
 import org.romaframework.core.schema.SchemaClass;
 import org.romaframework.core.schema.SchemaField;
 import org.romaframework.core.schema.SchemaHelper;
@@ -243,27 +242,9 @@ public class ObjectContext {
 	 * @param iUserObject
 	 *          The User Object of changed property
 	 */
+	@Deprecated
 	public void objectChanged(SessionInfo iUserSession, Object iUserObject) {
-		if (iUserObject == null)
-			return;
-
-		if (iUserSession == null)
-			iUserSession = getComponent(SessionAspect.class).getActiveSessionInfo();
-
-		RomaObjectHandler handler = Roma.getHandler(iUserObject);
-		if (handler == null)
-			return;
-
-		if (handler.getContainerComponent() != null) {
-			// OBJECT INSIDE ANOTHER ONE: REFRESH USING ITS CONTAINER
-			Object parentObject = handler.getContainerComponent().getContent();
-			String parentFieldName = handler.getSchemaField().getName();
-
-			fieldChanged(iUserSession, parentObject, parentFieldName);
-		} else {
-			// OBJECT INSIDE ANOTHER ONE: REFRESH USING ITS CONTAINER
-			fieldChanged(iUserSession, iUserObject);
-		}
+		Roma.objectChanged(iUserSession, iUserObject);
 	}
 
 	protected void signalFieldChanged(SessionInfo iUserSession, Object iUserObject, List<FieldRefreshListener> listeners, SchemaClass iClass, String iFieldName) {
@@ -300,10 +281,9 @@ public class ObjectContext {
 	 * @return SchemaObject instance
 	 * @throws ConfigurationNotFoundException
 	 */
+	@Deprecated
 	public SchemaObject getSchemaObject(Object iUserObject) throws ConfigurationNotFoundException {
-		// ASK TO ALL THE REGISTERED MODULES IF THEY MANAGE THE USER OBJECT.
-		RomaObjectHandler handler = Roma.getHandler(iUserObject);
-		return handler != null ? handler.getSchemaObject() : null;
+		return Roma.session().getSchemaObject(iUserObject);
 	}
 
 	/**

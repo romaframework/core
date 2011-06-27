@@ -20,8 +20,9 @@ import java.util.Collection;
 import java.util.Locale;
 
 import org.romaframework.core.aspect.Aspect;
+import org.romaframework.core.schema.SchemaObjectHandler;
 
-public interface SessionAspect extends Aspect {
+public interface SessionAspect extends Aspect, SchemaObjectHandler {
 	public static final String	ASPECT_NAME	= "session";
 
 	public SessionInfo getActiveSessionInfo();
@@ -53,7 +54,7 @@ public interface SessionAspect extends Aspect {
 	 *          Attribute name
 	 * @return Attribute value
 	 */
-	public Object getProperty(Object iSession, String iKey);
+	public <T> T getProperty(Object iSession, String iKey);
 
 	/**
 	 * Get an attribute value from the current session.
@@ -62,7 +63,7 @@ public interface SessionAspect extends Aspect {
 	 *          attribute name
 	 * @return Attribute value
 	 */
-	public Object getProperty(String iKey);
+	public <T> T getProperty(String iKey);
 
 	/**
 	 * Set an attribute in a User Session giving a name and a value.
@@ -72,7 +73,7 @@ public interface SessionAspect extends Aspect {
 	 * @param iValue
 	 *          attribute value
 	 */
-	public void setProperty(Object iSession, String iKey, Object iValue);
+	public <T> void setProperty(Object iSession, String iKey, T iValue);
 
 	/**
 	 * Set an attribute in the current Session giving a name and a value.
@@ -82,7 +83,7 @@ public interface SessionAspect extends Aspect {
 	 * @param iValue
 	 *          attribute value
 	 */
-	public void setProperty(String iKey, Object iValue);
+	public <T> void setProperty(String iKey, T iValue);
 
 	@Deprecated
 	public void shutdown(Object iSystemSession);

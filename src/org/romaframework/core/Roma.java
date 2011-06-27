@@ -38,6 +38,7 @@ import org.romaframework.core.exception.ConfigurationNotFoundException;
 import org.romaframework.core.factory.GenericFactory;
 import org.romaframework.core.flow.Controller;
 import org.romaframework.core.flow.ObjectContext;
+import org.romaframework.core.flow.ObjectRefreshListener;
 import org.romaframework.core.handler.RomaObjectHandler;
 import org.romaframework.core.module.Module;
 import org.romaframework.core.module.ModuleManager;
@@ -139,7 +140,17 @@ public class Roma implements ScriptingAspectListener {
 	 *          The User Object of changed property
 	 */
 	public static void objectChanged(SessionInfo iUserSession, Object iUserObject) {
-		ObjectContext.getInstance().objectChanged(iUserSession, iUserObject);
+		if (iUserObject == null)
+			return;
+
+		if (iUserSession == null)
+			iUserSession = Roma.session().getActiveSessionInfo();
+
+		List<ObjectRefreshListener> listeners = Controller.getInstance().getListeners(ObjectRefreshListener.class);
+
+		for (ObjectRefreshListener objectRefreshListener : listeners) {
+			objectRefreshListener.onObjectRefresh(iUserSession, iUserObject);
+		}
 	}
 
 	/**
@@ -155,18 +166,7 @@ public class Roma implements ScriptingAspectListener {
 		ObjectContext.getInstance().fieldChanged(iUserObject, iFieldNames);
 	}
 
-	/**
-	 * Get the schema object associated to the current POJO.
-	 * 
-	 * @param iUserObject
-	 *          User POJO
-	 * @return SchemaObject instance
-	 * @throws ConfigurationNotFoundException
-	 */
-	public static SchemaObject getSchemaObject(Object iUserObject) throws ConfigurationNotFoundException {
-		return ObjectContext.getInstance().getSchemaObject(iUserObject);
-	}
-
+	@Deprecated
 	public static RomaObjectHandler getHandler(Object iUserObject) throws ConfigurationNotFoundException {
 		// ASK TO ALL THE REGISTERED MODULES IF THEY MANAGE THE USER OBJECT
 		// REQUESTED.
@@ -181,6 +181,7 @@ public class Roma implements ScriptingAspectListener {
 		return null;
 	}
 
+	@Deprecated
 	public static List<RomaObjectHandler> getHandlers(SchemaClass iUserClass) throws ConfigurationNotFoundException {
 		// ASK TO ALL THE REGISTERED MODULES IF THEY MANAGE INSTANCE OF THE USER
 		// CLASS REQUESTED.
@@ -234,7 +235,7 @@ public class Roma implements ScriptingAspectListener {
 	}
 
 	private static <T> SchemaFeatures getSchemaFeature(Object iUserObject, String elementName, Feature<T> feature) {
-		SchemaObject schema = ObjectContext.getInstance().getSchemaObject(iUserObject);
+		SchemaObject schema = Roma.session().getSchemaObject(iUserObject);
 		if (schema == null)
 			return null;
 		SchemaFeatures features = null;

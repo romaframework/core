@@ -74,11 +74,6 @@ public class SchemaManager extends Configurable<String> {
 			return null;
 		}
 	}
-
-	public SchemaObject getSchemaObject(Object object){
-		
-		return null;
-	}
 	
 	public SchemaClass getSchemaClass(Object iObject) {
 		if (iObject == null)
