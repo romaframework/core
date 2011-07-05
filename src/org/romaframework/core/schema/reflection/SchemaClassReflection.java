@@ -537,6 +537,11 @@ public class SchemaClassReflection extends SchemaClass {
 	}
 
 	@Override
+	public boolean isEnum() {
+		return javaClass != null ? javaClass.isEnum() : false;
+	}
+	
+	@Override
 	public boolean isAbstract() {
 		return javaClass != null ? Modifier.isAbstract(javaClass.getModifiers()) : false;
 	}

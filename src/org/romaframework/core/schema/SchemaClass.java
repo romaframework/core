@@ -64,6 +64,8 @@ public abstract class SchemaClass extends SchemaClassDefinition implements Compa
 	public abstract boolean isArray();
 
 	public abstract boolean isPrimitive();
+	
+	public abstract boolean isEnum();
 
 	public abstract boolean isOfType(Class<?> iLanguageClass);
 
