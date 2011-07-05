@@ -23,19 +23,21 @@ import java.util.List;
 import java.util.Map;
 
 import org.romaframework.aspect.authentication.UserObjectPermissionListener;
-import org.romaframework.core.Roma;
 import org.romaframework.core.Utility;
 
 public abstract class SchemaClassDefinition extends SchemaFeatures {
 
-	private static final long						serialVersionUID	= 2060007769938743965L;
+	private static final long				serialVersionUID	= 2060007769938743965L;
+
 	protected Map<String, SchemaField>	fields;
+
 	protected Map<String, SchemaAction>	actions;
+
 	protected Map<String, SchemaEvent>	events;
 
-	protected List<SchemaField>					orderedFields;
-	protected List<SchemaAction>				orderedActions;
+	protected List<SchemaField>			orderedFields;
 
+	protected List<SchemaAction>			orderedActions;
 
 	public SchemaClassDefinition() {
 		super(FeatureType.CLASS);
@@ -75,37 +77,11 @@ public abstract class SchemaClassDefinition extends SchemaFeatures {
 	}
 
 	/**
-	 * Search an action by checking the name and parameter type. It works very similar to the JVM.
+	 * Search an action by checking the name and parameter type. It works very
+	 * similar to the JVM.
 	 */
-	public SchemaAction getAction(String iActionName, Object[] iActionParameters) {
-		for (SchemaAction a : orderedActions) {
-			if (a.getName().equals(iActionName)) {
-				if (iActionParameters == null || iActionParameters.length == 0 && a.getParameterNumber() == 0)
-					// NO PARAMETERS
-					return a;
-
-				if (iActionParameters.length == a.getParameterNumber()) {
-					SchemaParameter par;
-					Iterator<SchemaParameter> itPar = a.getParameterIterator();
-					int i;
-					for (i = 0; i < iActionParameters.length; ++i) {
-						if (!itPar.hasNext())
-							break;
-
-						par = itPar.next();
-
-						if (!par.getType().isAssignableFrom(Roma.schema().getSchemaClass(iActionParameters[i].getClass())))
-							break;
-					}
-
-					if (i == iActionParameters.length)
-						// ALL PARAMETER MATCHED: RETURN THIS ONE
-						return a;
-				}
-			}
-		}
-
-		return null;
+	public SchemaAction getAction(String iActionName, Class<?>[] iActionParameters) {
+		return actions.get(SchemaAction.getSignature(iActionName, iActionParameters));
 	}
 
 	public SchemaAction getAction(String iActionName) {
@@ -321,6 +297,5 @@ public abstract class SchemaClassDefinition extends SchemaFeatures {
 			setField(field.getName(), field);
 		}
 	}
-	
-	
+
 }
