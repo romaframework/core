@@ -50,24 +50,30 @@ import org.romaframework.core.schema.config.SaxSchemaConfiguration;
 import org.romaframework.core.schema.config.SchemaConfiguration;
 
 /**
- * Represent a class. It's not necessary that a Java class exist in the Classpath since you can define a SchemaClassReflection that
- * inherits another Java Class and use XML descriptor to customize it. This feature avoid the writing of empty class that simply
- * inherit real domain class.
+ * Represent a class. It's not necessary that a Java class exist in the
+ * Classpath since you can define a SchemaClassReflection that inherits another
+ * Java Class and use XML descriptor to customize it. This feature avoid the
+ * writing of empty class that simply inherit real domain class.
  * 
  * @author Luca Garulli (luca.garulli--at--assetdata.it)
  */
 public class SchemaClassReflection extends SchemaClass {
 
-	private static final long			serialVersionUID		= 8389722670237445799L;
-	private Class<?>							javaClass;
-	private SchemaClass						baseClass;
+	private static final long		serialVersionUID		= 8389722670237445799L;
 
-	public static final String		GET_METHOD					= "get";
-	public static final String		IS_METHOD						= "is";
-	public static final String		SET_METHOD					= "set";
+	private Class<?>					javaClass;
+
+	private SchemaClass				baseClass;
+
+	public static final String		GET_METHOD				= "get";
+
+	public static final String		IS_METHOD				= "is";
+
+	public static final String		SET_METHOD				= "set";
+
 	public static final String[]	IGNORE_METHOD_NAMES	= { "equals", "toString", "hashCode", "validate", "getClass", "clone" };
 
-	private static Log						log									= LogFactory.getLog(SchemaClassReflection.class);
+	private static Log				log						= LogFactory.getLog(SchemaClassReflection.class);
 
 	public SchemaClassReflection(Class<?> iClass) {
 		super(Utility.getClassName(iClass));
@@ -77,8 +83,7 @@ public class SchemaClassReflection extends SchemaClass {
 		config();
 	}
 
-	public SchemaClassReflection(String iEntityName, Class<?> iClass, SchemaClass iBaseClass, SchemaConfiguration iDescriptor)
-			throws ConfigurationNotFoundException {
+	public SchemaClassReflection(String iEntityName, Class<?> iClass, SchemaClass iBaseClass, SchemaConfiguration iDescriptor) throws ConfigurationNotFoundException {
 		super(iEntityName);
 
 		if (iDescriptor == null)
@@ -104,8 +109,8 @@ public class SchemaClassReflection extends SchemaClass {
 	}
 
 	@Override
-	public Object newInstanceFinal(Object... iArgs) throws InstantiationException, IllegalAccessException, IllegalArgumentException, SecurityException,
-			InvocationTargetException, NoSuchMethodException {
+	public Object newInstanceFinal(Object... iArgs) throws InstantiationException, IllegalAccessException, IllegalArgumentException, SecurityException, InvocationTargetException,
+			NoSuchMethodException {
 		Class<?> currClass = (Class<?>) (javaClass != null ? javaClass : baseClass.getLanguageType());
 
 		if (iArgs == null || iArgs.length == 0)
@@ -224,7 +229,7 @@ public class SchemaClassReflection extends SchemaClass {
 	}
 
 	private void createAction(Method method, ParameterizedType params) {
-		String methodSignature = getMethodSignature(method);
+		String methodSignature = SchemaAction.getSignature(method.getName(), method.getParameterTypes());
 		log.debug("[SchemaClassReflection] Class " + getName() + " found method: " + methodSignature);
 
 		SchemaActionReflection actionInfo = (SchemaActionReflection) getAction(methodSignature);
@@ -322,9 +327,9 @@ public class SchemaClassReflection extends SchemaClass {
 				SchemaField field = getFieldComposedEntity(fieldName);
 				if (field != null) {
 					if (log.isWarnEnabled())
-						log.warn("The method '" + method + "' will be associated as default event for the field '" + fieldEvent.getEntity().getSchemaClass().getName()
-								+ "." + fieldEvent.getName() + "' instead of '" + eventName + "' event for the field '" + field.getEntity().getSchemaClass().getName() + "."
-								+ field.getName() + "' ");
+						log.warn("The method '" + method + "' will be associated as default event for the field '" + fieldEvent.getEntity().getSchemaClass().getName() + "."
+								+ fieldEvent.getName() + "' instead of '" + eventName + "' event for the field '" + field.getEntity().getSchemaClass().getName() + "." + field.getName()
+								+ "' ");
 				}
 			}
 			addEvent(SchemaEvent.DEFAULT_EVENT_NAME, fieldEvent, method);
@@ -435,15 +440,6 @@ public class SchemaClassReflection extends SchemaClass {
 
 	private static boolean checkIfFirstCharAfterPrefixIsUpperCase(String methodName, String prefix) {
 		return methodName.length() > prefix.length() ? Character.isUpperCase(methodName.charAt(prefix.length())) : false;
-	}
-
-	public static String getMethodSignature(Method currentMethod) {
-		Class<?> parTypes[] = currentMethod.getParameterTypes();
-		String[] params = new String[parTypes.length];
-		for (int i = 0; i < parTypes.length; ++i) {
-			params[i] = parTypes[i].getSimpleName();
-		}
-		return SchemaAction.getSignature(currentMethod.getName(), params);
 	}
 
 	private void addEvent(String eventName, SchemaField field, Method eventMethod) {

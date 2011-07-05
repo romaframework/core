@@ -36,14 +36,17 @@ import org.romaframework.core.schema.xmlannotations.XmlActionAnnotation;
  * @author Luca Garulli (luca.garulli--at--assetdata.it)
  */
 public abstract class SchemaAction extends SchemaClassElement {
-	private static final long							serialVersionUID	= -4789886810661429988L;
+	private static final long					serialVersionUID	= -4789886810661429988L;
 
-	private static Log										log								= LogFactory.getLog(SchemaAction.class);
+	private static Log							log					= LogFactory.getLog(SchemaAction.class);
 
-	private Map<String, SchemaParameter>	parameters				= new HashMap<String, SchemaParameter>();
-	private List<SchemaParameter>					orderedParameters	= new ArrayList<SchemaParameter>();
-	private SchemaClass										returnType;
-	protected XmlActionAnnotation					descriptorInfo;
+	private Map<String, SchemaParameter>	parameters			= new HashMap<String, SchemaParameter>();
+
+	private List<SchemaParameter>				orderedParameters	= new ArrayList<SchemaParameter>();
+
+	private SchemaClass							returnType;
+
+	protected XmlActionAnnotation				descriptorInfo;
 
 	public SchemaAction(SchemaClassDefinition iEntity, String iName) {
 		super(iEntity, iName, FeatureType.ACTION);
@@ -162,9 +165,13 @@ public abstract class SchemaAction extends SchemaClassElement {
 		return descriptorInfo;
 	}
 
-	public static String getSignature(String name, String[] paramNames) {
+	public static String getSignature(String name, Class<?>[] paramClass) {
 		StringBuilder methodSignature = new StringBuilder();
 		methodSignature.append(name);
+		String[] paramNames = new String[paramClass.length];
+		for (int i = 0; i < paramClass.length; ++i) {
+			paramNames[i] = paramClass[i].getSimpleName();
+		}
 		if (paramNames != null && paramNames.length != 0) {
 			methodSignature.append("(");
 			for (int i = 0; i < paramNames.length; i++) {
