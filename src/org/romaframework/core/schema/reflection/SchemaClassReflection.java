@@ -331,7 +331,7 @@ public class SchemaClassReflection extends SchemaClass {
 	/**
 	 * Adds to the events list the methods argument list.
 	 * 
-	 * <p>If the event is not associable to a field will be added as class event. 
+	 * <p>If the event is not linkable to a field will be added as class event. 
 	 * Example: onNameEvent will be added as field event only if exists a field "Name" in the class.
 	 * 
 	 * @param methodsToAdd -: methods to 
