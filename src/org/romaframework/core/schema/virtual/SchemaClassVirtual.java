@@ -246,7 +246,7 @@ public class SchemaClassVirtual extends SchemaClass {
 		for (XmlEventAnnotation event : descriptor.getType().getEvents()) {
 			log.debug("[SchemaClassVirtual] Class " + getName() + " found event: " + event.getName());
 
-			SchemaField fieldEvent = getFieldComposedEntity(event.getName());
+			SchemaField fieldEvent = getField(event.getName());
 			String eventName = lastCapitalWords(event.getName());
 			eventName = firstToLower(eventName);
 
@@ -254,7 +254,7 @@ public class SchemaClassVirtual extends SchemaClass {
 				if (!event.getName().equals(eventName)) {
 					String fieldName = event.getName().substring(0, event.getName().length() - eventName.length());
 					fieldName = firstToLower(fieldName);
-					SchemaField field = getFieldComposedEntity(fieldName);
+					SchemaField field = getField(fieldName);
 					if (field != null) {
 						if (log.isWarnEnabled())
 							log.warn("The action '" + event.getName() + "' will be associated as default event for the field '"
@@ -272,7 +272,7 @@ public class SchemaClassVirtual extends SchemaClass {
 				// EVENT IS A FIELD EVENT
 				String fieldName = event.getName().substring(0, event.getName().length() - eventName.length());
 				fieldName = firstToLower(fieldName);
-				SchemaField field = getFieldComposedEntity(fieldName);
+				SchemaField field = getField(fieldName);
 
 				if (field == null) {
 					if (log.isWarnEnabled())

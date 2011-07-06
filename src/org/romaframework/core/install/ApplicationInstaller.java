@@ -44,11 +44,11 @@ public abstract class ApplicationInstaller extends SelfRegistrantModule {
 	 * 
 	 * @return true if already performed otherwise false.
 	 */
-	public abstract boolean checkInstall();
+	public abstract boolean alreadyInstalled();
 
 	@Override
 	public void startup() throws RuntimeException {
-		if (checkInstall()) {
+		if (!alreadyInstalled()) {
 			install();
 		}
 	}

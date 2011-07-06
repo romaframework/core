@@ -395,15 +395,6 @@ public abstract class SchemaClass extends SchemaClassDefinition implements Compa
 		}
 	}
 
-	protected SchemaField getFieldComposedEntity(String fieldName) {
-		SchemaField field = getField(fieldName);
-		// TODO CACHE MOST COMMON CLASSES
-		if (field == null && isAssignableAs(Roma.schema().getSchemaClass(ComposedEntity.class))) {
-			field = getField(ComposedEntity.NAME + Utility.PACKAGE_SEPARATOR + fieldName);
-		}
-		return field;
-	}
-
 	protected SchemaClass searchForInheritedClassOrInterface(Class<?> javaSuperClass) {
 		try {
 			SchemaClass cls = Roma.schema().getSchemaClassFullPackage(javaSuperClass);
