@@ -169,6 +169,7 @@ public class SchemaClassReflection extends SchemaClass {
 		ParameterizedType type = SchemaHelper.resolveParameterizedType(iClass);
 
 		List<Method> methods = SchemaHelper.getMethods(iClass);
+		List<Method> eventsToAdd = new ArrayList<Method>();
 		for (Method method : methods) {
 			// JUMP STATIC FIELDS OR NOT PUBLIC FIELDS
 			if (isToIgnoreMethod(method))
@@ -177,9 +178,10 @@ public class SchemaClassReflection extends SchemaClass {
 				continue;
 			else if (isSetterForField(method, type))
 				continue;
-			else if (isEvent(method))
+			else if (isEvent(method)) {
+				eventsToAdd.add(method);
 				continue;
-			else
+			} else
 				createAction(method, type);
 
 		}
@@ -218,6 +220,8 @@ public class SchemaClassReflection extends SchemaClass {
 			action.setOrder(getActionOrder(action));
 		}
 		Collections.sort(orderedActions);
+
+		addEvents(eventsToAdd);
 
 		List<SchemaEvent> curEvents = new ArrayList<SchemaEvent>(events.values());
 		for (SchemaEvent event : curEvents) {
@@ -309,47 +313,55 @@ public class SchemaClassReflection extends SchemaClass {
 
 	}
 
+	/**
+	 * Checks if the class method is an event
+	 * 
+	 * @param method
+	 *           -: the class method to check
+	 * 
+	 * @return true if is a event, false otherwise.
+	 */
 	public boolean isEvent(Method method) {
 		String eventMethodName = method.getName();
 		if (!eventMethodName.startsWith(SchemaEvent.ON_METHOD) || !checkIfFirstCharAfterPrefixIsUpperCase(eventMethodName, SchemaEvent.ON_METHOD))
 			return false;
-		eventMethodName = firstToLower(eventMethodName.substring(SchemaEvent.ON_METHOD.length()));
+		return true;
+	}
 
-		SchemaField fieldEvent = getFieldComposedEntity(eventMethodName);
-		String eventName = lastCapitalWords(eventMethodName);
-		eventName = firstToLower(eventName);
-		String fieldName;
+	/**
+	 * Adds to the events list the methods argument list.
+	 * 
+	 * <p>If the event is not associable to a field will be added as class event. 
+	 * Example: onNameEvent will be added as field event only if exists a field "Name" in the class.
+	 * 
+	 * @param methodsToAdd -: methods to 
+	 */
+	protected void addEvents(List<Method> methodsToAdd) {
+		for (Method method : methodsToAdd) {
+			
+			//GET THE EVENT REAL NAME
+			String eventMethodName = method.getName();
+			eventMethodName = firstToLower(eventMethodName.substring(SchemaEvent.ON_METHOD.length()));
 
-		if (fieldEvent != null) {
-			if (!eventMethodName.equals(eventName)) {
-				fieldName = eventMethodName.substring(0, eventMethodName.length() - eventName.length());
+			//GET THE EVENT ASSOCIATED FIELD NAME IF ANY
+			String eventName = lastCapitalWords(eventMethodName);
+			String fieldName = eventMethodName.substring(0, eventMethodName.length() - eventName.length());
+			eventName = firstToLower(eventName);
+
+			//ADDS THE EVENT TO THE LIST, AS EVENT FIELD IF THE FIELD NAME IS FOUND, TO THE CLASS EVENT OTHERWISE
+			if (fieldName.length() > 0) {
 				fieldName = firstToLower(fieldName);
-				SchemaField field = getFieldComposedEntity(fieldName);
-				if (field != null) {
-					if (log.isWarnEnabled())
-						log.warn("The method '" + method + "' will be associated as default event for the field '" + fieldEvent.getEntity().getSchemaClass().getName() + "."
-								+ fieldEvent.getName() + "' instead of '" + eventName + "' event for the field '" + field.getEntity().getSchemaClass().getName() + "." + field.getName()
-								+ "' ");
+				SchemaField field = getField(fieldName);
+				if (field == null) {
+					log.warn("[SchemaClassReflection] Cannot associate the event '" + getName() + "." + eventName + "' to the field '" + getName() + "." + fieldName
+							+ "'. The event will be set to the class.");
+				} else {
+					addEvent(eventName, field, method);
+					continue;
 				}
 			}
-			addEvent(SchemaEvent.DEFAULT_EVENT_NAME, fieldEvent, method);
-		} else if (eventMethodName.equals(eventName)) {
 			addEvent(eventName, null, method);
-		} else {
-			// EVENT IS A FIELD EVENT
-			fieldName = eventMethodName.substring(0, eventMethodName.length() - eventName.length());
-			fieldName = firstToLower(fieldName);
-			SchemaField field = getFieldComposedEntity(fieldName);
-
-			if (field == null) {
-				if (log.isWarnEnabled())
-					log.warn("[SchemaClassReflection] Cannot associate the event '" + getName() + "." + eventName + "' to the field '" + getName() + "." + fieldName
-							+ "'. The event will be ignored.");
-				return false;
-			}
-			addEvent(eventName, field, method);
 		}
-		return true;
 	}
 
 	public Class<?> getLanguageType() {
