@@ -75,7 +75,7 @@ public class CoreAspect extends SelfRegistrantModule implements Aspect, RomaAppl
 			try {
 				Class.forName(clBaseName + "Features");
 			} catch (Exception e) {
-				log.error(e);
+				log.debug("Not Found Features", e);
 			}
 			for (FeatureType type : FeatureType.values()) {
 				String name = clBaseName + type.getBaseName() + "Features";
@@ -83,7 +83,7 @@ public class CoreAspect extends SelfRegistrantModule implements Aspect, RomaAppl
 					// if (aspect.getClass().getClassLoader().getResource(name + ".class") != null)
 					Class.forName(name);
 				} catch (Exception e) {
-					log.error(e);
+					log.debug("Not Found Features", e);
 				}
 			}
 

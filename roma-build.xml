@@ -132,7 +132,7 @@
 
 	<target name="publish" depends="dist">
 		<ivy:publish resolver="local" overwrite="true">
-			<artifacts pattern="${project.dist}/[module].[ext]" />
+			<artifacts pattern="${project.dist}/[artifact].[ext]" />
 		</ivy:publish>
 	</target>
 

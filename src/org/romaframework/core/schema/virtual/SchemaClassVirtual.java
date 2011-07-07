@@ -327,6 +327,11 @@ public class SchemaClassVirtual extends SchemaClass {
 	}
 
 	@Override
+	public boolean isEnum() {
+		return false;
+	}
+
+	@Override
 	public boolean isAbstract() {
 		return abstractType;
 	}

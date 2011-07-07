@@ -89,7 +89,15 @@ public abstract class SchemaAction extends SchemaClassElement {
 			Object value = null;
 			try {
 
-				value = invokeFinal(iContent, params);
+				Iterator<SchemaParameter> param = getParameterIterator();
+				Object newValues[] = new Object[params.length];
+				int i = 0;
+				while (param.hasNext()) {
+					SchemaParameter par = param.next();
+					newValues[i] = convertValue(params[i], par.getType());
+					i++;
+				}
+				value = invokeFinal(iContent, newValues);
 				for (SchemaActionListener listener : listeners) {
 					try {
 						listener.onAfterAction(iContent, this, value);
