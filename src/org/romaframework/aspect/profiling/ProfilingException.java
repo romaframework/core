@@ -23,11 +23,11 @@ package org.romaframework.aspect.profiling;
  */
 public class ProfilingException extends RuntimeException {
 
-  public ProfilingException() {
-    super();
-  }
+	public ProfilingException() {
+		super();
+	}
 
-  public ProfilingException(String message) {
-    super(message);
-  }
+	public ProfilingException(String message) {
+		super(message);
+	}
 }

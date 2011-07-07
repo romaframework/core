@@ -22,8 +22,8 @@ package org.romaframework.core.config;
  * 
  */
 public interface Destroyable {
-  /**
-   * Destroy method to clean up the object.
-   */
-  public void destroy();
+	/**
+	 * Destroy method to clean up the object.
+	 */
+	public void destroy();
 }

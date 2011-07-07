@@ -9,8 +9,6 @@ public class XmlEventAnnotation extends XmlActionAnnotation {
 		buffer.append("event{");
 		buffer.append(name);
 
-		
-
 		if (aspects.size() > 0) {
 			buffer.append(" aspects[");
 			int i = 0;
@@ -22,8 +20,6 @@ public class XmlEventAnnotation extends XmlActionAnnotation {
 			}
 			buffer.append("]");
 		}
-
-	
 
 		buffer.append("}");
 		return buffer.toString();

@@ -205,17 +205,15 @@ public class SchemaClassResolver implements ResourceResolverListener, Serviceabl
 			// ALREADY EXISTS
 			if (currentPath.equals(iPackagePrefix))
 				// SAME PATH: PROBABLY THE JAR WAS SETTED MULTIPLE TIMES
-				log.warn("[SchemaClassResolver.addResourceClass] Warning: found the class " + name
-						+ " defined twice in the classpath and they point to the same package " + iPackagePrefix
+				log.warn("[SchemaClassResolver.addResourceClass] Warning: found the class " + name + " defined twice in the classpath and they point to the same package " + iPackagePrefix
 						+ " Assure you have only one class to avoid alignment problems. Current path is: " + iFile);
 			else
 				// ALREADY EXISTS
-				log.warn("[SchemaClassResolver.addResourceClass] Found the class " + name + " defined twice. Ignore current package "
-						+ iPackagePrefix + " Use the first one found: " + currentPath + " from path: " + iFile);
+				log.warn("[SchemaClassResolver.addResourceClass] Found the class " + name + " defined twice. Ignore current package " + iPackagePrefix + " Use the first one found: "
+						+ currentPath + " from path: " + iFile);
 		} else {
 			if (log.isDebugEnabled())
-				log.debug("[SchemaClassResolver.addResourceClass] > Loading class: " + iName + " from path: " + iFile
-						+ " using the package: " + iPackagePrefix);
+				log.debug("[SchemaClassResolver.addResourceClass] > Loading class: " + iName + " from path: " + iFile + " using the package: " + iPackagePrefix);
 
 			classLocations.put(name, iPackagePrefix);
 
@@ -244,18 +242,15 @@ public class SchemaClassResolver implements ResourceResolverListener, Serviceabl
 			// ALREADY EXISTS
 			if (currentPath.equals(iPackagePrefix))
 				// ALREADY EXISTS
-				log.warn("[SchemaClassResolver.addResourceDescriptor] Warning: found the Xml Annotation " + name
-						+ " defined twice in the classpath and they point to the same package " + iPackagePrefix
-						+ " Assure you have only one class to avoid alignment problems. Current path is: " + iFile);
+				log.warn("[SchemaClassResolver.addResourceDescriptor] Warning: found the Xml Annotation " + name + " defined twice in the classpath and they point to the same package "
+						+ iPackagePrefix + " Assure you have only one class to avoid alignment problems. Current path is: " + iFile);
 			else
 				// ALREADY EXISTS
-				log.warn("[SchemaClassResolver.addResourceDescriptor] Found the Xml Annotation " + name
-						+ " defined twice. Ignore current package " + iPackagePrefix + " Use the first one found: " + currentPath
-						+ " from path: " + iFile);
+				log.warn("[SchemaClassResolver.addResourceDescriptor] Found the Xml Annotation " + name + " defined twice. Ignore current package " + iPackagePrefix
+						+ " Use the first one found: " + currentPath + " from path: " + iFile);
 		} else {
 			if (log.isDebugEnabled())
-				log.debug("[SchemaClassResolver.addResourceDescriptor] > Loading Xml Annotation: " + iName + " from path: " + iFile
-						+ " using the package: " + iPackagePrefix);
+				log.debug("[SchemaClassResolver.addResourceDescriptor] > Loading Xml Annotation: " + iName + " from path: " + iFile + " using the package: " + iPackagePrefix);
 
 			descriptors.put(name, Utility.PATH_SEPARATOR + iPackagePrefix.replace('.', Utility.PATH_SEPARATOR));
 		}

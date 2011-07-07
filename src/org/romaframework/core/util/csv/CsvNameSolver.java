@@ -27,7 +27,7 @@ public interface CsvNameSolver {
 	 * @return the name of header.
 	 */
 	public String getHeaderName(String fieldName);
-	
+
 	/**
 	 * Retrieve the list of field to export.
 	 * 

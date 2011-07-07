@@ -32,5 +32,5 @@ import org.romaframework.aspect.core.annotation.AnnotationConstants;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidationAction {
-  byte validate() default AnnotationConstants.UNSETTED;
+	byte validate() default AnnotationConstants.UNSETTED;
 }

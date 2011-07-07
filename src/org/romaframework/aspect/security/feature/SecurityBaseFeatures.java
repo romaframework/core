@@ -15,7 +15,6 @@
  */
 package org.romaframework.aspect.security.feature;
 
-
 public class SecurityBaseFeatures {
 
 }

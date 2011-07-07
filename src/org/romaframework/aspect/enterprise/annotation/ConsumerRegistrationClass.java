@@ -18,13 +18,13 @@ public @interface ConsumerRegistrationClass {
 	String organizationPackage();
 
 	String serviceDesc() default "";
-	
+
 	String author() default "";
 
-	//this Annotation set up the service icon path 
-	String iconPath() default ""; 
-	
-	//Consumer Service Name
+	// this Annotation set up the service icon path
+	String iconPath() default "";
+
+	// Consumer Service Name
 	String serviceName();
 
 }

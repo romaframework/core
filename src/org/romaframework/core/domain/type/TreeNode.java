@@ -10,10 +10,10 @@ public interface TreeNode {
 	public TreeNode getParent();
 
 	public TreeNode getChild(String iName);
-	
+
 	public boolean removeChild(TreeNode iChild);
 
 	public Collection<? extends TreeNode> getChildren();
-	
-	public void addChild( TreeNode child);
+
+	public void addChild(TreeNode child);
 }

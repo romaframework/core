@@ -33,74 +33,74 @@ import org.romaframework.core.io.virtualfile.zip.ZipArchiveFile;
 import org.romaframework.core.io.virtualfile.zip.ZipEntryArchiveFile;
 
 public class VirtualFileFactory {
-  private Map<String, Class<? extends VirtualFile>> urlTypes = new HashMap<String, Class<? extends VirtualFile>>();
+	private Map<String, Class<? extends VirtualFile>>	urlTypes	= new HashMap<String, Class<? extends VirtualFile>>();
 
-  /**
-   * Singleton instance
-   */
-  public static VirtualFileFactory                  instance = new VirtualFileFactory();
+	/**
+	 * Singleton instance
+	 */
+	public static VirtualFileFactory									instance	= new VirtualFileFactory();
 
-  public VirtualFileFactory() {
-    urlTypes.put(PhysicalFile.PREFIX, PhysicalFile.class);
-    urlTypes.put(ZipArchiveFile.PREFIX, ZipArchiveFile.class);
-    urlTypes.put(HttpFile.PREFIX, HttpFile.class);
+	public VirtualFileFactory() {
+		urlTypes.put(PhysicalFile.PREFIX, PhysicalFile.class);
+		urlTypes.put(ZipArchiveFile.PREFIX, ZipArchiveFile.class);
+		urlTypes.put(HttpFile.PREFIX, HttpFile.class);
 
-    // REGISTER THE URL STREAM HANDLER TO BE RECOGNIZED BY JAVA IO CLASSES
-    // URL.setURLStreamHandlerFactory(new ClassPathURLStreamHandlerFactory()); Line commented because this static method can be
-    // called only once, and on tomcat it seems to has already been called.
-    urlTypes.put("classpath:", ClassPathFile.class);
-  }
+		// REGISTER THE URL STREAM HANDLER TO BE RECOGNIZED BY JAVA IO CLASSES
+		// URL.setURLStreamHandlerFactory(new ClassPathURLStreamHandlerFactory()); Line commented because this static method can be
+		// called only once, and on tomcat it seems to has already been called.
+		urlTypes.put("classpath:", ClassPathFile.class);
+	}
 
-  public VirtualFile getFile(String url) throws MalformedURLException {
-    if (url == null)
-      return null;
+	public VirtualFile getFile(String url) throws MalformedURLException {
+		if (url == null)
+			return null;
 
-    url = resolveURL(url);
+		url = resolveURL(url);
 
-    return getFile(new URL(url));
-  }
+		return getFile(new URL(url));
+	}
 
-  private String resolveURL(String url) {
-    for (Map.Entry<String, Class<? extends VirtualFile>> entry : urlTypes.entrySet()) {
-      if (url.startsWith(entry.getKey()))
-        return url;
-    }
+	private String resolveURL(String url) {
+		for (Map.Entry<String, Class<? extends VirtualFile>> entry : urlTypes.entrySet()) {
+			if (url.startsWith(entry.getKey()))
+				return url;
+		}
 
-    return Utility.FILE_PREFIX + url;
-  }
+		return Utility.FILE_PREFIX + url;
+	}
 
-  public VirtualFile getFile(URL url) {
-    URLConnection conn;
-    try {
-    if (url == null) {
-    	return null;
-    }
-    	
-      conn = url.openConnection();
+	public VirtualFile getFile(URL url) {
+		URLConnection conn;
+		try {
+			if (url == null) {
+				return null;
+			}
 
-      if (conn == null)
-        return null;
+			conn = url.openConnection();
 
-      if (conn instanceof JarURLConnection) {
-        JarURLConnection jarConn = (JarURLConnection) conn;
+			if (conn == null)
+				return null;
 
-        if (jarConn.getJarEntry() != null)
-          return new ZipEntryArchiveFile(jarConn.getJarEntry(), jarConn.getJarFile());
+			if (conn instanceof JarURLConnection) {
+				JarURLConnection jarConn = (JarURLConnection) conn;
 
-        return new ZipArchiveFile(jarConn);
-      } else if (conn instanceof ClassPathURLConnection) {
-        return new ClassPathFile(url);
-      } else if (conn instanceof HttpURLConnection) {
-        return new HttpFile(url);
-      } else {
-        return new PhysicalFile(url);
-      }
-    } catch (IOException e) {
-      return null;
-    }
-  }
+				if (jarConn.getJarEntry() != null)
+					return new ZipEntryArchiveFile(jarConn.getJarEntry(), jarConn.getJarFile());
 
-  public static VirtualFileFactory getInstance() {
-    return instance;
-  }
+				return new ZipArchiveFile(jarConn);
+			} else if (conn instanceof ClassPathURLConnection) {
+				return new ClassPathFile(url);
+			} else if (conn instanceof HttpURLConnection) {
+				return new HttpFile(url);
+			} else {
+				return new PhysicalFile(url);
+			}
+		} catch (IOException e) {
+			return null;
+		}
+	}
+
+	public static VirtualFileFactory getInstance() {
+		return instance;
+	}
 }

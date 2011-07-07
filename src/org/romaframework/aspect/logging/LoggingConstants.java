@@ -23,17 +23,17 @@ package org.romaframework.aspect.logging;
  */
 public interface LoggingConstants {
 
-  public static final int    LEVEL_DEBUG      = 0;
-  public static final int    LEVEL_INFO       = 1;
-  public static final int    LEVEL_WARNING    = 2;
-  public static final int    LEVEL_ERROR      = 3;
-  public static final int    LEVEL_FATAL      = 4;
+	public static final int			LEVEL_DEBUG				= 0;
+	public static final int			LEVEL_INFO				= 1;
+	public static final int			LEVEL_WARNING			= 2;
+	public static final int			LEVEL_ERROR				= 3;
+	public static final int			LEVEL_FATAL				= 4;
 
-  public static final String MODE_DB          = "DB";
-  public static final String MODE_FILE        = "FILE";
-  public static final String MODE_CONSOLE     = "CONSOLE";
+	public static final String	MODE_DB						= "DB";
+	public static final String	MODE_FILE					= "FILE";
+	public static final String	MODE_CONSOLE			= "CONSOLE";
 
-  public static final String DEFAULT_CATEGORY = "DefaultCategory";
-  public static final String DEFAULT_MESSAGE  = "@{who} @{where}";
+	public static final String	DEFAULT_CATEGORY	= "DefaultCategory";
+	public static final String	DEFAULT_MESSAGE		= "@{who} @{where}";
 
 }

@@ -24,7 +24,7 @@ public class UserException extends RuntimeException {
 
 	private static final long	serialVersionUID	= 5363709029026933291L;
 	protected StringBuilder		message						= new StringBuilder();
-	protected Object						obj;
+	protected Object					obj;
 
 	public UserException(Object iObject, String iMessage) {
 		init(iObject, iMessage);

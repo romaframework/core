@@ -27,9 +27,9 @@ import org.romaframework.aspect.core.annotation.AnnotationConstants;
 @Target(ElementType.TYPE)
 public @interface ProfilingClass {
 
-  /**
-   * Enable the profiling
-   */
-  byte enabled() default AnnotationConstants.UNSETTED;
+	/**
+	 * Enable the profiling
+	 */
+	byte enabled() default AnnotationConstants.UNSETTED;
 
 }

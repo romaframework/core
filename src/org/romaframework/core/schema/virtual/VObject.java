@@ -62,8 +62,7 @@ public class VObject implements VirtualObject {
 		if (iClass.getSuperClass() != null) {
 			try {
 				if (iClass.getSuperClass().isAbstract() || iClass.getSuperClass().isInterface())
-					throw new IllegalArgumentException("Can't create a virtual object with super class '" + iClass.getSuperClass()
-							+ "' since it's abstract or it's an interface");
+					throw new IllegalArgumentException("Can't create a virtual object with super class '" + iClass.getSuperClass() + "' since it's abstract or it's an interface");
 
 				superClassObject = iObject != null ? iObject : iClass.getSuperClass().newInstance();
 

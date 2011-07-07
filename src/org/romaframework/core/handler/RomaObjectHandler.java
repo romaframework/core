@@ -25,19 +25,19 @@ import org.romaframework.core.schema.SchemaObject;
  * 
  */
 public interface RomaObjectHandler {
-  public void setContent(Object iContent);
+	public void setContent(Object iContent);
 
-  public Object getContent();
+	public Object getContent();
 
-  public RomaObjectHandler getContainerComponent();
+	public RomaObjectHandler getContainerComponent();
 
-  public void setSchemaObject(SchemaObject iSchemaObject);
+	public void setSchemaObject(SchemaObject iSchemaObject);
 
-  public SchemaObject getSchemaObject();
+	public SchemaObject getSchemaObject();
 
-  public void setSchemaField(SchemaField iSchemaField);
+	public void setSchemaField(SchemaField iSchemaField);
 
-  public SchemaField getSchemaField();
+	public SchemaField getSchemaField();
 
-  public Object getFieldComponent(String iName);
+	public Object getFieldComponent(String iName);
 }

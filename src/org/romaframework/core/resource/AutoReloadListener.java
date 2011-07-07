@@ -19,5 +19,5 @@ package org.romaframework.core.resource;
 import java.io.File;
 
 public interface AutoReloadListener {
-  public void signalUpdatedFile(File iFile);
+	public void signalUpdatedFile(File iFile);
 }

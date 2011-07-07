@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 package org.romaframework.aspect.monitoring.annotation;
 
 import java.lang.annotation.ElementType;
@@ -23,8 +23,8 @@ import java.lang.annotation.Target;
 
 import org.romaframework.aspect.core.annotation.AnnotationConstants;
 
-@Target( { ElementType.FIELD, ElementType.METHOD })
+@Target({ ElementType.FIELD, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MonitoringField {
-  byte enabled() default AnnotationConstants.UNSETTED;
+	byte enabled() default AnnotationConstants.UNSETTED;
 }

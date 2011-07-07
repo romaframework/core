@@ -25,9 +25,13 @@ public interface Logger {
 
 	/**
 	 * Print the message
-	 * @param iLevel the level of the log message
-	 * @param iCategory the category of the log message
-	 * @param message the message to print
+	 * 
+	 * @param iLevel
+	 *          the level of the log message
+	 * @param iCategory
+	 *          the category of the log message
+	 * @param message
+	 *          the message to print
 	 */
 	public void print(int iLevel, String iCategory, String message);
 

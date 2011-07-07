@@ -13,24 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 package org.romaframework.core.util;
 
 public class DynaBeanException extends RuntimeException {
 
-  public DynaBeanException() {
-    super();
-  }
+	public DynaBeanException() {
+		super();
+	}
 
-  public DynaBeanException(String message, Throwable cause) {
-    super(message, cause);
-  }
+	public DynaBeanException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-  public DynaBeanException(String message) {
-    super(message);
-  }
+	public DynaBeanException(String message) {
+		super(message);
+	}
 
-  public DynaBeanException(Throwable cause) {
-    super(cause);
-  }
+	public DynaBeanException(Throwable cause) {
+		super(cause);
+	}
 }

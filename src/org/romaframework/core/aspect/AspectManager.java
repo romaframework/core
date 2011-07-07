@@ -30,63 +30,63 @@ import org.romaframework.aspect.core.CoreAspect;
  * 
  */
 public class AspectManager {
-  protected Collection<Aspect>  aspectCollection;
-  protected Map<String, Aspect> defaults = new LinkedHashMap<String, Aspect>();
+	protected Collection<Aspect>	aspectCollection;
+	protected Map<String, Aspect>	defaults	= new LinkedHashMap<String, Aspect>();
 
-  protected AspectManager() {
-    // ADD DEFAULT CORE ASPECT AS FIRST
-    registerAspect(new CoreAspect());
-  }
+	protected AspectManager() {
+		// ADD DEFAULT CORE ASPECT AS FIRST
+		registerAspect(new CoreAspect());
+	}
 
-  /**
-   * Register the aspect already started. It's used by SelfRegistrantAspect.
-   * 
-   * @param iAspect
-   *          Aspect to register
-   */
-  private void registerAspect(Aspect iAspect) {
-    defaults.put(iAspect.aspectName(), iAspect);
-    updateAspectCollection();
-  }
+	/**
+	 * Register the aspect already started. It's used by SelfRegistrantAspect.
+	 * 
+	 * @param iAspect
+	 *          Aspect to register
+	 */
+	private void registerAspect(Aspect iAspect) {
+		defaults.put(iAspect.aspectName(), iAspect);
+		updateAspectCollection();
+	}
 
-  /**
-   * Unregister the aspect.
-   * 
-   * @param iName
-   *          Aspect's name to unregister
-   */
-  protected Aspect unregisterAspect(String iName) {
-    Aspect aspect = defaults.remove(iName);
-    updateAspectCollection();
-    return aspect;
-  }
+	/**
+	 * Unregister the aspect.
+	 * 
+	 * @param iName
+	 *          Aspect's name to unregister
+	 */
+	protected Aspect unregisterAspect(String iName) {
+		Aspect aspect = defaults.remove(iName);
+		updateAspectCollection();
+		return aspect;
+	}
 
-  private void updateAspectCollection() {
-    synchronized (defaults) {
-      aspectCollection = Collections.unmodifiableCollection(defaults.values());
-    }
-  }
+	private void updateAspectCollection() {
+		synchronized (defaults) {
+			aspectCollection = Collections.unmodifiableCollection(defaults.values());
+		}
+	}
 
-  public Collection<Aspect> getAspectCollection() {
-    synchronized (defaults) {
-      return aspectCollection;
-    }
-  }
+	public Collection<Aspect> getAspectCollection() {
+		synchronized (defaults) {
+			return aspectCollection;
+		}
+	}
 
-  public Aspect getAspect(String name) {
-    return defaults.get(name);
-  }
+	public Aspect getAspect(String name) {
+		return defaults.get(name);
+	}
 
-  public Map<String, Aspect> getDefaults() {
-    return defaults;
-  }
+	public Map<String, Aspect> getDefaults() {
+		return defaults;
+	}
 
-  public void setDefaults(Map<String, Aspect> iDefaults) {
-    this.defaults.putAll(iDefaults);
-    updateAspectCollection();
-  }
+	public void setDefaults(Map<String, Aspect> iDefaults) {
+		this.defaults.putAll(iDefaults);
+		updateAspectCollection();
+	}
 
-  public String getStatus() {
-    return null;
-  }
+	public String getStatus() {
+		return null;
+	}
 }

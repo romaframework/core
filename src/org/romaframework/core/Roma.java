@@ -200,8 +200,7 @@ public class Roma implements ScriptingAspectListener {
 
 	@Deprecated
 	@SuppressWarnings("rawtypes")
-	public static boolean setFieldFeature(Object iUserObject, String iAspectName, String iFieldName, String iFeatureName, Object iFeatureValue)
-			throws ConfigurationNotFoundException {
+	public static boolean setFieldFeature(Object iUserObject, String iAspectName, String iFieldName, String iFeatureName, Object iFeatureValue) throws ConfigurationNotFoundException {
 		Feature fae = FeatureRegistry.getFeature(iAspectName, FeatureType.FIELD, iFeatureName);
 		return setFeature(iUserObject, iFieldName, fae, iFeatureValue);
 	}
@@ -214,8 +213,7 @@ public class Roma implements ScriptingAspectListener {
 
 	@Deprecated
 	@SuppressWarnings("rawtypes")
-	public static boolean setClassFeature(Object iUserObject, String iAspectName, String iFeatureName, Object iFeatureValue)
-			throws ConfigurationNotFoundException {
+	public static boolean setClassFeature(Object iUserObject, String iAspectName, String iFeatureName, Object iFeatureValue) throws ConfigurationNotFoundException {
 		Feature fae = FeatureRegistry.getFeature(iAspectName, FeatureType.CLASS, iFeatureName);
 		return setFeature(iUserObject, fae, iFeatureValue);
 	}

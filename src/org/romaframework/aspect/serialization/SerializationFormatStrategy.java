@@ -29,25 +29,26 @@ public interface SerializationFormatStrategy {
 	/**
 	 * Return the name of store strategy.
 	 * 
-	 * @return the name of store strategy. 
+	 * @return the name of store strategy.
 	 */
 	public String getName();
-	
+
 	/**
 	 * Write a data to a data Mainteiner.
 	 * 
 	 * @param data
 	 *          to store.
-	 * @return serialized data. 
+	 * @return serialized data.
 	 */
-	public void marshall(SerializationData data,OutputStream outputStream);
+	public void marshall(SerializationData data, OutputStream outputStream);
 
 	/**
 	 * Read ad an serialized data.
 	 * 
-	 * @param data to read.
+	 * @param data
+	 *          to read.
 	 * @return the SerializationData data deserialized .
 	 */
 	public SerializationData unmarshall(InputStream inputStream);
-	
+
 }

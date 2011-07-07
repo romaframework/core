@@ -15,7 +15,6 @@
  */
 package org.romaframework.aspect.security;
 
-
 import org.romaframework.aspect.authentication.UserObjectPermissionListener;
 import org.romaframework.core.flow.Controller;
 import org.romaframework.core.flow.SchemaActionListener;
@@ -26,16 +25,15 @@ import org.romaframework.core.schema.SchemaClassDefinition;
 import org.romaframework.core.schema.SchemaEvent;
 import org.romaframework.core.schema.SchemaField;
 
-public abstract class SecurityAspectAbstract extends SelfRegistrantConfigurableModule<String> implements SecurityAspect, UserObjectPermissionListener,
-		SchemaActionListener, SchemaFieldListener {
+public abstract class SecurityAspectAbstract extends SelfRegistrantConfigurableModule<String> implements SecurityAspect, UserObjectPermissionListener, SchemaActionListener,
+		SchemaFieldListener {
 
 	public SecurityAspectAbstract() {
 		Controller.getInstance().registerListener(SchemaFieldListener.class, this);
 		Controller.getInstance().registerListener(SchemaActionListener.class, this);
 		Controller.getInstance().registerListener(UserObjectPermissionListener.class, this);
 	}
-	
-	
+
 	public void beginConfigClass(SchemaClassDefinition iClass) {
 	}
 

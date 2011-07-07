@@ -215,7 +215,7 @@ public class Utility {
 	 * @return
 	 */
 	public static String getUniversalResourcePath(String iResourcePath) {
-		if(iResourcePath==null){
+		if (iResourcePath == null) {
 			return null;
 		}
 		return iResourcePath.replace(WINDOWS_SEPARATOR, PATH_SEPARATOR);
@@ -252,10 +252,9 @@ public class Utility {
 	}
 
 	public static boolean isPrimitiveType(Class<?> clazz) {
-		return clazz.isPrimitive() || clazz.isAssignableFrom(Byte.class) || clazz.isAssignableFrom(Short.class)
-				|| clazz.isAssignableFrom(Integer.class) || clazz.isAssignableFrom(Long.class) || clazz.isAssignableFrom(Float.class)
-				|| clazz.isAssignableFrom(Double.class) || clazz.isAssignableFrom(Character.class) || clazz.isAssignableFrom(String.class)
-				|| clazz.isAssignableFrom(Boolean.class);
+		return clazz.isPrimitive() || clazz.isAssignableFrom(Byte.class) || clazz.isAssignableFrom(Short.class) || clazz.isAssignableFrom(Integer.class)
+				|| clazz.isAssignableFrom(Long.class) || clazz.isAssignableFrom(Float.class) || clazz.isAssignableFrom(Double.class) || clazz.isAssignableFrom(Character.class)
+				|| clazz.isAssignableFrom(String.class) || clazz.isAssignableFrom(Boolean.class);
 	}
 
 	public static String cutString(String summary, int maxLength) {

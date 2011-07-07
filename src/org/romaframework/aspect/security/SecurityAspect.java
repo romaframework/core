@@ -21,34 +21,43 @@ import org.romaframework.core.schema.SchemaField;
 
 public interface SecurityAspect extends Aspect {
 
-	public static final String    ASPECT_NAME = "security";
-	
+	public static final String	ASPECT_NAME	= "security";
+
 	/**
-	 * checks whether the currently logged user can read this field 
-	 * @param obj the object
-	 * @param fieldName the field name
+	 * checks whether the currently logged user can read this field
+	 * 
+	 * @param obj
+	 *          the object
+	 * @param fieldName
+	 *          the field name
 	 * @return true if the currently logged user can read this field
 	 */
 	public boolean canRead(Object obj, SchemaField iSchemaField);
-	
+
 	/**
-	 * checks whether the currently logged user can write this field 
-	 * @param obj the object
-	 * @param fieldName the field name
+	 * checks whether the currently logged user can write this field
+	 * 
+	 * @param obj
+	 *          the object
+	 * @param fieldName
+	 *          the field name
 	 * @return true if the currently logged user can write this field
 	 */
 	public boolean canWrite(Object obj, SchemaField iSchemaField);
-	
+
 	/**
-	 * checks whether the currently logged user can execute this action 
-	 * @param obj the object
-	 * @param actionName the action
+	 * checks whether the currently logged user can execute this action
+	 * 
+	 * @param obj
+	 *          the object
+	 * @param actionName
+	 *          the action
 	 * @return true if the currently logged user can execute this action
 	 */
 	public boolean canExecute(Object obj, SchemaClassElement iSchemaElement);
-	
+
 	public Object encrypt(Object obj, String fieldName) throws UnsupportedOperationException;
-	
+
 	public Object decrypt(Object obj, String fieldName) throws UnsupportedOperationException;
-	
+
 }

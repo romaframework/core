@@ -27,7 +27,7 @@ import org.romaframework.core.Utility;
 
 public abstract class SchemaClassDefinition extends SchemaFeatures {
 
-	private static final long				serialVersionUID	= 2060007769938743965L;
+	private static final long						serialVersionUID	= 2060007769938743965L;
 
 	protected Map<String, SchemaField>	fields;
 
@@ -35,9 +35,9 @@ public abstract class SchemaClassDefinition extends SchemaFeatures {
 
 	protected Map<String, SchemaEvent>	events;
 
-	protected List<SchemaField>			orderedFields;
+	protected List<SchemaField>					orderedFields;
 
-	protected List<SchemaAction>			orderedActions;
+	protected List<SchemaAction>				orderedActions;
 
 	public SchemaClassDefinition() {
 		super(FeatureType.CLASS);
@@ -77,8 +77,7 @@ public abstract class SchemaClassDefinition extends SchemaFeatures {
 	}
 
 	/**
-	 * Search an action by checking the name and parameter type. It works very
-	 * similar to the JVM.
+	 * Search an action by checking the name and parameter type. It works very similar to the JVM.
 	 */
 	public SchemaAction getAction(String iActionName, Class<?>[] iActionParameters) {
 		return actions.get(SchemaAction.getSignature(iActionName, iActionParameters));

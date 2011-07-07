@@ -20,10 +20,10 @@ import org.romaframework.core.schema.SchemaEvent;
 
 /**
  * @author luca.molino
- *
+ * 
  */
 public interface SchemaEventListener {
-	
+
 	/**
 	 * Callback invoked before the execution of any action by the Controller. Events are themselve Events.
 	 * 

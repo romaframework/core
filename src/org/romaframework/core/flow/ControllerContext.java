@@ -28,34 +28,34 @@ import org.romaframework.core.schema.SchemaClass;
  */
 public class ControllerContext implements Serializable {
 
-  private static final long          serialVersionUID = 1L;
+	private static final long						serialVersionUID	= 1L;
 
-  protected String                   activeArea;
-  protected Map<SchemaClass, Object> objects          = new HashMap<SchemaClass, Object>();
+	protected String										activeArea;
+	protected Map<SchemaClass, Object>	objects						= new HashMap<SchemaClass, Object>();
 
-  public String getActiveArea() {
-    return activeArea;
-  }
+	public String getActiveArea() {
+		return activeArea;
+	}
 
-  public void setActiveArea(String lastArea) {
-    this.activeArea = lastArea;
-  }
+	public void setActiveArea(String lastArea) {
+		this.activeArea = lastArea;
+	}
 
-  public Map<SchemaClass, Object> getObjects() {
-    return objects;
-  }
+	public Map<SchemaClass, Object> getObjects() {
+		return objects;
+	}
 
-  public void removeObject(SchemaClass iKey) {
-    objects.remove(iKey);
-  }
+	public void removeObject(SchemaClass iKey) {
+		objects.remove(iKey);
+	}
 
-  @Override
-  public String toString() {
-    StringBuilder buffer = new StringBuilder();
-    buffer.append("LastArea: ");
-    buffer.append(activeArea);
-    buffer.append(" Objects: ");
-    buffer.append(objects.size());
-    return buffer.toString();
-  }
+	@Override
+	public String toString() {
+		StringBuilder buffer = new StringBuilder();
+		buffer.append("LastArea: ");
+		buffer.append(activeArea);
+		buffer.append(" Objects: ");
+		buffer.append(objects.size());
+		return buffer.toString();
+	}
 }

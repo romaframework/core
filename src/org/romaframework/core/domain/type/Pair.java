@@ -50,10 +50,10 @@ public class Pair<K, V> implements Map.Entry<K, V> {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof Pair<?,?>))
+		if (!(obj instanceof Pair<?, ?>))
 			return false;
 
-		Pair<?,?> other = (Pair<?,?>) obj;
+		Pair<?, ?> other = (Pair<?, ?>) obj;
 		if (key != null && value != null && other.getKey() != null && other.getValue() != null)
 			if (key.equals(other.getKey()) && value.equals(other.getValue()))
 				return true;

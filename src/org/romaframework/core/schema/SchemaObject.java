@@ -64,13 +64,10 @@ public class SchemaObject extends SchemaClassDefinition {
 
 		SchemaField field = fields.get(fieldName);
 		/*
-		if (field != null && field.getType() != null && !(field.getType() instanceof SchemaObject)) {
-			synchronized (field) {
-				if (field.getType() != null)
-					// COMPLEX CLASS: REPLACE IT WITH A SCHEMA OBJECT INSTANCE
-					field.setType(new SchemaObject(field.getType().getSchemaClass()));
-			}
-		}*/
+		 * if (field != null && field.getType() != null && !(field.getType() instanceof SchemaObject)) { synchronized (field) { if
+		 * (field.getType() != null) // COMPLEX CLASS: REPLACE IT WITH A SCHEMA OBJECT INSTANCE field.setType(new
+		 * SchemaObject(field.getType().getSchemaClass())); } }
+		 */
 		if (sepPos > -1 && field != null) {
 			if (field.getType() == null)
 				return null;

@@ -16,7 +16,6 @@
 
 package org.romaframework.aspect.persistence;
 
-
 import org.romaframework.aspect.persistence.annotation.Persistence;
 import org.romaframework.aspect.persistence.feature.PersistenceFeatures;
 import org.romaframework.core.Roma;

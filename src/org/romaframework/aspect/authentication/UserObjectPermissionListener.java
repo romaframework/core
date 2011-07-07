@@ -27,11 +27,11 @@ import org.romaframework.core.schema.SchemaField;
  * @author Luca Garulli (luca.garulli--at--assetdata.it)
  */
 public interface UserObjectPermissionListener {
-  public boolean allowClass(SchemaClass iClass);
+	public boolean allowClass(SchemaClass iClass);
 
-  public boolean allowField(SchemaField iField);
+	public boolean allowField(SchemaField iField);
 
-  public boolean allowAction(SchemaAction iAction);
+	public boolean allowAction(SchemaAction iAction);
 
-  public boolean allowEvent(SchemaEvent iEvent);
+	public boolean allowEvent(SchemaEvent iEvent);
 }

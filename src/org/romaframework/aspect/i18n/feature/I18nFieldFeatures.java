@@ -22,6 +22,6 @@ import org.romaframework.core.schema.FeatureType;
 
 public class I18nFieldFeatures {
 
-	public static final Feature<String>	KEY					= new Feature<String>(I18NAspect.ASPECT_NAME, "key", FeatureType.FIELD,String.class);
-	public static final String	CONTENT_VAR	= "$content";
+	public static final Feature<String>	KEY					= new Feature<String>(I18NAspect.ASPECT_NAME, "key", FeatureType.FIELD, String.class);
+	public static final String					CONTENT_VAR	= "$content";
 }

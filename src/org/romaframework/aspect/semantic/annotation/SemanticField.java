@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
  * @author Luigi Dell'Aquila (luigi.dellaquila@assetdata.it)
  * 
  */
-@Target( { ElementType.FIELD, ElementType.METHOD })
+@Target({ ElementType.FIELD, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface SemanticField {
 	String predicate();

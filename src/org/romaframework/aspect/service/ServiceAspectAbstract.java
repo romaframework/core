@@ -63,8 +63,8 @@ public abstract class ServiceAspectAbstract extends SelfRegistrantConfigurableMo
 	 * @throws SecurityException
 	 * @throws IllegalArgumentException
 	 */
-	protected Object createServiceInstance(SchemaClass implementation) throws IllegalArgumentException, SecurityException, InstantiationException,
-			IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+	protected Object createServiceInstance(SchemaClass implementation) throws IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException,
+			InvocationTargetException, NoSuchMethodException {
 		Class<?> intClass = implementation.getFeature(ServiceClassFeatures.INTERFACE_CLASS);
 
 		if (intClass == null)

@@ -340,7 +340,7 @@ public class HookAspect extends SelfRegistrantModule implements Aspect, FieldRef
 			} else if (entry.scope == HookScope.APPLICATION) {
 				Class<?> cls = (Class<?>) entry.clazzElement.getEntity().getSchemaClass().getLanguageType();
 
-				Map<String, Object> componentsMap = (Map<String, Object>)RomaApplicationContext.getInstance().getComponentAspect().getComponentsOfClass(cls);
+				Map<String, Object> componentsMap = (Map<String, Object>) RomaApplicationContext.getInstance().getComponentAspect().getComponentsOfClass(cls);
 				if (componentsMap != null) {
 					for (Object component : componentsMap.values()) {
 						result = invokeHook(iContent, iElement, key, component, entry);

@@ -10,10 +10,10 @@ public interface ServiceAspect extends Aspect {
 	public static final String	ASPECT_NAME	= "service";
 
 	/**
-	 *Get the WSDL created fro the service Aspect implementation
+	 * Get the WSDL created fro the service Aspect implementation
 	 * 
 	 * @return the HashMap<Class,Definition> that contain the definition for each class using Class as Key
-	 *@author Luca Acquaviva
+	 * @author Luca Acquaviva
 	 */
 	public HashMap<Class<?>, Object> getDefinitionMap();
 
@@ -31,8 +31,7 @@ public interface ServiceAspect extends Aspect {
 	 * @throws UnsupportedOperationException
 	 *           if the implementation doesn't support this operation
 	 */
-	public List<Object> invokeDynamicService(String serviceURL, String operationName, List<Object> inputs)
-			throws UnsupportedOperationException;
+	public List<Object> invokeDynamicService(String serviceURL, String operationName, List<Object> inputs) throws UnsupportedOperationException;
 
 	/**
 	 * lists available operation names for a service

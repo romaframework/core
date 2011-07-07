@@ -24,7 +24,7 @@ import org.romaframework.core.schema.xmlannotations.XmlClassAnnotation;
  */
 public class EmbeddedSchemaConfiguration extends SchemaConfiguration {
 
-  public EmbeddedSchemaConfiguration(XmlClassAnnotation type) {
-    super(type);
-  }
+	public EmbeddedSchemaConfiguration(XmlClassAnnotation type) {
+		super(type);
+	}
 }

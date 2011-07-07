@@ -21,10 +21,11 @@ import org.romaframework.core.schema.SchemaField;
 
 /**
  * abstract implementation of Bindable interface
+ * 
  * @author Luigi Dell'Aquila
  */
 public abstract class AbstractBindable implements Bindable {
-	
+
 	protected Object			sourceObject;
 	protected SchemaField	sourceField;
 
@@ -35,8 +36,7 @@ public abstract class AbstractBindable implements Bindable {
 		sourceField = cls.getField(iSourceFieldName);
 
 		if (sourceField == null)
-			throw new RuntimeException("Cannot find field name " + this.sourceObject.getClass().getSimpleName() + "."
-					+ iSourceFieldName + ". Check class definition");
+			throw new RuntimeException("Cannot find field name " + this.sourceObject.getClass().getSimpleName() + "." + iSourceFieldName + ". Check class definition");
 		init();
 	}
 

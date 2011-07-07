@@ -21,45 +21,51 @@ import java.io.InputStream;
  * This object represents a semantic model
  * 
  * <br>
- * IMPORTANT: PLEASE DO NOT RELY ON THIS RESOURCE, IT IS UNDER DEFINITION AND 
- * HEAVY DEVELOPMENT
- *  
+ * IMPORTANT: PLEASE DO NOT RELY ON THIS RESOURCE, IT IS UNDER DEFINITION AND HEAVY DEVELOPMENT
+ * 
  * @author Luigi Dell'Aquila (luigi.dellaquila@assetdata.it)
  * 
  */
 public interface SemanticModel {
 
-  /**
-   * adds an object to this model
-   * @param obj the object to be added to this model 
-   */
-  public void addObject(Object obj);
-  
-  /**
-   * returns the semantic representation of this model
-   * @return the semantic representation of this model
-   */
-  public String getRepresentation();
-  
-  
-  /**
-   * returns the semantic representation of this model in the given format 
-   * @param format the format (see supported formats in {@link SemanticAspect#getSupportedFormats()})
-   * @return the semantic representation of this model
-   */
-  public String getRepresentation(String format);
-  
-  
-  /**
-   * returns the implementation-specific model object
-   * @return the implementation-specific model object
-   */
-  public Object getUnderlyingImplementation();
-  
-  /**
-   * reads semantic information as a stream (e.g. RDF/XML). The new information is added to the current model
-   * @param inputStream the stream containing semantic information
-   * @param format the stream format (has to be supported by the SemanticAspect, see {@link SemanticAspect#getSupportedFormats()})
-   */
-  public void read(InputStream inputStream, String format);
+	/**
+	 * adds an object to this model
+	 * 
+	 * @param obj
+	 *          the object to be added to this model
+	 */
+	public void addObject(Object obj);
+
+	/**
+	 * returns the semantic representation of this model
+	 * 
+	 * @return the semantic representation of this model
+	 */
+	public String getRepresentation();
+
+	/**
+	 * returns the semantic representation of this model in the given format
+	 * 
+	 * @param format
+	 *          the format (see supported formats in {@link SemanticAspect#getSupportedFormats()})
+	 * @return the semantic representation of this model
+	 */
+	public String getRepresentation(String format);
+
+	/**
+	 * returns the implementation-specific model object
+	 * 
+	 * @return the implementation-specific model object
+	 */
+	public Object getUnderlyingImplementation();
+
+	/**
+	 * reads semantic information as a stream (e.g. RDF/XML). The new information is added to the current model
+	 * 
+	 * @param inputStream
+	 *          the stream containing semantic information
+	 * @param format
+	 *          the stream format (has to be supported by the SemanticAspect, see {@link SemanticAspect#getSupportedFormats()})
+	 */
+	public void read(InputStream inputStream, String format);
 }

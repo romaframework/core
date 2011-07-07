@@ -29,29 +29,33 @@ public interface SerializationInspectionStrategy {
 	 * @return the name of inspection strategy.
 	 */
 	public String getName();
-	
+
 	/**
 	 * Inspect an object and extract the data to store.
 	 * 
-	 * @param toInspect object ot inspect
+	 * @param toInspect
+	 *          object ot inspect
 	 * @return
 	 */
 	public SerializationData inspect(Object toInspect);
-	
+
 	/**
 	 * Create an object from SerializationData.
 	 * 
-	 * @param data to read for fill.
+	 * @param data
+	 *          to read for fill.
 	 * @return object created from data.
 	 */
 	public Object create(SerializationData data);
-	
+
 	/**
 	 * Fill an object with the SerializationData.
 	 * 
-	 * @param toFill object to fill.
-	 * @param data to read for fill.
+	 * @param toFill
+	 *          object to fill.
+	 * @param data
+	 *          to read for fill.
 	 */
-	public void fill(Object toFill,SerializationData data);
+	public void fill(Object toFill, SerializationData data);
 
 }

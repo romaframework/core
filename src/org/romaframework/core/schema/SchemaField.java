@@ -247,8 +247,7 @@ public abstract class SchemaField extends SchemaClassElement {
 			// TODO is this the right place to do this...?
 			Class<?> valueClass = value.getClass();
 			// SUCH A MONSTER!!! MOVE THIS LOGIC IN SchemaClass.isAssignableFrom...
-			if (value instanceof VirtualObject
-					&& !(typeClass.getLanguageType() instanceof Class<?> && ((Class<?>) typeClass.getLanguageType()).isAssignableFrom(VirtualObject.class))
+			if (value instanceof VirtualObject && !(typeClass.getLanguageType() instanceof Class<?> && ((Class<?>) typeClass.getLanguageType()).isAssignableFrom(VirtualObject.class))
 					&& ((VirtualObject) value).getSuperClassObject() != null) {
 				if (ComposedEntity.class.isAssignableFrom(((VirtualObject) value).getSuperClassObject().getClass())) {
 					value = ((VirtualObject) value).getSuperClassObject();
@@ -262,8 +261,7 @@ public abstract class SchemaField extends SchemaClassElement {
 		}
 
 		if (value == null && typeClass.isPrimitive()) {
-			log.warn("Cannot set the field value to null for primitive types! Field: " + getEntity() + "." + name + " of class " + getType().getName()
-					+ ". Setting value to 0.");
+			log.warn("Cannot set the field value to null for primitive types! Field: " + getEntity() + "." + name + " of class " + getType().getName() + ". Setting value to 0.");
 			// SET THE VALUE TO 0
 			value = SchemaHelper.assignDefaultValueToLiteral(typeClass);
 		}
@@ -297,4 +295,5 @@ public abstract class SchemaField extends SchemaClassElement {
 	public void setEmbeddedTypeGenerics(SchemaClass[] embeddedTypeGenerics) {
 		this.embeddedTypeGenerics = embeddedTypeGenerics;
 	}
+
 }

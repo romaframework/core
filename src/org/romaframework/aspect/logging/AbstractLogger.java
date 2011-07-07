@@ -17,13 +17,16 @@ package org.romaframework.aspect.logging;
 
 /**
  * An abstract implementation that register itself to the logging aspect
+ * 
  * @author Giordano Maestro (giordano.maestro--at--assetdata.it)
- *
+ * 
  */
 public abstract class AbstractLogger implements Logger {
 	/**
 	 * Register itself to the logging aspect
-	 * @param iLoggingAspect The logging aspect
+	 * 
+	 * @param iLoggingAspect
+	 *          The logging aspect
 	 */
 	public AbstractLogger(LoggingAspect iLoggingAspect) {
 		iLoggingAspect.registerLogger(this);

@@ -54,19 +54,18 @@ import org.romaframework.core.schema.virtual.VirtualObject;
 
 public class SchemaHelper {
 
-	private static Log			log						= LogFactory.getLog(SchemaHelper.class);
+	private static Log					log									= LogFactory.getLog(SchemaHelper.class);
 
 	public static final Object	FAILED_EVENT_INVOKE	= new Object();
 
 	/**
-	 * Determine the embedded type of a field. If the field is annoted with
-	 * USE_RUNTIME_TYPE=TRUE, then the embedded type will be determined using the
-	 * first one object, if any,
+	 * Determine the embedded type of a field. If the field is annoted with USE_RUNTIME_TYPE=TRUE, then the embedded type will be
+	 * determined using the first one object, if any,
 	 * 
 	 * @param iContent
-	 *           Run-time object
+	 *          Run-time object
 	 * @param iField
-	 *           Field to get the embedded type
+	 *          Field to get the embedded type
 	 * @return
 	 * @throws ConfigurationException
 	 */
@@ -90,8 +89,7 @@ public class SchemaHelper {
 	}
 
 	/**
-	 * Return the embedded type of a field. Use the ViewHelper if you're using
-	 * the front-end since it makes some checks moreover.
+	 * Return the embedded type of a field. Use the ViewHelper if you're using the front-end since it makes some checks moreover.
 	 * 
 	 * @param iField
 	 * @return
@@ -297,11 +295,10 @@ public class SchemaHelper {
 	}
 
 	/**
-	 * Get all fields of a class. This method differs from Class.getFields()
-	 * since it returns also non public fields.
+	 * Get all fields of a class. This method differs from Class.getFields() since it returns also non public fields.
 	 * 
 	 * @param iClass
-	 *           Class<?> to introspect
+	 *          Class<?> to introspect
 	 * @return Fields array
 	 */
 	public static Field[] getFields(Class<?> iClass) {
@@ -327,13 +324,12 @@ public class SchemaHelper {
 	}
 
 	/**
-	 * Get all methods of a class. This method differs from Class.getMethods()
-	 * since it reads the class and go up. if a method is declared also in a base
-	 * class will not be inserted, since the presumption is that the
-	 * lower-defined method is more relevant than higher one.
+	 * Get all methods of a class. This method differs from Class.getMethods() since it reads the class and go up. if a method is
+	 * declared also in a base class will not be inserted, since the presumption is that the lower-defined method is more relevant
+	 * than higher one.
 	 * 
 	 * @param iClass
-	 *           Class<?> to introspect
+	 *          Class<?> to introspect
 	 * @return Methods array
 	 */
 	public static List<Method> getMethods(Class<?> iClass) {
@@ -484,9 +480,9 @@ public class SchemaHelper {
 	 * Check if a schemaClass is assignable to a specified class
 	 * 
 	 * @param schemaClass
-	 *           to check
+	 *          to check
 	 * @param dest
-	 *           destination type.
+	 *          destination type.
 	 * @return true if assignable otherwise false.
 	 */
 	public static boolean isAssignableAs(SchemaClassDefinition schemaClass, Class<?> dest) {
@@ -639,12 +635,11 @@ public class SchemaHelper {
 	 * Move an object up or down in a List or array objects.
 	 * 
 	 * @param iContent
-	 *           List or array object
+	 *          List or array object
 	 * @param iSelection
-	 *           The object to move.
+	 *          The object to move.
 	 * @param iDirection
-	 *           use positive integer to move the item forward or negative for
-	 *           backward
+	 *          use positive integer to move the item forward or negative for backward
 	 * @return new element position
 	 */
 	public static int moveElement(Object iContent, Object iSelection, int iDirection) {
@@ -694,7 +689,7 @@ public class SchemaHelper {
 	 * Return the type of generic of superclass.
 	 * 
 	 * @param clazz
-	 *           where search.
+	 *          where search.
 	 * @return the generic SchemaClass or null.
 	 */
 	public static SchemaClass getSuperclassGenericType(Class<?> clazz) {
@@ -705,7 +700,7 @@ public class SchemaHelper {
 	 * Return the type of generic of superclass.
 	 * 
 	 * @param schemaClassDefinition
-	 *           where search.
+	 *          where search.
 	 * @return the generic SchemaClass or null.
 	 */
 	public static SchemaClass getSuperclassGenericType(SchemaClassDefinition schemaClassDefinition) {
@@ -763,7 +758,7 @@ public class SchemaHelper {
 	 * Return the type of generic of superclass.
 	 * 
 	 * @param schemaClassDefinition
-	 *           where search.
+	 *          where search.
 	 * @return the generic SchemaClass or null.
 	 */
 	public static List<SchemaClass> getSuperclassGenericTypes(SchemaClassDefinition schemaClassDefinition) {
@@ -792,7 +787,7 @@ public class SchemaHelper {
 	 * Return the generic type if iType uses Java5+ Generics.
 	 * 
 	 * @param iType
-	 *           Type with generics
+	 *          Type with generics
 	 * @return Generic Class<?> if any
 	 */
 	public static Class<?> getGenericClass(Type iType) {
@@ -844,9 +839,9 @@ public class SchemaHelper {
 	 * Returns the object of field in expression.
 	 * 
 	 * @param iStartingObject
-	 *           Starting object to navigate
+	 *          Starting object to navigate
 	 * @param iExpression
-	 *           Path of field
+	 *          Path of field
 	 * @return
 	 */
 	public static Object getFieldObject(Object iStartingObject, String iExpression) {
@@ -949,7 +944,7 @@ public class SchemaHelper {
 	 * Resolve class object for java types.
 	 * 
 	 * @param iEntityName
-	 *           Java type name
+	 *          Java type name
 	 * @return Class object if found, otherwise null
 	 */
 	public static Class<?> getClassForJavaTypes(String iEntityName) {
@@ -1016,9 +1011,9 @@ public class SchemaHelper {
 	 * Return the SchemaEvent requested.
 	 * 
 	 * @param iClassName
-	 *           Name of the class
+	 *          Name of the class
 	 * @param iEventName
-	 *           Name of the event to search
+	 *          Name of the event to search
 	 * @return SchemaEvent object if found, otherwise null
 	 */
 	public static SchemaEvent getSchemaEvent(String iClassName, String iEventName) {
@@ -1033,9 +1028,9 @@ public class SchemaHelper {
 	 * Return the SchemaAction requested.
 	 * 
 	 * @param iClassName
-	 *           Name of the class
+	 *          Name of the class
 	 * @param iActionName
-	 *           Name of the action to search
+	 *          Name of the action to search
 	 * @return SchemaAction object if found, otherwise null
 	 */
 	public static SchemaClassElement getSchemaAction(String iClassName, String iActionName) {
@@ -1050,9 +1045,9 @@ public class SchemaHelper {
 	 * Return the SchemaField requested.
 	 * 
 	 * @param iClassName
-	 *           Name of the class
+	 *          Name of the class
 	 * @param iFieldName
-	 *           Name of the field to search
+	 *          Name of the field to search
 	 * @return SchemaField object if found, otherwise null
 	 */
 	public static SchemaField getSchemaField(String iClassName, String iFieldName) {
@@ -1064,13 +1059,12 @@ public class SchemaHelper {
 	}
 
 	/**
-	 * Create a new Object using the factory if any otherwise by SchemaClass's
-	 * object construction.
+	 * Create a new Object using the factory if any otherwise by SchemaClass's object construction.
 	 * 
 	 * @param iClass
-	 *           SchemaClass instance
+	 *          SchemaClass instance
 	 * @param iArgs
-	 *           Optional var args
+	 *          Optional var args
 	 * @return The new object created
 	 */
 	public static Object createObject(SchemaClass iClass, Object... iArgs) throws IllegalArgumentException, InstantiationException, IllegalAccessException,

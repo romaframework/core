@@ -15,14 +15,12 @@
  */
 package org.romaframework.aspect.semantic.feature;
 
-
 /**
- * IMPORTANT: PLEASE DO NOT RELY ON THIS RESOURCE, IT IS UNDER DEFINITION AND 
- * HEAVY DEVELOPMENT
- *  
+ * IMPORTANT: PLEASE DO NOT RELY ON THIS RESOURCE, IT IS UNDER DEFINITION AND HEAVY DEVELOPMENT
+ * 
  * @author Luigi Dell'Aquila (luigi.dellaquila@assetdata.it)
  * 
  */
-public class SemanticBaseFeatures{
+public class SemanticBaseFeatures {
 
 }

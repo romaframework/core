@@ -20,8 +20,8 @@ import org.romaframework.core.schema.Feature;
 import org.romaframework.core.schema.FeatureType;
 
 public class ServiceClassFeatures {
-	public static final Feature<Class>	INTERFACE_CLASS				= new Feature<Class>(ServiceAspectAbstract.ASPECT_NAME, "interfaceClass", FeatureType.CLASS,Class.class);
-	public static final Feature<String>	SERVICE_NAME					= new Feature<String>(ServiceAspectAbstract.ASPECT_NAME, "serviceName", FeatureType.CLASS,String.class,"");
-	public static final Feature<Class>	ASPECT_IMPLEMENTATION	= new Feature<Class>(ServiceAspectAbstract.ASPECT_NAME, "aspectImplementation", FeatureType.CLASS,Class.class);
+	public static final Feature<Class>	INTERFACE_CLASS				= new Feature<Class>(ServiceAspectAbstract.ASPECT_NAME, "interfaceClass", FeatureType.CLASS, Class.class);
+	public static final Feature<String>	SERVICE_NAME					= new Feature<String>(ServiceAspectAbstract.ASPECT_NAME, "serviceName", FeatureType.CLASS, String.class, "");
+	public static final Feature<Class>	ASPECT_IMPLEMENTATION	= new Feature<Class>(ServiceAspectAbstract.ASPECT_NAME, "aspectImplementation", FeatureType.CLASS, Class.class);
 
 }

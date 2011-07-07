@@ -51,7 +51,7 @@ public interface SchemaFeaturesChangeListener {
 	 * @param iFeatureValue
 	 *          The new value of the feature
 	 */
-	public <T>void signalChangeAction(Object iUserObject, String iActionName, Feature<T> iFeature, T iOldValue, T iFeatureValue);
+	public <T> void signalChangeAction(Object iUserObject, String iActionName, Feature<T> iFeature, T iOldValue, T iFeatureValue);
 
 	/**
 	 * Notify the change of the features of a class
@@ -65,5 +65,5 @@ public interface SchemaFeaturesChangeListener {
 	 * @param iFeatureValue
 	 *          The new value of the feature
 	 */
-	public<T> void signalChangeClass(Object iUserObject, Feature<T> iFeature, T iOldValue, T iFeatureValue);
+	public <T> void signalChangeClass(Object iUserObject, Feature<T> iFeature, T iOldValue, T iFeatureValue);
 }

@@ -26,7 +26,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.romaframework.aspect.core.feature.CoreClassFeatures;
 import org.romaframework.core.Roma;
-import org.romaframework.core.Utility;
 import org.romaframework.core.domain.entity.ComposedEntity;
 import org.romaframework.core.schema.config.SchemaConfiguration;
 import org.romaframework.core.schema.xmlannotations.XmlActionAnnotation;
@@ -76,8 +75,8 @@ public abstract class SchemaClass extends SchemaClassDefinition implements Compa
 
 	public abstract String getFullName();
 
-	public Object newInstance(Object... iArgs) throws InstantiationException, IllegalAccessException, IllegalArgumentException, SecurityException,
-			InvocationTargetException, NoSuchMethodException {
+	public Object newInstance(Object... iArgs) throws InstantiationException, IllegalAccessException, IllegalArgumentException, SecurityException, InvocationTargetException,
+			NoSuchMethodException {
 		try {
 			// CREATE THE CONTEXT BEFORE TO CALL THE ACTION
 			Roma.context().create();

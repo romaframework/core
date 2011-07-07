@@ -13,24 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 package org.romaframework.aspect.scheduler;
 
 public class SchedulerException extends RuntimeException {
 
-  public SchedulerException() {
-    super();
-  }
+	public SchedulerException() {
+		super();
+	}
 
-  public SchedulerException(String arg0) {
-    super(arg0);
-  }
+	public SchedulerException(String arg0) {
+		super(arg0);
+	}
 
-  public SchedulerException(String arg0, Throwable arg1) {
-    super(arg0, arg1);
-  }
+	public SchedulerException(String arg0, Throwable arg1) {
+		super(arg0, arg1);
+	}
 
-  public SchedulerException(Throwable arg0) {
-    super(arg0);
-  }
+	public SchedulerException(Throwable arg0) {
+		super(arg0);
+	}
 }

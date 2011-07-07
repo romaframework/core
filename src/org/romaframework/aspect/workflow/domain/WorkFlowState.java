@@ -3,7 +3,7 @@ package org.romaframework.aspect.workflow.domain;
 import java.util.Set;
 
 public interface WorkFlowState {
-	
+
 	public Set<String> getActivities();
 
 	public String getDefinition();

@@ -25,5 +25,5 @@ import java.io.File;
  * 
  */
 public interface SchemaReloadListener {
-  public void signalUpdatedClass(SchemaClass iClass, File iFile);
+	public void signalUpdatedClass(SchemaClass iClass, File iFile);
 }

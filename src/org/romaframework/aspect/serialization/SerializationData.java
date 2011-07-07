@@ -20,7 +20,6 @@ import java.util.List;
 
 import org.romaframework.core.schema.SchemaFeatures;
 
-
 /**
  * 
  * @author Emanuele Tagliaferri (emanuele.tagliaferri--at--assetdata.it)
@@ -28,18 +27,19 @@ import org.romaframework.core.schema.SchemaFeatures;
  */
 public class SerializationData extends SchemaFeatures {
 
-	private static final long	serialVersionUID	= -9063141913291614417L;
-	
-	private String	name;
-	private Object simpleValue;
-	private List<SerializationData> collection;
-	private List<SerializationElement> fields = new ArrayList<SerializationElement>();
-	private List<SerializationElement> actions = new ArrayList<SerializationElement>();
-	private List<SerializationElement> events = new ArrayList<SerializationElement>();
-	
+	private static final long						serialVersionUID	= -9063141913291614417L;
+
+	private String											name;
+	private Object											simpleValue;
+	private List<SerializationData>			collection;
+	private List<SerializationElement>	fields						= new ArrayList<SerializationElement>();
+	private List<SerializationElement>	actions						= new ArrayList<SerializationElement>();
+	private List<SerializationElement>	events						= new ArrayList<SerializationElement>();
+
 	public SerializationData() {
 		super(null);
 	}
+
 	public String getName() {
 		return name;
 	}
@@ -63,7 +63,7 @@ public class SerializationData extends SchemaFeatures {
 	public void setFields(List<SerializationElement> fields) {
 		this.fields = fields;
 	}
-	
+
 	public List<SerializationElement> getActions() {
 		return actions;
 	}
@@ -88,16 +88,16 @@ public class SerializationData extends SchemaFeatures {
 		this.collection = collection;
 	}
 
-	public boolean containCollection(){
+	public boolean containCollection() {
 		return collection != null;
 	}
-	
-	public boolean containSimpleValue(){
-		return simpleValue!=null;
+
+	public boolean containSimpleValue() {
+		return simpleValue != null;
 	}
-	
-  @Override
-  public String toString() {
-  	return getName() +" :" +(containCollection()?"Collection":containSimpleValue()?"simpleValue":"object");
-  }
+
+	@Override
+	public String toString() {
+		return getName() + " :" + (containCollection() ? "Collection" : containSimpleValue() ? "simpleValue" : "object");
+	}
 }

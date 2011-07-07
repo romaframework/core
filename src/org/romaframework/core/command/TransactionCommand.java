@@ -11,8 +11,7 @@ import org.romaframework.aspect.persistence.PersistenceAspect;
 public abstract class TransactionCommand implements Command {
 
 	/**
-	 * Retrieve the persistence aspect in the context and call the execute passing
-	 * the aspect
+	 * Retrieve the persistence aspect in the context and call the execute passing the aspect
 	 */
 	public final Object execute(CommandContext iContext) {
 		PersistenceAspect db = ((TransactionalCommandContext) iContext).getDb();

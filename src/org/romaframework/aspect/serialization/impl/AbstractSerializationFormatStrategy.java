@@ -22,8 +22,8 @@ import org.romaframework.core.Roma;
 /**
  * @author Emanuele Tagliaferri (emanuele.tagliaferri--at--assetdata.it)
  */
-public abstract class AbstractSerializationFormatStrategy implements SerializationFormatStrategy{
-	
+public abstract class AbstractSerializationFormatStrategy implements SerializationFormatStrategy {
+
 	public AbstractSerializationFormatStrategy() {
 		Roma.component(SerializationAspect.class).addFormatStrategy(this);
 	}

@@ -18,10 +18,10 @@ package org.romaframework.aspect.workflow.domain;
 
 /**
  * @author Luca Molino
- *
+ * 
  */
 public interface WorkFlowDefinition {
-	
+
 	public void setBeginState(WorkFlowState beginState);
 
 	public WorkFlowState getBeginState();

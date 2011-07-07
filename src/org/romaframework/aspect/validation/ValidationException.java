@@ -47,7 +47,6 @@ public class ValidationException extends FieldErrorUserException {
 		}
 	}
 
-	
 	@Override
 	public String toString() {
 		StringBuilder buffer = new StringBuilder(super.toString());

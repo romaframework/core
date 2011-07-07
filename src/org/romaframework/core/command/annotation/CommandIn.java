@@ -21,10 +21,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target (ElementType.FIELD)
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CommandIn {	
+public @interface CommandIn {
 	Class<?> type() default Object.class;
+
 	boolean required() default true;
+
 	Class<?> collectionType() default Object.class;
 }

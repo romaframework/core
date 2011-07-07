@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 package org.romaframework.core.binding;
 
 import org.romaframework.core.exception.FieldErrorUserException;
@@ -22,10 +22,10 @@ public class BindingException extends FieldErrorUserException {
 	private static final long	serialVersionUID	= -7495986118778177788L;
 
 	public BindingException(Object iObject, String iFieldName, Throwable t) {
-    super(iObject, iFieldName, "$validation.binding", t);
-  }
+		super(iObject, iFieldName, "$validation.binding", t);
+	}
 
-  public BindingException(Object iObject, String iFieldName, String arg0) {
-    super(iObject, iFieldName, arg0);
-  }
+	public BindingException(Object iObject, String iFieldName, String arg0) {
+		super(iObject, iFieldName, arg0);
+	}
 }

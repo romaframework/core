@@ -30,6 +30,5 @@ public interface EnterpriseAspect extends Aspect {
 	 *          the HashMap that contains the wsdl relative to the annotated Class
 	 **/
 	public void exposeServices(HashMap<Class<?>, Object> definitionMap);
-	
 
 }

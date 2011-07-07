@@ -35,6 +35,5 @@ public interface WorkflowAspect extends Aspect {
 
 	public abstract List<WorkFlowStatus> getStatusHistory(String iWorkFlowName, String iOID);
 
-	public abstract WorkFlowStatus executeActivity(String iWorkFlowName, String iActivityName, String iOID, DynaBean iParameters)
-			throws WorkflowException;
+	public abstract WorkFlowStatus executeActivity(String iWorkFlowName, String iActivityName, String iOID, DynaBean iParameters) throws WorkflowException;
 }

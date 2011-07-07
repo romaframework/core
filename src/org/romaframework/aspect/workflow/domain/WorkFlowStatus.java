@@ -3,7 +3,7 @@ package org.romaframework.aspect.workflow.domain;
 import java.util.Date;
 
 public interface WorkFlowStatus {
-	
+
 	public Date getDate();
 
 	public void setDate(Date date);
@@ -19,7 +19,7 @@ public interface WorkFlowStatus {
 	public WorkFlowState getState();
 
 	public void setState(WorkFlowState state);
-	
+
 	public abstract String getStateName();
 
 }

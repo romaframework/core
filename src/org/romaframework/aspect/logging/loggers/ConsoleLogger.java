@@ -48,8 +48,7 @@ public class ConsoleLogger extends AbstractLogger {
 	 * @see org.romaframework.aspect.logging.Logger#print(int, java.lang.String, java.lang.String)
 	 */
 	public void print(int level, String category, String message) {
-		String result = "-----------------------------------\n" + "level:    " + level + "\n" + "category: " + category + "\n"
-		+ "message: " + message + "\n";
+		String result = "-----------------------------------\n" + "level:    " + level + "\n" + "category: " + category + "\n" + "message: " + message + "\n";
 		System.out.println(result);
 	}
 }

@@ -22,8 +22,8 @@ package org.romaframework.core.config;
  * 
  */
 public interface Refreshable {
-  /**
-   * Refresh method.
-   */
-  public void refresh();
+	/**
+	 * Refresh method.
+	 */
+	public void refresh();
 }

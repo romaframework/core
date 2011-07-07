@@ -21,5 +21,5 @@ import org.romaframework.core.schema.Feature;
 import org.romaframework.core.schema.FeatureType;
 
 public class MonitoringFeatures {
-	public static final Feature<Boolean>	ENABLED	= new Feature<Boolean>(MonitoringAspect.ASPECT_NAME,"enabled",FeatureType.FIELD,Boolean.class,Boolean.TRUE);
+	public static final Feature<Boolean>	ENABLED	= new Feature<Boolean>(MonitoringAspect.ASPECT_NAME, "enabled", FeatureType.FIELD, Boolean.class, Boolean.TRUE);
 }

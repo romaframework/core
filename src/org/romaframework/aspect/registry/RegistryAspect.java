@@ -22,7 +22,6 @@ import org.romaframework.core.aspect.Aspect;
 public interface RegistryAspect extends Aspect {
 
 	public static final String	ASPECT_NAME	= "registry";
-	
 
 	/**
 	 * Register Services to the remote Registry
@@ -31,7 +30,7 @@ public interface RegistryAspect extends Aspect {
 	 *          the HashMap that contains the wsdl relative to the annotated Class
 	 **/
 	public void registerServices(HashMap<Class<?>, Object> definitionMap);
-	
+
 	/**
 	 * Register Services to the remote Registry
 	 * 
@@ -44,15 +43,15 @@ public interface RegistryAspect extends Aspect {
 	 * @param password
 	 *          the registry password
 	 * @param iconpath
-	 *          the service icon path 
+	 *          the service icon path
 	 * @param author
-	 * 					the service author
+	 *          the service author
 	 * @param desc
-	 * 					the service description
+	 *          the service description
 	 * @param serviceName
-	 * 					the Consumer Service Name
+	 *          the Consumer Service Name
 	 **/
-	public void registerDef(Object wsdlDef, String registryURL, String username, String password,String orgPackage, String iconPath, String author,
-			String desc,String serviceName) throws Exception;
+	public void registerDef(Object wsdlDef, String registryURL, String username, String password, String orgPackage, String iconPath, String author, String desc, String serviceName)
+			throws Exception;
 
 }

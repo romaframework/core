@@ -56,8 +56,7 @@ public class ComponentManager<C> {
 	 * @throws IllegalAccessException
 	 * @throws InstantiationException
 	 */
-	public void setComponents(List<String> iComponentClassNames) throws InstantiationException, IllegalAccessException,
-			ClassNotFoundException {
+	public void setComponents(List<String> iComponentClassNames) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
 		componentClassNames = iComponentClassNames;
 	}
 

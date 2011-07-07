@@ -22,11 +22,11 @@ package org.romaframework.core.classloader;
  */
 public interface ClassLoaderListener {
 
-  /**
-   * Called after a class is loaded.
-   * 
-   * @param iClass
-   *          Class just loaded
-   */
-  public void onClassLoading(Class<?> iClass);
+	/**
+	 * Called after a class is loaded.
+	 * 
+	 * @param iClass
+	 *          Class just loaded
+	 */
+	public void onClassLoading(Class<?> iClass);
 }

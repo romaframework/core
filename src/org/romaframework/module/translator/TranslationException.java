@@ -19,7 +19,7 @@ package org.romaframework.module.translator;
 public class TranslationException extends Exception {
 
 	public TranslationException(String string, Exception e) {
-		super(string,e);
+		super(string, e);
 	}
 
 	public TranslationException(String string) {

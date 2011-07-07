@@ -203,7 +203,7 @@ public class CsvUtil {
 			while ((val = reader.read()) != '\n' || inQuoteDouble || inQuoteSingle) {
 				if (val == -1)
 					break;
-				cur = (char)val;
+				cur = (char) val;
 				switch (cur) {
 				case '\'':
 					if (!escape) {

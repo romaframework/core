@@ -1,7 +1,7 @@
 package org.romaframework.core.schema.xmlannotations;
 
 public class XmlScreenAnnotation {
-	XmlFormAreaAnnotation rootArea;
+	XmlFormAreaAnnotation	rootArea;
 
 	public XmlFormAreaAnnotation getRootArea() {
 		return rootArea;
@@ -10,5 +10,5 @@ public class XmlScreenAnnotation {
 	public void setRootArea(XmlFormAreaAnnotation rootArea) {
 		this.rootArea = rootArea;
 	}
-	
+
 }

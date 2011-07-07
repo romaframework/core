@@ -16,34 +16,32 @@
 package org.romaframework.aspect.semantic.exception;
 
 /**
- * Is thrown when the query is too complex to be elaborated (e.g. if the query
- * is being translated to another format and this query cannot
- * be rendered in that format because of a lack of expressiveness)
- * <br>
- * IMPORTANT: PLEASE DO NOT RELY ON THIS RESOURCE, IT IS UNDER DEFINITION AND 
- * HEAVY DEVELOPMENT
+ * Is thrown when the query is too complex to be elaborated (e.g. if the query is being translated to another format and this query
+ * cannot be rendered in that format because of a lack of expressiveness) <br>
+ * IMPORTANT: PLEASE DO NOT RELY ON THIS RESOURCE, IT IS UNDER DEFINITION AND HEAVY DEVELOPMENT
+ * 
  * @author Luigi Dell'Aquila (luigi.dellaquila@assetdata.it)
  */
-public class UnsupportedComplexityException extends SemanticQueryException{
+public class UnsupportedComplexityException extends SemanticQueryException {
 
-  public UnsupportedComplexityException() {
-    super();
-    // TODO Auto-generated constructor stub
-  }
+	public UnsupportedComplexityException() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
-  public UnsupportedComplexityException(String message, Throwable cause) {
-    super(message, cause);
-    // TODO Auto-generated constructor stub
-  }
+	public UnsupportedComplexityException(String message, Throwable cause) {
+		super(message, cause);
+		// TODO Auto-generated constructor stub
+	}
 
-  public UnsupportedComplexityException(String message) {
-    super(message);
-    // TODO Auto-generated constructor stub
-  }
+	public UnsupportedComplexityException(String message) {
+		super(message);
+		// TODO Auto-generated constructor stub
+	}
 
-  public UnsupportedComplexityException(Throwable cause) {
-    super(cause);
-    // TODO Auto-generated constructor stub
-  }
+	public UnsupportedComplexityException(Throwable cause) {
+		super(cause);
+		// TODO Auto-generated constructor stub
+	}
 
 }

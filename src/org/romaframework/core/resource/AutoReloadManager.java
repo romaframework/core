@@ -33,104 +33,104 @@ import org.romaframework.core.config.Serviceable;
  */
 public class AutoReloadManager implements Serviceable {
 
-  private Map<String, ResourceInfo> resources;
-  private int                       checkDelay;
-  private PollerThread              poller;
+	private Map<String, ResourceInfo>	resources;
+	private int												checkDelay;
+	private PollerThread							poller;
 
-  private static Log                log = LogFactory.getLog(AutoReloadManager.class);
+	private static Log								log	= LogFactory.getLog(AutoReloadManager.class);
 
-  /**
-   * Construct the object using a delay time.
-   * 
-   * @param iCheckDelay
-   *          Millisecond to wait between polls. 0 or less to disable auto reload.
-   */
-  public AutoReloadManager(int iCheckDelay) {
-    checkDelay = iCheckDelay;
-    resources = new HashMap<String, ResourceInfo>();
+	/**
+	 * Construct the object using a delay time.
+	 * 
+	 * @param iCheckDelay
+	 *          Millisecond to wait between polls. 0 or less to disable auto reload.
+	 */
+	public AutoReloadManager(int iCheckDelay) {
+		checkDelay = iCheckDelay;
+		resources = new HashMap<String, ResourceInfo>();
 
-    startup();
-  }
+		startup();
+	}
 
-  /**
-   * Add a resource to be monitoring by a listener
-   * 
-   * @param iFile
-   *          File to monitor
-   * @param iListener
-   *          Listener to be wakeup on file change
-   */
-  public synchronized void addResource(File iFile, AutoReloadListener iListener) {
-    ResourceInfo resource = getResourceInfo(iFile);
+	/**
+	 * Add a resource to be monitoring by a listener
+	 * 
+	 * @param iFile
+	 *          File to monitor
+	 * @param iListener
+	 *          Listener to be wakeup on file change
+	 */
+	public synchronized void addResource(File iFile, AutoReloadListener iListener) {
+		ResourceInfo resource = getResourceInfo(iFile);
 
-    // REGISTER THE LISTENER
-    resource.listeners.add(iListener);
-  }
+		// REGISTER THE LISTENER
+		resource.listeners.add(iListener);
+	}
 
-  /**
-   * Add a resource to be monitoring by multiple listeners
-   * 
-   * @param iFile
-   *          File to monitor
-   * @param iListeners
-   *          The Set of Listeners to be wakeup on file change
-   */
-  public synchronized void addResource(File iFile, Set<AutoReloadListener> iListeners) {
-    ResourceInfo resource = getResourceInfo(iFile);
+	/**
+	 * Add a resource to be monitoring by multiple listeners
+	 * 
+	 * @param iFile
+	 *          File to monitor
+	 * @param iListeners
+	 *          The Set of Listeners to be wakeup on file change
+	 */
+	public synchronized void addResource(File iFile, Set<AutoReloadListener> iListeners) {
+		ResourceInfo resource = getResourceInfo(iFile);
 
-    // REGISTER THE LISTENERS
-    resource.listeners = iListeners;
-  }
+		// REGISTER THE LISTENERS
+		resource.listeners = iListeners;
+	}
 
-  /**
-   * Get the ResourceInfo object for the file to be monitored
-   * 
-   * @param iFile
-   *          File to monitor
-   */
-  protected ResourceInfo getResourceInfo(File iFile) {
-    String absolutePath = iFile.getAbsolutePath();
-    ResourceInfo resource = resources.get(absolutePath);
-    if (resource == null) {
-      resource = new ResourceInfo(iFile);
-      resources.put(absolutePath, resource);
-    }
-    return resource;
-  }
+	/**
+	 * Get the ResourceInfo object for the file to be monitored
+	 * 
+	 * @param iFile
+	 *          File to monitor
+	 */
+	protected ResourceInfo getResourceInfo(File iFile) {
+		String absolutePath = iFile.getAbsolutePath();
+		ResourceInfo resource = resources.get(absolutePath);
+		if (resource == null) {
+			resource = new ResourceInfo(iFile);
+			resources.put(absolutePath, resource);
+		}
+		return resource;
+	}
 
-  protected synchronized void checkResources() {
-    ResourceInfo currentResource;
-    long lastModified;
+	protected synchronized void checkResources() {
+		ResourceInfo currentResource;
+		long lastModified;
 
-    for (Iterator<ResourceInfo> it = resources.values().iterator(); it.hasNext();) {
-      currentResource = it.next();
-      lastModified = currentResource.file.lastModified();
+		for (Iterator<ResourceInfo> it = resources.values().iterator(); it.hasNext();) {
+			currentResource = it.next();
+			lastModified = currentResource.file.lastModified();
 
-      if (lastModified > currentResource.lastModified) {
-        // SIGNAL ALL REGISTERED LISTENERS
-        for (AutoReloadListener listener : currentResource.listeners) {
-          try {
-            listener.signalUpdatedFile( currentResource.file);
-            currentResource.lastModified = lastModified;
-          } catch (Exception e) {
-            log.error("[AutoReloadManager.checkResources] Error on reloading resource: " + currentResource.file, e);
-          }
-        }
-      }
-    }
-  }
+			if (lastModified > currentResource.lastModified) {
+				// SIGNAL ALL REGISTERED LISTENERS
+				for (AutoReloadListener listener : currentResource.listeners) {
+					try {
+						listener.signalUpdatedFile(currentResource.file);
+						currentResource.lastModified = lastModified;
+					} catch (Exception e) {
+						log.error("[AutoReloadManager.checkResources] Error on reloading resource: " + currentResource.file, e);
+					}
+				}
+			}
+		}
+	}
 
-  public String getStatus() {
-    return null;
-  }
+	public String getStatus() {
+		return null;
+	}
 
-  public void startup() throws RuntimeException {
-    if (checkDelay > 0)
-      poller = new PollerThread(this, checkDelay);
-  }
+	public void startup() throws RuntimeException {
+		if (checkDelay > 0)
+			poller = new PollerThread(this, checkDelay);
+	}
 
-  public void shutdown() throws RuntimeException {
-    if (poller != null)
-      poller.sendShutdown();
-  }
+	public void shutdown() throws RuntimeException {
+		if (poller != null)
+			poller.sendShutdown();
+	}
 }

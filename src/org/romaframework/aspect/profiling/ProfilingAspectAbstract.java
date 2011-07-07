@@ -16,7 +16,6 @@
 
 package org.romaframework.aspect.profiling;
 
-
 import org.romaframework.core.module.SelfRegistrantConfigurableModule;
 import org.romaframework.core.schema.SchemaAction;
 import org.romaframework.core.schema.SchemaClassDefinition;

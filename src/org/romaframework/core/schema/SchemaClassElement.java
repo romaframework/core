@@ -25,7 +25,7 @@ public abstract class SchemaClassElement extends SchemaElement {
 	private static final long				serialVersionUID	= 7431417848849742385L;
 
 	protected SchemaClassDefinition	entity;
-	protected String fullName;
+	protected String								fullName;
 
 	public SchemaClassElement(SchemaClassDefinition iEntity, FeatureType featureType) {
 		this(iEntity, null, featureType);

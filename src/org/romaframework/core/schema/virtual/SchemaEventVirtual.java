@@ -36,15 +36,15 @@ import org.romaframework.core.schema.xmlannotations.XmlActionAnnotation;
  */
 public class SchemaEventVirtual extends SchemaEvent {
 	private static final long	serialVersionUID	= 9194031418318628702L;
-	
-	protected SchemaEvent	inheritedEvent;
+
+	protected SchemaEvent			inheritedEvent;
 
 	public SchemaEventVirtual(SchemaField field, String iName) {
-		super(field, iName,null);
+		super(field, iName, null);
 	}
 
 	public SchemaEventVirtual(SchemaClassDefinition iEntity, String iName) {
-		super(iEntity, iName,null);
+		super(iEntity, iName, null);
 	}
 
 	public SchemaEventVirtual(SchemaClassVirtual schemaClassVirtual, String iName, SchemaEvent iInheritedEvent) {
@@ -53,7 +53,7 @@ public class SchemaEventVirtual extends SchemaEvent {
 	}
 
 	@Override
-	public Object invokeFinal(Object iContent,Object [] params) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+	public Object invokeFinal(Object iContent, Object[] params) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		try {
 			if (getFeature(ScriptingFeatures.CODE) != null)
 				// EXECUTE VIRTUAL CODE

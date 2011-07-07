@@ -16,32 +16,31 @@
 package org.romaframework.aspect.semantic.exception;
 
 /**
- * Is thrown when the syntax of a semantic query is not correct
- * <br>
- * IMPORTANT: PLEASE DO NOT RELY ON THIS RESOURCE, IT IS UNDER DEFINITION AND 
- * HEAVY DEVELOPMENT
+ * Is thrown when the syntax of a semantic query is not correct <br>
+ * IMPORTANT: PLEASE DO NOT RELY ON THIS RESOURCE, IT IS UNDER DEFINITION AND HEAVY DEVELOPMENT
+ * 
  * @author Luigi Dell'Aquila (luigi.dellaquila@assetdata.it)
  */
-public class SemanticQuerySyntaxException extends SemanticQueryException{
+public class SemanticQuerySyntaxException extends SemanticQueryException {
 
-  public SemanticQuerySyntaxException() {
-    super();
-    // TODO Auto-generated constructor stub
-  }
+	public SemanticQuerySyntaxException() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
-  public SemanticQuerySyntaxException(String message, Throwable cause) {
-    super(message, cause);
-    // TODO Auto-generated constructor stub
-  }
+	public SemanticQuerySyntaxException(String message, Throwable cause) {
+		super(message, cause);
+		// TODO Auto-generated constructor stub
+	}
 
-  public SemanticQuerySyntaxException(String message) {
-    super(message);
-    // TODO Auto-generated constructor stub
-  }
+	public SemanticQuerySyntaxException(String message) {
+		super(message);
+		// TODO Auto-generated constructor stub
+	}
 
-  public SemanticQuerySyntaxException(Throwable cause) {
-    super(cause);
-    // TODO Auto-generated constructor stub
-  }
+	public SemanticQuerySyntaxException(Throwable cause) {
+		super(cause);
+		// TODO Auto-generated constructor stub
+	}
 
 }

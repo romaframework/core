@@ -40,7 +40,7 @@ public class NoAuthenticationManager extends AuthenticationAspectAbstract {
 	}
 
 	@Override
-  public String getEncryptionAlgorithm() {
+	public String getEncryptionAlgorithm() {
 		return null;
 	}
 

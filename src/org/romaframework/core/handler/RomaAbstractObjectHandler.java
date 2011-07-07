@@ -25,41 +25,41 @@ import org.romaframework.core.schema.SchemaObject;
  * 
  */
 public abstract class RomaAbstractObjectHandler implements RomaObjectHandler {
-  protected Object            content;
-  protected RomaObjectHandler containerComponent;
+	protected Object						content;
+	protected RomaObjectHandler	containerComponent;
 
-  protected SchemaObject      schemaObject;
-  protected SchemaField       schemaField;
+	protected SchemaObject			schemaObject;
+	protected SchemaField				schemaField;
 
-  public Object getContent() {
-    return content;
-  }
+	public Object getContent() {
+		return content;
+	}
 
-  public void setContent(Object content) {
-    this.content = content;
-  }
+	public void setContent(Object content) {
+		this.content = content;
+	}
 
-  public RomaObjectHandler getContainerComponent() {
-    return containerComponent;
-  }
+	public RomaObjectHandler getContainerComponent() {
+		return containerComponent;
+	}
 
-  public void setContainerComponent(RomaObjectHandler containerComponent) {
-    this.containerComponent = containerComponent;
-  }
+	public void setContainerComponent(RomaObjectHandler containerComponent) {
+		this.containerComponent = containerComponent;
+	}
 
-  public SchemaObject getSchemaObject() {
-    return schemaObject;
-  }
+	public SchemaObject getSchemaObject() {
+		return schemaObject;
+	}
 
-  public void setSchemaObject(SchemaObject schemaObject) {
-    this.schemaObject = schemaObject;
-  }
+	public void setSchemaObject(SchemaObject schemaObject) {
+		this.schemaObject = schemaObject;
+	}
 
-  public SchemaField getSchemaField() {
-    return schemaField;
-  }
+	public SchemaField getSchemaField() {
+		return schemaField;
+	}
 
-  public void setSchemaField(SchemaField schemaField) {
-    this.schemaField = schemaField;
-  }
+	public void setSchemaField(SchemaField schemaField) {
+		this.schemaField = schemaField;
+	}
 }

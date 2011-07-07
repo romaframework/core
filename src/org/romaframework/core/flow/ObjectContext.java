@@ -322,8 +322,7 @@ public class ObjectContext {
 	 * @throws ConfigurationNotFoundException
 	 */
 	@Deprecated
-	public boolean setFieldFeature(Object iUserObject, String iAspectName, String iFieldName, String iFeatureName, Object iFeatureValue)
-			throws ConfigurationNotFoundException {
+	public boolean setFieldFeature(Object iUserObject, String iAspectName, String iFieldName, String iFeatureName, Object iFeatureValue) throws ConfigurationNotFoundException {
 		return Roma.setFieldFeature(iUserObject, iAspectName, iFieldName, iFeatureName, iFeatureValue);
 	}
 
@@ -344,8 +343,7 @@ public class ObjectContext {
 	 * @throws ConfigurationNotFoundException
 	 */
 	@Deprecated()
-	public boolean setActionFeature(Object iUserObject, String iAspectName, String iActionName, String iFeatureName, Object iFeatureValue)
-			throws ConfigurationNotFoundException {
+	public boolean setActionFeature(Object iUserObject, String iAspectName, String iActionName, String iFeatureName, Object iFeatureValue) throws ConfigurationNotFoundException {
 		return Roma.setActionFeature(iUserObject, iAspectName, iActionName, iFeatureName, iFeatureValue);
 	}
 

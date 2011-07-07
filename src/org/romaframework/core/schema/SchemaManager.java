@@ -74,7 +74,7 @@ public class SchemaManager extends Configurable<String> {
 			return null;
 		}
 	}
-	
+
 	public SchemaClass getSchemaClass(Object iObject) {
 		if (iObject == null)
 			return null;
@@ -183,8 +183,7 @@ public class SchemaManager extends Configurable<String> {
 	 * @return Registered ClassInfo instance.
 	 * @throws ConfigurationNotFoundException
 	 */
-	public SchemaClass registerSchemaClass(String iEntityName, Class<?> iClass, SchemaClass iBaseClass, SchemaConfiguration iDescriptor)
-			throws ConfigurationNotFoundException {
+	public SchemaClass registerSchemaClass(String iEntityName, Class<?> iClass, SchemaClass iBaseClass, SchemaConfiguration iDescriptor) throws ConfigurationNotFoundException {
 		// CREATE THE SCHEMA INFO INSTANCE
 		SchemaClassReflection cls = new SchemaClassReflection(iEntityName, iClass, iBaseClass, iDescriptor);
 

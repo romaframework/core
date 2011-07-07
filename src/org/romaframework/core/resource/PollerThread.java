@@ -20,25 +20,25 @@ import org.romaframework.core.util.thread.SoftThread;
 
 public class PollerThread extends SoftThread {
 
-  private AutoReloadManager manager;
-  private int               delay;
+	private AutoReloadManager	manager;
+	private int								delay;
 
-  public PollerThread(AutoReloadManager iManager, int iMilliseconds) {
-    super("AutoReload");
-    
-    manager = iManager;
-    delay = iMilliseconds;
+	public PollerThread(AutoReloadManager iManager, int iMilliseconds) {
+		super("AutoReload");
 
-    start();
-  }
+		manager = iManager;
+		delay = iMilliseconds;
 
-  @Override
-  protected void execute() {
-    manager.checkResources();
+		start();
+	}
 
-    try {
-      Thread.sleep(delay);
-    } catch (InterruptedException e) {
-    }
-  }
+	@Override
+	protected void execute() {
+		manager.checkResources();
+
+		try {
+			Thread.sleep(delay);
+		} catch (InterruptedException e) {
+		}
+	}
 }

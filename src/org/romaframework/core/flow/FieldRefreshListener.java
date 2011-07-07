@@ -4,11 +4,11 @@ import org.romaframework.aspect.session.SessionInfo;
 import org.romaframework.core.schema.SchemaField;
 
 /**
- * Listener of a field update. 
- *
+ * Listener of a field update.
+ * 
  */
 public interface FieldRefreshListener {
-	
+
 	/**
 	 * Invoked when a field is changed outside Roma, usually from the user side.
 	 * 

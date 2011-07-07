@@ -13,5 +13,5 @@ public interface ObjectRefreshListener {
 	 *          to refresh
 	 */
 	public void onObjectRefresh(SessionInfo iSession, Object iContent);
-	
+
 }

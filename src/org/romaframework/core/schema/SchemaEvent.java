@@ -33,29 +33,29 @@ import org.romaframework.core.flow.SchemaEventListener;
  */
 public abstract class SchemaEvent extends SchemaAction {
 
-	private static Log					log									= LogFactory.getLog(SchemaEvent.class);
+	private static Log							log													= LogFactory.getLog(SchemaEvent.class);
 
-	private static final long			serialVersionUID					= 1652569176934380370L;
+	private static final long				serialVersionUID						= 1652569176934380370L;
 
-	protected SchemaField				field;
+	protected SchemaField						field;
 
-	protected String						eventSignature;
+	protected String								eventSignature;
 
 	protected SchemaClassDefinition	eventOwner;
 
-	public static final String			ON_METHOD							= "on";
+	public static final String			ON_METHOD										= "on";
 
-	public static final String			COLLECTION_VIEW_EVENT			= "view";
+	public static final String			COLLECTION_VIEW_EVENT				= "view";
 
 	public static final String			COLLECTION_ADD_EVENT				= "add";
 
 	public static final String			COLLECTION_ADD_INLINE_EVENT	= "addInline";
 
-	public static final String			COLLECTION_EDIT_EVENT			= "edit";
+	public static final String			COLLECTION_EDIT_EVENT				= "edit";
 
 	public static final String			COLLECTION_REMOVE_EVENT			= "remove";
 
-	public static final String			DEFAULT_EVENT_NAME				= ".DEFAULT_EVENT";
+	public static final String			DEFAULT_EVENT_NAME					= ".DEFAULT_EVENT";
 
 	public SchemaEvent(SchemaField field, String iName, List<SchemaParameter> iOrderedParameters) {
 		super(field.getEntity(), iName, iOrderedParameters, FeatureType.EVENT);

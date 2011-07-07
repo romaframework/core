@@ -18,7 +18,9 @@ package org.romaframework.aspect.profiling;
 import org.romaframework.core.aspect.Aspect;
 
 /**
- * Profiling Aspect behavior interface. This aspect handle all the profiling concerns. Use it in this way:<br/><br/> <code>
+ * Profiling Aspect behavior interface. This aspect handle all the profiling concerns. Use it in this way:<br/>
+ * <br/>
+ * <code>
  *   &nbsp;&nbsp;long timer = Roma.aspect(ProfilingAspect.class).begin();<br/>
  *   &nbsp;&nbsp;...<br/>
  *     &nbsp;&nbsp;Roma.aspect(ProfilingAspect.class).end( "TestEmployeeLoading", timer );<br/>
@@ -28,26 +30,26 @@ import org.romaframework.core.aspect.Aspect;
  */
 public interface ProfilingAspect extends Aspect {
 
-  public static final String ASPECT_NAME = "profiling";
+	public static final String	ASPECT_NAME	= "profiling";
 
-  /**
-   * Start a new timer.
-   * 
-   * @return New Timer to use in end() method.
-   * @see #end(String, long);
-   */
-  public long begin();
+	/**
+	 * Start a new timer.
+	 * 
+	 * @return New Timer to use in end() method.
+	 * @see #end(String, long);
+	 */
+	public long begin();
 
-  /**
-   * Profile a new call passing the key and caller.
-   * 
-   * @param iKey
-   *          key to collect data
-   * @param iBeginTime
-   *          Begin time taken with begin()
-   * @return The delta time between begin and end
-   * @see #begin
-   */
+	/**
+	 * Profile a new call passing the key and caller.
+	 * 
+	 * @param iKey
+	 *          key to collect data
+	 * @param iBeginTime
+	 *          Begin time taken with begin()
+	 * @return The delta time between begin and end
+	 * @see #begin
+	 */
 
-  public long end(String iKey, long iBeginTime);
+	public long end(String iKey, long iBeginTime);
 }

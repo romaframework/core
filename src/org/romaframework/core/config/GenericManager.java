@@ -49,8 +49,7 @@ public class GenericManager<C> {
 	 * @throws IllegalAccessException
 	 * @throws InstantiationException
 	 */
-	public void setComponents(List<String> iComponentClassNames) throws InstantiationException, IllegalAccessException,
-			ClassNotFoundException {
+	public void setComponents(List<String> iComponentClassNames) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
 		componentClassNames = iComponentClassNames;
 	}
 
@@ -83,8 +82,7 @@ public class GenericManager<C> {
 	 *          Manageable's class name
 	 */
 	@SuppressWarnings("unchecked")
-	public void addComponent(String iComponentClassName) throws InstantiationException, IllegalAccessException,
-			ClassNotFoundException {
+	public void addComponent(String iComponentClassName) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
 		addComponent((Class<C>) Class.forName(iComponentClassName));
 	}
 

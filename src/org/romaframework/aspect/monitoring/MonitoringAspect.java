@@ -18,7 +18,6 @@ package org.romaframework.aspect.monitoring;
 
 import org.romaframework.core.aspect.Aspect;
 
-
 public interface MonitoringAspect extends Aspect {
 
 	public static final String	ASPECT_NAME	= "monitoring";

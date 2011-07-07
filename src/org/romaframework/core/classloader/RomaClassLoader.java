@@ -31,9 +31,9 @@ import org.romaframework.core.flow.Controller;
  */
 public class RomaClassLoader extends URLClassLoader {
 
-	private Log                          log             = LogFactory.getLog(RomaClassLoader.class);
-//	private boolean                      classPathSetted = false;
-	private static Map<String, Class<?>> reloadedClasses;
+	private Log														log	= LogFactory.getLog(RomaClassLoader.class);
+	// private boolean classPathSetted = false;
+	private static Map<String, Class<?>>	reloadedClasses;
 
 	public RomaClassLoader() {
 		super(new URL[] {});
@@ -101,24 +101,11 @@ public class RomaClassLoader extends URLClassLoader {
 
 	private void init() {
 		/*
-		if (!classPathSetted) {
-			synchronized (this) {
-				if (!classPathSetted) {
-					classPathSetted = true;
-					String classPaths[] = Roma.component(ResourceResolver.class).getClassPaths();
-					for (String classPath : classPaths) {
-						for (String item : classPath.split(File.pathSeparator)) {
-							try {
-								addURL(new File(item).toURI().toURL());
-							} catch (MalformedURLException e) {
-								log.error("[RomaClassLoader.init] Bad url setting classpath: " + item);
-							}
-						}
-					}
-				}
-			}
-		}
-		*/
+		 * if (!classPathSetted) { synchronized (this) { if (!classPathSetted) { classPathSetted = true; String classPaths[] =
+		 * Roma.component(ResourceResolver.class).getClassPaths(); for (String classPath : classPaths) { for (String item :
+		 * classPath.split(File.pathSeparator)) { try { addURL(new File(item).toURI().toURL()); } catch (MalformedURLException e) {
+		 * log.error("[RomaClassLoader.init] Bad url setting classpath: " + item); } } } } } }
+		 */
 	}
 
 	/**
@@ -130,7 +117,7 @@ public class RomaClassLoader extends URLClassLoader {
 	private void signalToAllListeners(Class<?> cls) {
 		if (Controller.getInstance().getListeners(ClassLoaderListener.class) != null) {
 			for (Object obj : Controller.getInstance().getListeners(ClassLoaderListener.class)) {
-				ClassLoaderListener l = (ClassLoaderListener)obj;
+				ClassLoaderListener l = (ClassLoaderListener) obj;
 				if (l != null) {
 					l.onClassLoading(cls);
 				}

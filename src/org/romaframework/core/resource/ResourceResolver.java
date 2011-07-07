@@ -166,7 +166,7 @@ public class ResourceResolver {
 
 			while ((entry = jis.getNextJarEntry()) != null) {
 				fullName = entry.getName();
-				if (fullName.startsWith(pathStartingPackage) && acceptResorce(fullName) ) {
+				if (fullName.startsWith(pathStartingPackage) && acceptResorce(fullName)) {
 					i = fullName.lastIndexOf(JAR_PATH_SEPARATOR) + 1;
 					packagePrefix = fullName.substring(0, i).replace(JAR_PATH_SEPARATOR, PACKAGE_SEPARATOR);
 					name = fullName.substring(i, fullName.length());

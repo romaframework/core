@@ -22,5 +22,5 @@ package org.romaframework.core.util.parser;
  * 
  */
 public interface VariableParserListener {
-  public String resolve(String iVariable);
+	public String resolve(String iVariable);
 }

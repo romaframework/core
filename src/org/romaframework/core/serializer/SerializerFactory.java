@@ -13,6 +13,7 @@
  * governing permissions and limitations under the License.
  */
 package org.romaframework.core.serializer;
+
 public interface SerializerFactory {
 	public RomaObjectSerializer getSerializer(Object iToSerialize) throws RomaSerializationException;
 }

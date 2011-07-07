@@ -15,7 +15,7 @@
  */
 package org.romaframework.aspect.security.exception;
 
-public class SecurityException extends java.lang.SecurityException{
+public class SecurityException extends java.lang.SecurityException {
 
 	public SecurityException() {
 		super();

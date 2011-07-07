@@ -16,58 +16,57 @@
 
 package org.romaframework.aspect.persistence;
 
-
 public class Query {
-  protected int     totalItems     = -1;
-  protected int     rangeFrom      = -1;
-  protected int     rangeTo        = -1;
-  protected byte    retrievingMode = PersistenceAspect.STRATEGY_DEFAULT;
+	protected int			totalItems			= -1;
+	protected int			rangeFrom				= -1;
+	protected int			rangeTo					= -1;
+	protected byte		retrievingMode	= PersistenceAspect.STRATEGY_DEFAULT;
 
-  protected String  mode;
-  protected boolean subClasses     = false;
+	protected String	mode;
+	protected boolean	subClasses			= false;
 
-  public byte getStrategy() {
-    return retrievingMode;
-  }
+	public byte getStrategy() {
+		return retrievingMode;
+	}
 
-  public void setStrategy(byte retrievingMode) {
-    this.retrievingMode = retrievingMode;
-  }
+	public void setStrategy(byte retrievingMode) {
+		this.retrievingMode = retrievingMode;
+	}
 
-  public void setRangeFrom(int iRangeFrom, int iRangeTo) {
-    rangeFrom = iRangeFrom;
-    rangeTo = iRangeTo;
-  }
+	public void setRangeFrom(int iRangeFrom, int iRangeTo) {
+		rangeFrom = iRangeFrom;
+		rangeTo = iRangeTo;
+	}
 
-  public int getRangeFrom() {
-    return rangeFrom;
-  }
+	public int getRangeFrom() {
+		return rangeFrom;
+	}
 
-  public int getRangeTo() {
-    return rangeTo;
-  }
+	public int getRangeTo() {
+		return rangeTo;
+	}
 
-  public int getTotalItems() {
-    return totalItems;
-  }
+	public int getTotalItems() {
+		return totalItems;
+	}
 
-  public void setTotalItems(int totalItems) {
-    this.totalItems = totalItems;
-  }
+	public void setTotalItems(int totalItems) {
+		this.totalItems = totalItems;
+	}
 
-  public boolean isSubClasses() {
-    return subClasses;
-  }
+	public boolean isSubClasses() {
+		return subClasses;
+	}
 
-  public void setSubClasses(boolean subClasses) {
-    this.subClasses = subClasses;
-  }
+	public void setSubClasses(boolean subClasses) {
+		this.subClasses = subClasses;
+	}
 
-  public String getMode() {
-    return mode;
-  }
+	public String getMode() {
+		return mode;
+	}
 
-  public void setMode(String mode) {
-    this.mode = mode;
-  }
+	public void setMode(String mode) {
+		this.mode = mode;
+	}
 }

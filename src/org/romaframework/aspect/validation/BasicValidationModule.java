@@ -139,12 +139,10 @@ public class BasicValidationModule extends ValidationAspectAbstract implements S
 		else if (Number.class.isAssignableFrom(fieldClass))
 			validateNumber(pojo, multiException, (Number) fieldValue, name, required, annotationMin, annotationMax);
 		else if (SchemaHelper.isMultiValueObject(fieldValue))
-			validateMultiValue(pojo, multiException, fieldValue, name, required, annotationMin, annotationMax, SchemaHelper.getSizeForMultiValueObject(fieldValue),
-					fieldInfo);
+			validateMultiValue(pojo, multiException, fieldValue, name, required, annotationMin, annotationMax, SchemaHelper.getSizeForMultiValueObject(fieldValue), fieldInfo);
 	}
 
-	public void validateNumber(Object pojo, MultiValidationException iMultiException, Number fieldValue, String name, boolean required, Integer annotationMin,
-			Integer annotationMax) {
+	public void validateNumber(Object pojo, MultiValidationException iMultiException, Number fieldValue, String name, boolean required, Integer annotationMin, Integer annotationMax) {
 		if (required && fieldValue == null)
 			handleValidationException(pojo, iMultiException, name, "$validation.required", null);
 
@@ -156,8 +154,8 @@ public class BasicValidationModule extends ValidationAspectAbstract implements S
 	}
 
 	@SuppressWarnings("unchecked")
-	public void validateMultiValue(Object pojo, MultiValidationException iMultiException, Object fieldValue, String name, boolean required,
-			Integer annotationMin, Integer annotationMax, int length, SchemaElement iElement) {
+	public void validateMultiValue(Object pojo, MultiValidationException iMultiException, Object fieldValue, String name, boolean required, Integer annotationMin,
+			Integer annotationMax, int length, SchemaElement iElement) {
 		if (required) {
 			// TODO: RESOLVE THIS DEPENDENCY IN MORE FAIR WAY
 			final String selectionField = (String) iElement.getFeature(FeatureRegistry.getFeature("view", FeatureType.FIELD, "selectionField"));
@@ -174,8 +172,8 @@ public class BasicValidationModule extends ValidationAspectAbstract implements S
 			handleValidationException(pojo, iMultiException, name, "$validation.maxLength", String.valueOf(annotationMax));
 	}
 
-	public void validateString(Object pojo, MultiValidationException iMultiException, SchemaField fieldInfo, Object fieldValue, String name, boolean required,
-			Integer annotationMin, Integer annotationMax) {
+	public void validateString(Object pojo, MultiValidationException iMultiException, SchemaField fieldInfo, Object fieldValue, String name, boolean required, Integer annotationMin,
+			Integer annotationMax) {
 		String stringValue = (String) fieldValue;
 		if (required && (stringValue == null || stringValue.length() == 0))
 			handleValidationException(pojo, iMultiException, name, "$validation.required", null);

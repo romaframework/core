@@ -22,7 +22,7 @@ import org.romaframework.core.module.SelfRegistrantConfigurableModule;
  * Workflow Aspect abstract implementation.
  */
 public abstract class WorkflowAspectAbstract extends SelfRegistrantConfigurableModule implements WorkflowAspect {
-  public String aspectName() {
-    return NAME;
-  }
+	public String aspectName() {
+		return NAME;
+	}
 }

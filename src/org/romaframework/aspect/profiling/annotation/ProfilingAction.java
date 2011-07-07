@@ -27,13 +27,13 @@ import org.romaframework.aspect.core.annotation.AnnotationConstants;
 @Target(ElementType.METHOD)
 public @interface ProfilingAction {
 
-  /**
-   * Enable the profiling
-   */
-  byte enabled() default AnnotationConstants.UNSETTED;
+	/**
+	 * Enable the profiling
+	 */
+	byte enabled() default AnnotationConstants.UNSETTED;
 
-  /**
-   * Key where collect data.
-   */
-  String key();
+	/**
+	 * Key where collect data.
+	 */
+	String key();
 }

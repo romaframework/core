@@ -49,7 +49,7 @@ public class QueryByFilter extends Query {
 		this(iCandidateClass, PREDICATE_AND);
 	}
 
-	//@SpringConstructor(constructorParamsGetters = { "getCandidateClass", "getPredicateOperator" })
+	// @SpringConstructor(constructorParamsGetters = { "getCandidateClass", "getPredicateOperator" })
 	public QueryByFilter(Class<?> iCandidateClass, String iPredicateOperator) {
 		candidateClass = iCandidateClass;
 		items = new ArrayList<QueryByFilterItem>();
@@ -114,7 +114,7 @@ public class QueryByFilter extends Query {
 		orders.clear();
 	}
 
-	//@SpringDescribe(nested = true)
+	// @SpringDescribe(nested = true)
 	public List<QueryByFilterItem> getItems() {
 		return items;
 	}
@@ -125,8 +125,7 @@ public class QueryByFilter extends Query {
 
 	public void merge(QueryByFilter source) {
 		if (!candidateClass.equals(source.candidateClass)) {
-			throw new RuntimeException("Cannot merge queries: expected candidate class " + candidateClass + ", found "
-					+ source.getCandidateClass());
+			throw new RuntimeException("Cannot merge queries: expected candidate class " + candidateClass + ", found " + source.getCandidateClass());
 		}
 		if (!predicateOperator.equals(source.predicateOperator)) {
 			QueryByFilterItemGroup group = new QueryByFilterItemGroup(source.predicateOperator);

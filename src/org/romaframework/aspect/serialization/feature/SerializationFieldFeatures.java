@@ -6,7 +6,6 @@ import org.romaframework.core.schema.FeatureType;
 
 public class SerializationFieldFeatures {
 
-	public static final Feature<Boolean>	TRANSIENT	= new Feature<Boolean>(SerializationAspect.ASPECT_NAME, "transient", FeatureType.FIELD, Boolean.class,
-																											Boolean.FALSE);
+	public static final Feature<Boolean>	TRANSIENT	= new Feature<Boolean>(SerializationAspect.ASPECT_NAME, "transient", FeatureType.FIELD, Boolean.class, Boolean.FALSE);
 
 }

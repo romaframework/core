@@ -16,12 +16,10 @@
 
 package org.romaframework.module.translator;
 
-public class LanguageNotSupportedException extends TranslationException{
+public class LanguageNotSupportedException extends TranslationException {
 
-	public LanguageNotSupportedException(String iLanguage)  {
-		super("Language " +iLanguage + "not supported");
+	public LanguageNotSupportedException(String iLanguage) {
+		super("Language " + iLanguage + "not supported");
 	}
-	
-	
-	
+
 }

@@ -32,50 +32,51 @@ import org.romaframework.core.schema.config.SaxSchemaConfiguration;
  */
 public class SchemaConfigurationLoader {
 
-  /**
-   * Load XML descriptor using Apache XMLBeans. Entities are cached.
-   * 
-   * @param iEntityName
-   * @return Entity instance read from XML descriptor
-   */
-  public FileSystemSchemaConfiguration getXmlFileSystemSchemaConfiguration(String iEntityName) {
-    FileSystemSchemaConfiguration descr = null;
-    String filePath = "<unsetted>";
-    try {
-      filePath = Roma.component(SchemaClassResolver.class).getClassDescriptorPath(iEntityName);
-      if (filePath == null)
-        return null;
+	/**
+	 * Load XML descriptor using Apache XMLBeans. Entities are cached.
+	 * 
+	 * @param iEntityName
+	 * @return Entity instance read from XML descriptor
+	 */
+	public FileSystemSchemaConfiguration getXmlFileSystemSchemaConfiguration(String iEntityName) {
+		FileSystemSchemaConfiguration descr = null;
+		String filePath = "<unsetted>";
+		try {
+			filePath = Roma.component(SchemaClassResolver.class).getClassDescriptorPath(iEntityName);
+			if (filePath == null)
+				return null;
 
-      String containerFilePath = Utility.getContainerFile(filePath);
+			String containerFilePath = Utility.getContainerFile(filePath);
 
-      // TRY TO LOAD RESOURCE BY CLASS LOADER
-      if (log.isDebugEnabled())
-        log.debug("[SchemaConfigurationLoader.getSchema] Loading schema from file: " + getClass().getResource(filePath).getFile());
-      descr = new FileSystemSchemaConfiguration(new File(getClass().getResource(containerFilePath).getFile()), filePath);
-    } catch (Exception e) {
-      log.error("[SchemaConfigurationLoader.getSchema] Error on loading resource: " + filePath, e);
-    }
-    return descr;
-  }
-  
-  public SaxSchemaConfiguration getSaxSchemaConfiguration(String iEntityName) {
+			// TRY TO LOAD RESOURCE BY CLASS LOADER
+			if (log.isDebugEnabled())
+				log.debug("[SchemaConfigurationLoader.getSchema] Loading schema from file: " + getClass().getResource(filePath).getFile());
+			descr = new FileSystemSchemaConfiguration(new File(getClass().getResource(containerFilePath).getFile()), filePath);
+		} catch (Exception e) {
+			log.error("[SchemaConfigurationLoader.getSchema] Error on loading resource: " + filePath, e);
+		}
+		return descr;
+	}
+
+	public SaxSchemaConfiguration getSaxSchemaConfiguration(String iEntityName) {
 		SaxSchemaConfiguration descr = null;
-	    String filePath = "<unsetted>";
-	    try {
-	      filePath = Roma.component(SchemaClassResolver.class).getClassDescriptorPath(iEntityName);
-	      if (filePath == null)
-	        return null;
+		String filePath = "<unsetted>";
+		try {
+			filePath = Roma.component(SchemaClassResolver.class).getClassDescriptorPath(iEntityName);
+			if (filePath == null)
+				return null;
 
-	      String containerFilePath = Utility.getContainerFile(filePath);
+			String containerFilePath = Utility.getContainerFile(filePath);
 
-	      // TRY TO LOAD RESOURCE BY CLASS LOADER
-	      if (log.isDebugEnabled())
-	        log.debug("[SchemaConfigurationLoader.getSchema] Loading schema from file: " + getClass().getResource(filePath).getFile());
-	      descr = new SaxSchemaConfiguration(new File(getClass().getResource(containerFilePath).getFile()), filePath);
-	    } catch (Exception e) {
-	      log.error("[SchemaConfigurationLoader.getSchema] Error on loading resource: " + filePath, e);
-	    }
-	    return descr;
-	  }
-  private static Log log = LogFactory.getLog(SchemaConfigurationLoader.class);
+			// TRY TO LOAD RESOURCE BY CLASS LOADER
+			if (log.isDebugEnabled())
+				log.debug("[SchemaConfigurationLoader.getSchema] Loading schema from file: " + getClass().getResource(filePath).getFile());
+			descr = new SaxSchemaConfiguration(new File(getClass().getResource(containerFilePath).getFile()), filePath);
+		} catch (Exception e) {
+			log.error("[SchemaConfigurationLoader.getSchema] Error on loading resource: " + filePath, e);
+		}
+		return descr;
+	}
+
+	private static Log	log	= LogFactory.getLog(SchemaConfigurationLoader.class);
 }

@@ -13,24 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 package org.romaframework.aspect.workflow;
 
 public class WorkflowException extends RuntimeException {
 
-  public WorkflowException() {
-    super();
-  }
+	public WorkflowException() {
+		super();
+	}
 
-  public WorkflowException(String arg0) {
-    super(arg0);
-  }
+	public WorkflowException(String arg0) {
+		super(arg0);
+	}
 
-  public WorkflowException(String arg0, Throwable arg1) {
-    super(arg0, arg1);
-  }
+	public WorkflowException(String arg0, Throwable arg1) {
+		super(arg0, arg1);
+	}
 
-  public WorkflowException(Throwable arg0) {
-    super(arg0);
-  }
+	public WorkflowException(Throwable arg0) {
+		super(arg0);
+	}
 }

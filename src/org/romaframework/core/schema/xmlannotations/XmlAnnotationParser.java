@@ -40,9 +40,7 @@ public class XmlAnnotationParser extends DefaultHandler {
 		if (printNamespace) {
 			buffer.append(" xmlns=\"http://www.romaframework.org/xml/roma\"\n");
 			append(buffer, "xmlns:xsd=\"http://www.w3.org/2001/XMLSchema-instance\"\n", indent + 1);
-			append(buffer,
-					"xsd:schemaLocation=\"http://www.romaframework.org/xml/roma http://www.romaframework.org/schema/v2/roma.xsd\"",
-					indent + 1);
+			append(buffer, "xsd:schemaLocation=\"http://www.romaframework.org/xml/roma http://www.romaframework.org/schema/v2/roma.xsd\"", indent + 1);
 		}
 		buffer.append(">\n");
 		printAspectsBlock(annotation, buffer, indent + 1);
@@ -60,8 +58,7 @@ public class XmlAnnotationParser extends DefaultHandler {
 			}
 			append(buffer, "</actions>\n", indent + 1);
 		}
-		
-		
+
 		if (annotation.getEvents() != null && annotation.getEvents().size() > 0) {
 			append(buffer, "<events>\n", indent + 1);
 			for (XmlEventAnnotation action : annotation.getEvents()) {
@@ -69,7 +66,7 @@ public class XmlAnnotationParser extends DefaultHandler {
 			}
 			append(buffer, "</events>\n", indent + 1);
 		}
-		
+
 		append(buffer, "</class>\n", indent);
 		return buffer;
 	}
@@ -117,7 +114,7 @@ public class XmlAnnotationParser extends DefaultHandler {
 		append(buffer, "</action>\n", indent);
 		return buffer;
 	}
-	
+
 	private static StringBuffer printEvent(XmlEventAnnotation action, int indent) {
 		StringBuffer buffer = new StringBuffer();
 		append(buffer, "<event", indent);
@@ -250,9 +247,7 @@ public class XmlAnnotationParser extends DefaultHandler {
 		append(buffer, "<screen", indent);
 		if (printNamespace) {
 			buffer.append("  xmlns=\"http://www.romaframework.org/xml/roma\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema-instance\"\n");
-			append(buffer,
-					" xsd:schemaLocation=\"http://www.romaframework.org/xml/roma http://www.romaframework.org/schema/roma-view-screen.xsd\"",
-					indent + 1);
+			append(buffer, " xsd:schemaLocation=\"http://www.romaframework.org/xml/roma http://www.romaframework.org/schema/roma-view-screen.xsd\"", indent + 1);
 		}
 		buffer.append(">\n");
 		buffer.append(printArea(annotation.getRootArea(), indent + 1));
@@ -261,8 +256,7 @@ public class XmlAnnotationParser extends DefaultHandler {
 		return buffer;
 	}
 
-	public static XmlClassAnnotation parseClass(InputStream inputStream) throws ParserConfigurationException, SAXException,
-			IOException {
+	public static XmlClassAnnotation parseClass(InputStream inputStream) throws ParserConfigurationException, SAXException, IOException {
 		SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
 		XmlClassHandler handler = new XmlClassHandler();
 		parser.parse(inputStream, handler);

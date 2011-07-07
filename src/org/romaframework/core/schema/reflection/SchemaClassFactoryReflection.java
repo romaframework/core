@@ -61,7 +61,7 @@ public class SchemaClassFactoryReflection extends Configurable<String> implement
 			if (clazz == null) {
 				clazz = SchemaHelper.getClassForJavaTypes(arrayName);
 			}
-			if(clazz==null){
+			if (clazz == null) {
 				clazz = SchemaHelper.getClassForJavaTypes(Object.class.getSimpleName());
 			}
 			return clazz;

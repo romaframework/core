@@ -28,57 +28,56 @@ import org.romaframework.core.schema.SchemaClassResolver;
 
 public abstract class EtlAspect extends SelfRegistrantConfigurableModule<String> {
 
-  @Deprecated
-  public abstract int doImport(Object iRootObject, String iMappingName, InputStream iStream, ImportFactory iFactory)
-      throws EtlException;
+	@Deprecated
+	public abstract int doImport(Object iRootObject, String iMappingName, InputStream iStream, ImportFactory iFactory) throws EtlException;
 
-  public abstract int doExport(String iMappingName, OutputStream iStream) throws EtlException;
+	public abstract int doExport(String iMappingName, OutputStream iStream) throws EtlException;
 
-  /**
-   * launches an ETL procedure given its name
-   * 
-   * @param name
-   *          the symbolic name of an ETL definition
-   * @return the number of records imported
-   * @throws EtlException
-   */
-  public abstract int doImport(String name) throws EtlException;
+	/**
+	 * launches an ETL procedure given its name
+	 * 
+	 * @param name
+	 *          the symbolic name of an ETL definition
+	 * @return the number of records imported
+	 * @throws EtlException
+	 */
+	public abstract int doImport(String name) throws EtlException;
 
-  /**
-   * launches an ETL procedure given its name
-   * 
-   * @param name
-   *          the symbolic name of an ETL definition
-   * @param input
-   *          input values for the procedure
-   * @return the number of records imported
-   * @throws EtlException
-   */
-  public abstract int doImport(String name, Map<String, Object> input) throws EtlException;
+	/**
+	 * launches an ETL procedure given its name
+	 * 
+	 * @param name
+	 *          the symbolic name of an ETL definition
+	 * @param input
+	 *          input values for the procedure
+	 * @return the number of records imported
+	 * @throws EtlException
+	 */
+	public abstract int doImport(String name, Map<String, Object> input) throws EtlException;
 
-  public String aspectName() {
-    return ASPECT_NAME;
-  }
+	public String aspectName() {
+		return ASPECT_NAME;
+	}
 
-  /**
-   * @return the names of all available ETL procedure
-   */
-  public abstract Set<String> getEtlDefinitionNames();
+	/**
+	 * @return the names of all available ETL procedure
+	 */
+	public abstract Set<String> getEtlDefinitionNames();
 
-  /**
-   * given an etl definition name, returns its description
-   * 
-   * @param etlName
-   *          the name of an etl definition
-   * @return the descriprion of the etl procedure
-   */
-  public abstract String getEtlDescription(String etlName);
+	/**
+	 * given an etl definition name, returns its description
+	 * 
+	 * @param etlName
+	 *          the name of an etl definition
+	 * @return the descriprion of the etl procedure
+	 */
+	public abstract String getEtlDescription(String etlName);
 
-  @Override
-  public void startup() {
-    // REGISTER THE VIEW DOMAIN TO SCHEMA CLASS RESOLVER
-    Roma.component(SchemaClassResolver.class).addDomainPackage(Utility.getApplicationAspectPackage(aspectName()));
-  }
+	@Override
+	public void startup() {
+		// REGISTER THE VIEW DOMAIN TO SCHEMA CLASS RESOLVER
+		Roma.component(SchemaClassResolver.class).addDomainPackage(Utility.getApplicationAspectPackage(aspectName()));
+	}
 
-  public static final String ASPECT_NAME = "etl";
+	public static final String	ASPECT_NAME	= "etl";
 }

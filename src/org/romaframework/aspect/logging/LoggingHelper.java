@@ -114,8 +114,7 @@ public class LoggingHelper {
 	 * @param args
 	 * @return
 	 */
-	private static String getMessageToPrint(String messageTemplate, Object me, Object returnedValue, Throwable exception, String who, String where,
-			Object... args) {
+	private static String getMessageToPrint(String messageTemplate, Object me, Object returnedValue, Throwable exception, String who, String where, Object... args) {
 		if (messageTemplate == null) {
 			return "";
 		}

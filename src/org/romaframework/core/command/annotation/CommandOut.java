@@ -21,10 +21,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target (ElementType.FIELD)
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CommandOut {
-	
+
 	Class<?> type() default Object.class;
+
 	Class<?> collectionType() default Object.class;
 }

@@ -23,15 +23,15 @@ package org.romaframework.core.config;
  * 
  */
 public interface Serviceable {
-  public void startup() throws RuntimeException;
+	public void startup() throws RuntimeException;
 
-  public void shutdown() throws RuntimeException;
+	public void shutdown() throws RuntimeException;
 
-  public String getStatus();
+	public String getStatus();
 
-  public static final String STATUS_UNKNOWN     = "unknown";
-  public static final String STATUS_DOWN        = "down";
-  public static final String STATUS_STARTING    = "starting";
-  public static final String STATUS_UP          = "up";
-  public static final String STATUS_SHUTDOWNING = "shutdowning";
+	public static final String	STATUS_UNKNOWN			= "unknown";
+	public static final String	STATUS_DOWN					= "down";
+	public static final String	STATUS_STARTING			= "starting";
+	public static final String	STATUS_UP						= "up";
+	public static final String	STATUS_SHUTDOWNING	= "shutdowning";
 }

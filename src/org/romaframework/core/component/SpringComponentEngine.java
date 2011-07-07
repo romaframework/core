@@ -70,8 +70,8 @@ public class SpringComponentEngine extends AbstractServiceable implements Compon
 		List<File> cfgFiles = FileUtils.searchAllFiles(RomaApplicationContext.getApplicationPath() + COMPONENT_SRV_DIRECTORY, COMPONENT_SRV_FILE_PATTERN, true);
 
 		if (cfgFiles == null || cfgFiles.size() == 0)
-			LoggingHelper.raiseCfgException(getClass(), "Error on loading configuration from path: " + RomaApplicationContext.getApplicationPath()
-					+ COMPONENT_SRV_DIRECTORY + ". No files found.");
+			LoggingHelper.raiseCfgException(getClass(), "Error on loading configuration from path: " + RomaApplicationContext.getApplicationPath() + COMPONENT_SRV_DIRECTORY
+					+ ". No files found.");
 
 		for (File f : cfgFiles) {
 			xmlReader.loadBeanDefinitions(new FileSystemResource(f));

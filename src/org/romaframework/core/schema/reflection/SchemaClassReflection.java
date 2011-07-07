@@ -50,30 +50,29 @@ import org.romaframework.core.schema.config.SaxSchemaConfiguration;
 import org.romaframework.core.schema.config.SchemaConfiguration;
 
 /**
- * Represent a class. It's not necessary that a Java class exist in the
- * Classpath since you can define a SchemaClassReflection that inherits another
- * Java Class and use XML descriptor to customize it. This feature avoid the
- * writing of empty class that simply inherit real domain class.
+ * Represent a class. It's not necessary that a Java class exist in the Classpath since you can define a SchemaClassReflection that
+ * inherits another Java Class and use XML descriptor to customize it. This feature avoid the writing of empty class that simply
+ * inherit real domain class.
  * 
  * @author Luca Garulli (luca.garulli--at--assetdata.it)
  */
 public class SchemaClassReflection extends SchemaClass {
 
-	private static final long		serialVersionUID		= 8389722670237445799L;
+	private static final long			serialVersionUID		= 8389722670237445799L;
 
-	private Class<?>					javaClass;
+	private Class<?>							javaClass;
 
-	private SchemaClass				baseClass;
+	private SchemaClass						baseClass;
 
-	public static final String		GET_METHOD				= "get";
+	public static final String		GET_METHOD					= "get";
 
-	public static final String		IS_METHOD				= "is";
+	public static final String		IS_METHOD						= "is";
 
-	public static final String		SET_METHOD				= "set";
+	public static final String		SET_METHOD					= "set";
 
 	public static final String[]	IGNORE_METHOD_NAMES	= { "equals", "toString", "hashCode", "validate", "getClass", "clone" };
 
-	private static Log				log						= LogFactory.getLog(SchemaClassReflection.class);
+	private static Log						log									= LogFactory.getLog(SchemaClassReflection.class);
 
 	public SchemaClassReflection(Class<?> iClass) {
 		super(Utility.getClassName(iClass));
@@ -174,9 +173,7 @@ public class SchemaClassReflection extends SchemaClass {
 			// JUMP STATIC FIELDS OR NOT PUBLIC FIELDS
 			if (isToIgnoreMethod(method))
 				continue;
-			if (isGetterForField(method, type))
-				continue;
-			else if (isSetterForField(method, type))
+			if (isGetterForField(method, type) || isSetterForField(method, type))
 				continue;
 			else if (isEvent(method)) {
 				eventsToAdd.add(method);
@@ -189,19 +186,20 @@ public class SchemaClassReflection extends SchemaClass {
 		Field[] javaFields = iClass.getDeclaredFields();
 		for (Field curField : javaFields) {
 			SchemaField sf = getField(curField.getName());
-			if (sf != null && sf instanceof SchemaFieldReflection) {
-				SchemaClass fieldSchemaClass = Roma.schema().getSchemaClassIfExist(curField.getType());
-				if (sf.getType() == null || fieldSchemaClass.isAssignableAs(fieldSchemaClass)) {
+			if (sf instanceof SchemaFieldReflection) {
+				Class<?> genericFieldClass = SchemaHelper.resolveClassFromType(curField.getGenericType(), type);
+				SchemaClass fieldSchemaClass = Roma.schema().getSchemaClassIfExist(genericFieldClass);
+				if (sf.getType() == null || fieldSchemaClass.isAssignableAs(sf.getType().getSchemaClass())) {
 					sf.setType(fieldSchemaClass);
 					((SchemaFieldReflection) sf).field = curField;
-					((SchemaFieldReflection) sf).languageType = SchemaHelper.resolveClassFromType(curField.getGenericType(), type);
+					((SchemaFieldReflection) sf).languageType = genericFieldClass;
 				}
 			}
 		}
 
 		List<SchemaField> curFields = new ArrayList<SchemaField>(fields.values());
 		for (SchemaField field : curFields) {
-			if (field instanceof SchemaFieldReflection && ((SchemaFieldReflection) field).getGetterMethod() == null) {
+			if ((field instanceof SchemaFieldReflection && !(field instanceof SchemaFieldDelegate)) && ((SchemaFieldReflection) field).getGetterMethod() == null) {
 				fields.remove(field.getName());
 				orderedFields.remove(field);
 			} else {
@@ -285,8 +283,14 @@ public class SchemaClassReflection extends SchemaClass {
 		if (fieldInfo == null) {
 			fieldInfo = createField(fieldName, javaFieldClass);
 			fieldInfo.getterMethod = method;
-		} else if (fieldInfo instanceof SchemaFieldReflection && javaFieldClass.isAssignableFrom(((SchemaFieldReflection) fieldInfo).getLanguageType())) {
-			fieldInfo.getterMethod = method;
+		} else if (fieldInfo instanceof SchemaFieldReflection) {
+			if (fieldInfo instanceof SchemaFieldDelegate && !javaFieldClass.isAssignableFrom(((SchemaFieldReflection) fieldInfo).getLanguageType())) {
+				fieldInfo = createField(fieldName, javaFieldClass);
+				fieldInfo.getterMethod = method;
+			} else {
+				if (javaFieldClass.isAssignableFrom(((SchemaFieldReflection) fieldInfo).getLanguageType()))
+					fieldInfo.getterMethod = method;
+			}
 		}
 
 		return true;
@@ -305,9 +309,16 @@ public class SchemaClassReflection extends SchemaClass {
 		if (fieldInfo == null) {
 			fieldInfo = createField(fieldName, javaFieldClass);
 			fieldInfo.setterMethod = method;
-		} else if (fieldInfo instanceof SchemaFieldReflection && ((SchemaFieldReflection) fieldInfo).getLanguageType().isAssignableFrom(javaFieldClass)) {
-			fieldInfo.setterMethod = method;
-			fieldInfo.setType(Roma.schema().getSchemaClassIfExist(javaFieldClass));
+		} else if (fieldInfo instanceof SchemaFieldReflection) {
+			if (fieldInfo instanceof SchemaFieldDelegate && !javaFieldClass.isAssignableFrom(((SchemaFieldReflection) fieldInfo).getLanguageType())) {
+				fieldInfo = createField(fieldName, javaFieldClass);
+				fieldInfo.setterMethod = method;
+			} else {
+				if (((SchemaFieldReflection) fieldInfo).getLanguageType().isAssignableFrom(javaFieldClass)) {
+					fieldInfo.setterMethod = method;
+					fieldInfo.setType(Roma.schema().getSchemaClassIfExist(javaFieldClass));
+				}
+			}
 		}
 		return true;
 
@@ -317,7 +328,7 @@ public class SchemaClassReflection extends SchemaClass {
 	 * Checks if the class method is an event
 	 * 
 	 * @param method
-	 *           -: the class method to check
+	 *          -: the class method to check
 	 * 
 	 * @return true if is a event, false otherwise.
 	 */
@@ -331,24 +342,26 @@ public class SchemaClassReflection extends SchemaClass {
 	/**
 	 * Adds to the events list the methods argument list.
 	 * 
-	 * <p>If the event is not linkable to a field will be added as class event. 
-	 * Example: onNameEvent will be added as field event only if exists a field "Name" in the class.
+	 * <p>
+	 * If the event is not linkable to a field will be added as class event. Example: onNameEvent will be added as field event only if
+	 * exists a field "Name" in the class.
 	 * 
-	 * @param methodsToAdd -: methods to 
+	 * @param methodsToAdd
+	 *          -: methods to
 	 */
 	protected void addEvents(List<Method> methodsToAdd) {
 		for (Method method : methodsToAdd) {
-			
-			//GET THE EVENT REAL NAME
+
+			// GET THE EVENT REAL NAME
 			String eventMethodName = method.getName();
 			eventMethodName = firstToLower(eventMethodName.substring(SchemaEvent.ON_METHOD.length()));
 
-			//GET THE EVENT ASSOCIATED FIELD NAME IF ANY
+			// GET THE EVENT ASSOCIATED FIELD NAME IF ANY
 			String eventName = lastCapitalWords(eventMethodName);
 			String fieldName = eventMethodName.substring(0, eventMethodName.length() - eventName.length());
 			eventName = firstToLower(eventName);
 
-			//ADDS THE EVENT TO THE LIST, AS EVENT FIELD IF THE FIELD NAME IS FOUND, TO THE CLASS EVENT OTHERWISE
+			// ADDS THE EVENT TO THE LIST, AS EVENT FIELD IF THE FIELD NAME IS FOUND, TO THE CLASS EVENT OTHERWISE
 			if (fieldName.length() > 0) {
 				fieldName = firstToLower(fieldName);
 				SchemaField field = getField(fieldName);

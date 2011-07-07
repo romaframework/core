@@ -11,8 +11,8 @@ public abstract class UnmanagedServiceAspectAbstract extends ServiceAspectAbstra
 	private Map<String, Object>	instances	= new HashMap<String, Object>();
 
 	@Override
-	protected Object createServiceInstance(SchemaClass implementation) throws IllegalArgumentException, SecurityException,
-			InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+	protected Object createServiceInstance(SchemaClass implementation) throws IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException,
+			InvocationTargetException, NoSuchMethodException {
 		Object instance = instances.get(implementation.getName());
 		if (instance == null) {
 			instance = super.createServiceInstance(implementation);

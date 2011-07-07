@@ -13,10 +13,12 @@
  * governing permissions and limitations under the License.
  */
 package org.romaframework.core.serializer;
+
 import java.util.Map;
 
 public abstract class RomaObjectSerializer {
 	public abstract Object serialize(Object iToSerialize, Map<String, Object> iOptions) throws RomaSerializationException;
+
 	public abstract Object serialize(Object iToSerialize) throws RomaSerializationException;
-	
+
 }

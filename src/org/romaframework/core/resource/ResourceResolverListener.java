@@ -24,5 +24,5 @@ import java.io.File;
  */
 public interface ResourceResolverListener {
 
-  public void addResource(File iFile, String iName, String iPackagePrefix, String iStartingPackage);
+	public void addResource(File iFile, String iName, String iPackagePrefix, String iStartingPackage);
 }

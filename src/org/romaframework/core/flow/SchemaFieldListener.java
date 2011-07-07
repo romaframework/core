@@ -16,7 +16,7 @@ public interface SchemaFieldListener {
 	 * Special object to return when the callback ignore the operation.
 	 */
 	public static final IgnoredExecution	IGNORED	= new IgnoredExecution();
-	
+
 	/**
 	 * Callback invoked before to read a field. Return IGNORED if the callback ignores the method itself.
 	 * 

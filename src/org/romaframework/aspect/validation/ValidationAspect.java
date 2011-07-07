@@ -26,9 +26,9 @@ import org.romaframework.core.aspect.Aspect;
  * 
  */
 public interface ValidationAspect extends Aspect {
-  public static final String ASPECT_NAME = "validation";
+	public static final String	ASPECT_NAME	= "validation";
 
-  public void validate(Object iPOJO) throws ValidationException, MultiValidationException;
+	public void validate(Object iPOJO) throws ValidationException, MultiValidationException;
 
-  public MultiValidationException validateAndCollectExceptions(Object iPOJO);
+	public MultiValidationException validateAndCollectExceptions(Object iPOJO);
 }

@@ -15,7 +15,6 @@
  */
 package org.romaframework.aspect.enterprise;
 
-
 import org.romaframework.aspect.enterprise.annotation.BpelClass;
 import org.romaframework.aspect.enterprise.annotation.ConsumerRegistrationClass;
 import org.romaframework.aspect.enterprise.annotation.EnterpriseClass;

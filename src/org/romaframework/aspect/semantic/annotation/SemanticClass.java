@@ -21,16 +21,17 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * IMPORTANT: PLEASE DO NOT RELY ON THIS RESOURCE, IT IS UNDER DEFINITION AND 
- * HEAVY DEVELOPMENT
- *  
+ * IMPORTANT: PLEASE DO NOT RELY ON THIS RESOURCE, IT IS UNDER DEFINITION AND HEAVY DEVELOPMENT
+ * 
  * @author Luigi Dell'Aquila (luigi.dellaquila@assetdata.it)
  * 
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface SemanticClass {
-  String subjectPrefix() default "";
-  String subjectId() default "";
-  String classUri() default "";
+	String subjectPrefix() default "";
+
+	String subjectId() default "";
+
+	String classUri() default "";
 }

@@ -27,6 +27,6 @@ import org.romaframework.core.schema.FeatureType;
  */
 public class SemanticFieldFeatures {
 
-	public static final Feature<String>	PREDICATE	= new Feature<String>(SemanticAspect.ASPECT_NAME,"predicate",FeatureType.FIELD,String.class);
-	public static final Feature<String[]>	RESOURCES	= new Feature<String[]>(SemanticAspect.ASPECT_NAME,"resources",FeatureType.FIELD,String[].class);
+	public static final Feature<String>		PREDICATE	= new Feature<String>(SemanticAspect.ASPECT_NAME, "predicate", FeatureType.FIELD, String.class);
+	public static final Feature<String[]>	RESOURCES	= new Feature<String[]>(SemanticAspect.ASPECT_NAME, "resources", FeatureType.FIELD, String[].class);
 }

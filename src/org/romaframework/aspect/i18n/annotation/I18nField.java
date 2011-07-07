@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 package org.romaframework.aspect.i18n.annotation;
 
 import java.lang.annotation.ElementType;
@@ -28,14 +28,13 @@ import org.romaframework.aspect.core.annotation.AnnotationConstants;
  * 
  * @author Luca Garulli (luca.garulli--at--assetdata.it)
  */
-@Target( { ElementType.FIELD, ElementType.METHOD })
+@Target({ ElementType.FIELD, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface I18nField {
-  /**
-   * Define the key to search in the I18N repository. You can write
-   * "MyClass.$content.label" and ROMA will complete the $content with the
-   * run-time value of field. <br>
-   * By default the key is "Object.$content.label".
-   */
-  String key() default AnnotationConstants.DEF_VALUE;
+	/**
+	 * Define the key to search in the I18N repository. You can write "MyClass.$content.label" and ROMA will complete the $content
+	 * with the run-time value of field. <br>
+	 * By default the key is "Object.$content.label".
+	 */
+	String key() default AnnotationConstants.DEF_VALUE;
 }

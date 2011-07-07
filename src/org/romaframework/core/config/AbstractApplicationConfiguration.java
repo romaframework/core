@@ -33,8 +33,7 @@ public abstract class AbstractApplicationConfiguration extends Configurable<Stri
 	protected boolean	applicationDevelopment;
 
 	public void login(LoginListener iListener) {
-		throw new ConfigurationException(
-				"No login configured. If you want to enable the auto-login feature please define CustomApplicationConfiguration.login(listener)");
+		throw new ConfigurationException("No login configured. If you want to enable the auto-login feature please define CustomApplicationConfiguration.login(listener)");
 	}
 
 	public String getApplicationName() {

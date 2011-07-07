@@ -70,8 +70,7 @@ public class JDBCCsvGenerator {
 		return statement;
 	}
 
-	private static void generateHeaderCsv(OutputStream stream, ResultSetMetaData metaData, int columnCount) throws SQLException,
-			IOException {
+	private static void generateHeaderCsv(OutputStream stream, ResultSetMetaData metaData, int columnCount) throws SQLException, IOException {
 		for (int i = 1; i <= columnCount; i++) {
 			stream.write(TEXT_DELIMITER.getBytes());
 			String header = metaData.getColumnName(i);

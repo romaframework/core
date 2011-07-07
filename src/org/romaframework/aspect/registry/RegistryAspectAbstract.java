@@ -15,7 +15,6 @@
  */
 package org.romaframework.aspect.registry;
 
-
 import org.romaframework.aspect.registry.annotation.RegistryClass;
 import org.romaframework.aspect.registry.feature.RegistryClassFeatures;
 import org.romaframework.core.module.SelfRegistrantConfigurableModule;

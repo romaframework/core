@@ -27,24 +27,24 @@ import java.util.Set;
  */
 public class ResourceInfo {
 
-  public File                    file;
-  public long                    lastModified;
-  public Set<AutoReloadListener> listeners;
+	public File											file;
+	public long											lastModified;
+	public Set<AutoReloadListener>	listeners;
 
-  public ResourceInfo(File iFile) {
-    file = iFile;
-    lastModified = iFile.lastModified();
-    listeners = new HashSet<AutoReloadListener>();
-  }
+	public ResourceInfo(File iFile) {
+		file = iFile;
+		lastModified = iFile.lastModified();
+		listeners = new HashSet<AutoReloadListener>();
+	}
 
-  @Override
-  public String toString() {
-    StringBuilder buffer = new StringBuilder();
-    buffer.append("File: ");
-    buffer.append(file);
-    buffer.append("(lastModified on ");
-    buffer.append(lastModified);
-    buffer.append(")");
-    return buffer.toString();
-  }
+	@Override
+	public String toString() {
+		StringBuilder buffer = new StringBuilder();
+		buffer.append("File: ");
+		buffer.append(file);
+		buffer.append("(lastModified on ");
+		buffer.append(lastModified);
+		buffer.append(")");
+		return buffer.toString();
+	}
 }

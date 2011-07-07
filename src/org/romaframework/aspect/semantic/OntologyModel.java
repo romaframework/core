@@ -17,19 +17,23 @@ package org.romaframework.aspect.semantic;
 
 import java.util.List;
 
-public interface OntologyModel extends SemanticModel{
-  /**
-   * adds a class (and hierarchy) to the ontology
-   * @param clazz the class to be added
-   */
-  public void addClass(Class<?> clazz);
-  
-  /**
-   * retuns a list containing all the instances of a class in the current model
-   * @param <T>
-   * @param clazz the class of the POJOs 
-   * @return a list containing all the instances of a class in the current model
-   * @throws Exception
-   */
-  public <T> List<T> getInstancesOf(Class<T> clazz) throws Exception;
+public interface OntologyModel extends SemanticModel {
+	/**
+	 * adds a class (and hierarchy) to the ontology
+	 * 
+	 * @param clazz
+	 *          the class to be added
+	 */
+	public void addClass(Class<?> clazz);
+
+	/**
+	 * retuns a list containing all the instances of a class in the current model
+	 * 
+	 * @param <T>
+	 * @param clazz
+	 *          the class of the POJOs
+	 * @return a list containing all the instances of a class in the current model
+	 * @throws Exception
+	 */
+	public <T> List<T> getInstancesOf(Class<T> clazz) throws Exception;
 }

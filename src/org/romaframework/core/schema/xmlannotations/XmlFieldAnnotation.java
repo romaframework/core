@@ -83,7 +83,7 @@ public class XmlFieldAnnotation extends XmlAnnotation {
 			}
 			buffer.append("]");
 		}
-		
+
 		if (classAnnotation != null) {
 			buffer.append(" ");
 			buffer.append(classAnnotation);
@@ -94,8 +94,6 @@ public class XmlFieldAnnotation extends XmlAnnotation {
 			buffer.append(text);
 		}
 
-		
-		
 		buffer.append("}");
 
 		return buffer.toString();

@@ -16,21 +16,20 @@
 
 package org.romaframework.aspect.persistence;
 
-
 public class QueryByFilterItemText implements QueryByFilterItem {
-  private String condition;
+	private String	condition;
 
-//  @SpringConstructor(constructorParamsGetters = { "getCondition" })
-  public QueryByFilterItemText(String iCondition) {
-    this.condition = iCondition;
-  }
+	// @SpringConstructor(constructorParamsGetters = { "getCondition" })
+	public QueryByFilterItemText(String iCondition) {
+		this.condition = iCondition;
+	}
 
-  public String getCondition() {
-    return condition;
-  }
+	public String getCondition() {
+		return condition;
+	}
 
-  @Override
-  public String toString() {
-    return condition == null ? "" : condition;
-  }
+	@Override
+	public String toString() {
+		return condition == null ? "" : condition;
+	}
 }

@@ -64,8 +64,7 @@ public class XmlClassHandler extends DefaultHandler {
 	}
 
 	private boolean isToPop(String name) {
-		if ("aspects".equals(name) || "fields".equals(name) || "actions".equals(name) || "parameters".equals(name)
-				|| "events".equals(name)) {
+		if ("aspects".equals(name) || "fields".equals(name) || "actions".equals(name) || "parameters".equals(name) || "events".equals(name)) {
 			return false;
 		}
 		return true;

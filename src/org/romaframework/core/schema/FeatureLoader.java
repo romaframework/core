@@ -48,8 +48,7 @@ public class FeatureLoader {
 	 *          the Xml descriptor with configurations to load on features.
 	 */
 	@SuppressWarnings("unchecked")
-	static public void loadFeatures(SchemaFeatures schemaFeatures, AnnotatedElement baseAnnotatedElement, AnnotatedElement additionalAnnotatedElement,
-			XmlAnnotation descriptor) {
+	static public void loadFeatures(SchemaFeatures schemaFeatures, AnnotatedElement baseAnnotatedElement, AnnotatedElement additionalAnnotatedElement, XmlAnnotation descriptor) {
 		Map<String, Annotation> annotations = new HashMap<String, Annotation>();
 		Map<String, Annotation> additionalAnnotations = new HashMap<String, Annotation>();
 

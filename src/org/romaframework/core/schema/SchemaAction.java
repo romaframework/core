@@ -36,17 +36,17 @@ import org.romaframework.core.schema.xmlannotations.XmlActionAnnotation;
  * @author Luca Garulli (luca.garulli--at--assetdata.it)
  */
 public abstract class SchemaAction extends SchemaClassElement {
-	private static final long					serialVersionUID	= -4789886810661429988L;
+	private static final long							serialVersionUID	= -4789886810661429988L;
 
-	private static Log							log					= LogFactory.getLog(SchemaAction.class);
+	private static Log										log								= LogFactory.getLog(SchemaAction.class);
 
-	private Map<String, SchemaParameter>	parameters			= new HashMap<String, SchemaParameter>();
+	private Map<String, SchemaParameter>	parameters				= new HashMap<String, SchemaParameter>();
 
-	private List<SchemaParameter>				orderedParameters	= new ArrayList<SchemaParameter>();
+	private List<SchemaParameter>					orderedParameters	= new ArrayList<SchemaParameter>();
 
-	private SchemaClass							returnType;
+	private SchemaClass										returnType;
 
-	protected XmlActionAnnotation				descriptorInfo;
+	protected XmlActionAnnotation					descriptorInfo;
 
 	public SchemaAction(SchemaClassDefinition iEntity, String iName) {
 		super(iEntity, iName, FeatureType.ACTION);

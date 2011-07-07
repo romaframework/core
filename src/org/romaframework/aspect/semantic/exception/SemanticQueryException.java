@@ -16,32 +16,31 @@
 package org.romaframework.aspect.semantic.exception;
 
 /**
- * Represents an exception in elaborating a semantic query
- * <br>
- * IMPORTANT: PLEASE DO NOT RELY ON THIS RESOURCE, IT IS UNDER DEFINITION AND 
- * HEAVY DEVELOPMENT 
+ * Represents an exception in elaborating a semantic query <br>
+ * IMPORTANT: PLEASE DO NOT RELY ON THIS RESOURCE, IT IS UNDER DEFINITION AND HEAVY DEVELOPMENT
+ * 
  * @author Luigi Dell'Aquila (luigi.dellaquila@assetdata.it)
  */
-public class SemanticQueryException extends Exception{
+public class SemanticQueryException extends Exception {
 
-  public SemanticQueryException() {
-    super();
-    // TODO Auto-generated constructor stub
-  }
+	public SemanticQueryException() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
-  public SemanticQueryException(String message, Throwable cause) {
-    super(message, cause);
-    // TODO Auto-generated constructor stub
-  }
+	public SemanticQueryException(String message, Throwable cause) {
+		super(message, cause);
+		// TODO Auto-generated constructor stub
+	}
 
-  public SemanticQueryException(String message) {
-    super(message);
-    // TODO Auto-generated constructor stub
-  }
+	public SemanticQueryException(String message) {
+		super(message);
+		// TODO Auto-generated constructor stub
+	}
 
-  public SemanticQueryException(Throwable cause) {
-    super(cause);
-    // TODO Auto-generated constructor stub
-  }
+	public SemanticQueryException(Throwable cause) {
+		super(cause);
+		// TODO Auto-generated constructor stub
+	}
 
 }

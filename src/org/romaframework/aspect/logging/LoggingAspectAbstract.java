@@ -16,7 +16,6 @@
 
 package org.romaframework.aspect.logging;
 
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.romaframework.core.module.SelfRegistrantConfigurableModule;

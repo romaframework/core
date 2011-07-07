@@ -18,12 +18,8 @@ import org.romaframework.core.schema.SchemaClass;
 
 public class CoreFieldFeatures {
 
-	public static final Feature<SchemaClass>	EMBEDDED_TYPE			= new Feature<SchemaClass>(CoreAspect.ASPECT_NAME, "embeddedType", FeatureType.FIELD,
-																																	SchemaClass.class);
-	public static final Feature<Boolean>			EMBEDDED					= new Feature<Boolean>(CoreAspect.ASPECT_NAME, "embedded", FeatureType.FIELD, Boolean.class,
-																																	Boolean.FALSE);
-	public static final Feature<Boolean>			USE_RUNTIME_TYPE	= new Feature<Boolean>(CoreAspect.ASPECT_NAME, "useRuntimeType", FeatureType.FIELD,
-																																	Boolean.class, Boolean.FALSE);
-	public static final Feature<Boolean>			EXPAND						= new Feature<Boolean>(CoreAspect.ASPECT_NAME, "expand", FeatureType.FIELD, Boolean.class,
-																																	Boolean.FALSE);
+	public static final Feature<SchemaClass>	EMBEDDED_TYPE			= new Feature<SchemaClass>(CoreAspect.ASPECT_NAME, "embeddedType", FeatureType.FIELD, SchemaClass.class);
+	public static final Feature<Boolean>			EMBEDDED					= new Feature<Boolean>(CoreAspect.ASPECT_NAME, "embedded", FeatureType.FIELD, Boolean.class, Boolean.FALSE);
+	public static final Feature<Boolean>			USE_RUNTIME_TYPE	= new Feature<Boolean>(CoreAspect.ASPECT_NAME, "useRuntimeType", FeatureType.FIELD, Boolean.class, Boolean.FALSE);
+	public static final Feature<Boolean>			EXPAND						= new Feature<Boolean>(CoreAspect.ASPECT_NAME, "expand", FeatureType.FIELD, Boolean.class, Boolean.FALSE);
 }

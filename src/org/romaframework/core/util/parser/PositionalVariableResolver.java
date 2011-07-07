@@ -22,29 +22,29 @@ package org.romaframework.core.util.parser;
  * 
  */
 public class PositionalVariableResolver implements VariableParserListener {
-  public static final String VAR_BEGIN = "${";
-  public static final String VAR_END   = "}";
-  protected String           format;
-  protected int              counter;
-  protected Object[]         args;
+	public static final String	VAR_BEGIN	= "${";
+	public static final String	VAR_END		= "}";
+	protected String						format;
+	protected int								counter;
+	protected Object[]					args;
 
-  public PositionalVariableResolver(String iFormat) {
-    format = iFormat;
-  }
+	public PositionalVariableResolver(String iFormat) {
+		format = iFormat;
+	}
 
-  public String resolve(Object[] iArgs) {
-    args = iArgs;
-    counter = 0;
-    return VariableParser.resolveVariables(format, VAR_BEGIN, VAR_END, this);
-  }
+	public String resolve(Object[] iArgs) {
+		args = iArgs;
+		counter = 0;
+		return VariableParser.resolveVariables(format, VAR_BEGIN, VAR_END, this);
+	}
 
-  public String resolve(String variable) {
-    counter = Integer.parseInt(variable) - 1;
+	public String resolve(String variable) {
+		counter = Integer.parseInt(variable) - 1;
 
-    if (counter >= args.length)
-      return null;
+		if (counter >= args.length)
+			return null;
 
-    Object arg = args[counter];
-    return arg != null ? arg.toString() : null;
-  }
+		Object arg = args[counter];
+		return arg != null ? arg.toString() : null;
+	}
 }

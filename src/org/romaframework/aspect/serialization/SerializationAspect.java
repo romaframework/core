@@ -28,7 +28,7 @@ import org.romaframework.core.aspect.Aspect;
  */
 public interface SerializationAspect extends Aspect {
 
-	public static final String	ASPECT_NAME					= "serialization";
+	public static final String	ASPECT_NAME	= "serialization";
 
 	/**
 	 * Serialize and store an object.

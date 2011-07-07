@@ -19,14 +19,13 @@ package org.romaframework.module.translator;
 import java.util.List;
 
 public interface TranslationModule {
-	
+
 	public List<String> getSupportedLanguages();
-	
+
 	public boolean isSupportedLanguage(String iLanguage);
-	
+
 	public boolean isValidTranslationPair(String iSourceLanguage, String iTargetLanguage);
-	
-	public String getTranslation(String iSentenceToTranslate, String iSourceLanguage, String iTargetLanguage) throws  TranslationException; 
-	
-	
+
+	public String getTranslation(String iSentenceToTranslate, String iSourceLanguage, String iTargetLanguage) throws TranslationException;
+
 }

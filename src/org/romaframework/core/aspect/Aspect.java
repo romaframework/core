@@ -16,7 +16,6 @@
 
 package org.romaframework.core.aspect;
 
-
 import org.romaframework.core.schema.SchemaAction;
 import org.romaframework.core.schema.SchemaClassDefinition;
 import org.romaframework.core.schema.SchemaEvent;

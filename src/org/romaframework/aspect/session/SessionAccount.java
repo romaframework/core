@@ -23,9 +23,9 @@ package org.romaframework.aspect.session;
  * 
  */
 public interface SessionAccount {
-  public Object getProfile();
+	public Object getProfile();
 
-  public void setProfile(Object iProfile);
+	public void setProfile(Object iProfile);
 
-  public Object getRealm();
+	public Object getRealm();
 }

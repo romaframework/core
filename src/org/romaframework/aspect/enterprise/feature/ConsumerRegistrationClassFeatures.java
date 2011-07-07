@@ -22,17 +22,13 @@ import org.romaframework.core.schema.FeatureType;
 
 public class ConsumerRegistrationClassFeatures {
 
-	public static final Feature<String>	SERVICE_DESC	= new Feature<String>(EnterpriseAspectAbstract.ASPECT_NAME, "serviceDesc", FeatureType.CLASS, String.class,
-																												"");
-	public static final Feature<String>	REG_URI				= new Feature<String>(EnterpriseAspectAbstract.ASPECT_NAME, "registryURI", FeatureType.CLASS, String.class,
-																												"");
+	public static final Feature<String>	SERVICE_DESC	= new Feature<String>(EnterpriseAspectAbstract.ASPECT_NAME, "serviceDesc", FeatureType.CLASS, String.class, "");
+	public static final Feature<String>	REG_URI				= new Feature<String>(EnterpriseAspectAbstract.ASPECT_NAME, "registryURI", FeatureType.CLASS, String.class, "");
 	public static final Feature<String>	USERNAME			= new Feature<String>(EnterpriseAspectAbstract.ASPECT_NAME, "username", FeatureType.CLASS, String.class, "");
 	public static final Feature<String>	PASSW					= new Feature<String>(EnterpriseAspectAbstract.ASPECT_NAME, "password", FeatureType.CLASS, String.class, "");
-	public static final Feature<String>	ORGANIZATION	= new Feature<String>(EnterpriseAspectAbstract.ASPECT_NAME, "organization", FeatureType.CLASS,
-																												String.class, "");
+	public static final Feature<String>	ORGANIZATION	= new Feature<String>(EnterpriseAspectAbstract.ASPECT_NAME, "organization", FeatureType.CLASS, String.class, "");
 	public static final Feature<String>	AUTHOR				= new Feature<String>(EnterpriseAspectAbstract.ASPECT_NAME, "author", FeatureType.CLASS, String.class, "");
 	public static final Feature<String>	ICONPATH			= new Feature<String>(EnterpriseAspectAbstract.ASPECT_NAME, "iconPath", FeatureType.CLASS, String.class, "");
-	public static final Feature<String>	SERVICE_NAME	= new Feature<String>(EnterpriseAspectAbstract.ASPECT_NAME, "serviceName", FeatureType.CLASS, String.class,
-																												"");
+	public static final Feature<String>	SERVICE_NAME	= new Feature<String>(EnterpriseAspectAbstract.ASPECT_NAME, "serviceName", FeatureType.CLASS, String.class, "");
 
 }

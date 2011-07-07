@@ -5,11 +5,11 @@ import java.util.LinkedList;
 
 public class TreeNodeHelper {
 
-	public static final String NODE_SEPARATOR = "/";
-	public static final String CURRENT_NODE = ".";
-	public static final String CURRENT_POSITION = "./";
-	public static final String PARENT_POSITION = "../";
-	public static final String ANY_POSITION = "//";
+	public static final String	NODE_SEPARATOR		= "/";
+	public static final String	CURRENT_NODE			= ".";
+	public static final String	CURRENT_POSITION	= "./";
+	public static final String	PARENT_POSITION		= "../";
+	public static final String	ANY_POSITION			= "//";
 
 	public static String getPath(TreeNode iNode) {
 		StringBuilder buffer = new StringBuilder();
@@ -29,8 +29,7 @@ public class TreeNodeHelper {
 		if (iChildPath.equals(NODE_SEPARATOR))
 			return getRootNode(iRoot);
 
-		if (iChildPath.equals(CURRENT_NODE)
-				|| iChildPath.equals(CURRENT_POSITION))
+		if (iChildPath.equals(CURRENT_NODE) || iChildPath.equals(CURRENT_POSITION))
 			return iRoot;
 
 		// CHECK FOR ANY POSITION
@@ -47,19 +46,16 @@ public class TreeNodeHelper {
 		// CHECK FOR STARTING FROM ROOT
 		if (iChildPath.startsWith(NODE_SEPARATOR)) {
 			TreeNode current = getRootNode(iRoot);
-			return findChild(current, iChildPath.substring(NODE_SEPARATOR
-					.length()));
+			return findChild(current, iChildPath.substring(NODE_SEPARATOR.length()));
 		}
 
 		// CHECK FOR STARTING FROM CURRENT
 		if (iChildPath.startsWith(CURRENT_POSITION)) {
-			return findChild(iRoot, iChildPath.substring(CURRENT_POSITION
-					.length()));
+			return findChild(iRoot, iChildPath.substring(CURRENT_POSITION.length()));
 		}
 		// CHECK FOR STARTING FROM PARENT
 		if (iChildPath.startsWith(PARENT_POSITION)) {
-			return findChild(iRoot.getParent(), iChildPath
-					.substring(PARENT_POSITION.length()));
+			return findChild(iRoot.getParent(), iChildPath.substring(PARENT_POSITION.length()));
 		}
 		return findChild(iRoot, iChildPath);
 	}
@@ -125,8 +121,8 @@ public class TreeNodeHelper {
 				return currentNode;
 			}
 
-			if (currentNode.getChildren() != null) {				
-					stack.addAll(0, currentNode.getChildren());				
+			if (currentNode.getChildren() != null) {
+				stack.addAll(0, currentNode.getChildren());
 			}
 			i = i - 1;
 		}
@@ -149,8 +145,8 @@ public class TreeNodeHelper {
 				return result;
 			}
 
-			if (currentNode.getChildren() != null) {			
-					stack.addAll(0, currentNode.getChildren());				
+			if (currentNode.getChildren() != null) {
+				stack.addAll(0, currentNode.getChildren());
 			}
 		}
 		return -1;

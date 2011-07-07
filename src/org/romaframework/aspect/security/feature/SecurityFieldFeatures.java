@@ -21,10 +21,9 @@ import org.romaframework.core.schema.FeatureType;
 
 public class SecurityFieldFeatures {
 
-	public static final Feature<String[]>		READ_ROLES						= new Feature<String[]>(SecurityAspect.ASPECT_NAME, "readRoles", FeatureType.FIELD, String[].class);
-	public static final Feature<String[]>		WRITE_ROLES						= new Feature<String[]>(SecurityAspect.ASPECT_NAME, "writeRoles", FeatureType.FIELD, String[].class);
+	public static final Feature<String[]>	READ_ROLES						= new Feature<String[]>(SecurityAspect.ASPECT_NAME, "readRoles", FeatureType.FIELD, String[].class);
+	public static final Feature<String[]>	WRITE_ROLES						= new Feature<String[]>(SecurityAspect.ASPECT_NAME, "writeRoles", FeatureType.FIELD, String[].class);
 	public static final Feature<Boolean>	ENCRYPT								= new Feature<Boolean>(SecurityAspect.ASPECT_NAME, "writeRoles", FeatureType.FIELD, Boolean.class);
-	public static final Feature<String>		ENCRYPTION_ALGORITHM	= new Feature<String>(SecurityAspect.ASPECT_NAME, "encryptionAlgorithm", FeatureType.FIELD,
-																																	String.class);
+	public static final Feature<String>		ENCRYPTION_ALGORITHM	= new Feature<String>(SecurityAspect.ASPECT_NAME, "encryptionAlgorithm", FeatureType.FIELD, String.class);
 
 }

@@ -28,24 +28,34 @@ public interface LoggingAspect extends Aspect {
 	 * The aspect name
 	 */
 	public static final String	ASPECT_NAME	= "logging";
+
 	/**
 	 * Register a logger to the aspect
-	 * @param iLogger the logger to register
+	 * 
+	 * @param iLogger
+	 *          the logger to register
 	 */
 	public void registerLogger(Logger iLogger);
 
 	/**
 	 * Remove a logger to the aspect
-	 * @param iLogger the logger to remove
+	 * 
+	 * @param iLogger
+	 *          the logger to remove
 	 */
 	public void removeLogger(Logger iLogger);
 
 	/**
 	 * Log a message
-	 * @param level the level of the message
-	 * @param category the category of the message
-	 * @param mode the mode of the message
-	 * @param message the message to log
+	 * 
+	 * @param level
+	 *          the level of the message
+	 * @param category
+	 *          the category of the message
+	 * @param mode
+	 *          the mode of the message
+	 * @param message
+	 *          the message to log
 	 */
 	public void log(int level, String category, String mode, String message);
 }

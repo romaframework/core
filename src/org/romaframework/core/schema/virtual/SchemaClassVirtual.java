@@ -81,8 +81,8 @@ public class SchemaClassVirtual extends SchemaClass {
 	}
 
 	@Override
-	public Object newInstanceFinal(Object... iArgs) throws InstantiationException, IllegalAccessException, IllegalArgumentException, SecurityException,
-			InvocationTargetException, NoSuchMethodException {
+	public Object newInstanceFinal(Object... iArgs) throws InstantiationException, IllegalAccessException, IllegalArgumentException, SecurityException, InvocationTargetException,
+			NoSuchMethodException {
 		return new VObject(this);
 	}
 
@@ -257,9 +257,8 @@ public class SchemaClassVirtual extends SchemaClass {
 					SchemaField field = getField(fieldName);
 					if (field != null) {
 						if (log.isWarnEnabled())
-							log.warn("The action '" + event.getName() + "' will be associated as default event for the field '"
-									+ fieldEvent.getEntity().getSchemaClass().getName() + "." + fieldEvent.getName() + "' instead of '" + eventName + "' event for the field '"
-									+ field.getEntity().getSchemaClass().getName() + "." + field.getName() + "' ");
+							log.warn("The action '" + event.getName() + "' will be associated as default event for the field '" + fieldEvent.getEntity().getSchemaClass().getName() + "."
+									+ fieldEvent.getName() + "' instead of '" + eventName + "' event for the field '" + field.getEntity().getSchemaClass().getName() + "." + field.getName() + "' ");
 					}
 				}
 				addEvent(SchemaEvent.DEFAULT_EVENT_NAME, fieldEvent);

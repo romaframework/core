@@ -27,7 +27,7 @@ import org.romaframework.core.schema.FeatureType;
  */
 public class SemanticClassFeatures {
 
-	public static final Feature<String>	SUBJECT_PREFIX	= new Feature<String>(SemanticAspect.ASPECT_NAME, "subjectPrefix", FeatureType.CLASS, String.class,"");
-	public static final Feature<String>	SUBJECT_ID			= new Feature<String>(SemanticAspect.ASPECT_NAME, "subjectId", FeatureType.CLASS, String.class,"");
-	public static final Feature<String>	CLASS_URI				= new Feature<String>(SemanticAspect.ASPECT_NAME, "classUri", FeatureType.CLASS, String.class,"");
+	public static final Feature<String>	SUBJECT_PREFIX	= new Feature<String>(SemanticAspect.ASPECT_NAME, "subjectPrefix", FeatureType.CLASS, String.class, "");
+	public static final Feature<String>	SUBJECT_ID			= new Feature<String>(SemanticAspect.ASPECT_NAME, "subjectId", FeatureType.CLASS, String.class, "");
+	public static final Feature<String>	CLASS_URI				= new Feature<String>(SemanticAspect.ASPECT_NAME, "classUri", FeatureType.CLASS, String.class, "");
 }

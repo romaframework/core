@@ -27,10 +27,10 @@ import org.romaframework.aspect.persistence.PersistenceConstants;
 @Target(ElementType.METHOD)
 public @interface Persistence {
 
-  /**
-   * Persistence interaction mode.
-   * 
-   * @return
-   */
-  String mode() default PersistenceConstants.MODE_NOTHING;
+	/**
+	 * Persistence interaction mode.
+	 * 
+	 * @return
+	 */
+	String mode() default PersistenceConstants.MODE_NOTHING;
 }

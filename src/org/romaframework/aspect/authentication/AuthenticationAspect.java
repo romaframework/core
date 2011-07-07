@@ -29,8 +29,7 @@ import org.romaframework.core.aspect.Aspect;
 public interface AuthenticationAspect extends Aspect {
 	public static final String	ASPECT_NAME	= "authentication";
 
-	public Object authenticate(Object iContext, String iUserName, String iPassword, Map<String, String> iAdditionalInfo)
-			throws AuthenticationException;
+	public Object authenticate(Object iContext, String iUserName, String iPassword, Map<String, String> iAdditionalInfo) throws AuthenticationException;
 
 	public boolean allow(Object iProfile, String iFunctionName);
 

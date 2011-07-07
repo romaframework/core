@@ -16,25 +16,21 @@
 package org.romaframework.aspect.validation;
 
 /**
- * Interface for custom validation. User classes can implement this interface
- * defining custom validation rules.
+ * Interface for custom validation. User classes can implement this interface defining custom validation rules.
  * 
- * Before to call the validate method, the framework will bind data in the
- * object to allow to the method to read user input data.
+ * Before to call the validate method, the framework will bind data in the object to allow to the method to read user input data.
  * 
- * If sub-classes also define the validate method, please assure to call
- * super.validate() as first one call to avoid loss of sub-class validation
- * rules.
+ * If sub-classes also define the validate method, please assure to call super.validate() as first one call to avoid loss of
+ * sub-class validation rules.
  * 
  * @author Luca Garulli (luca.garulli--at--assetdata.it)
  */
 public interface CustomValidation {
-  /**
-   * Unique method to implement to compute validation.
-   * 
-   * @throws ValidationException
-   *           Exception initialized with fieldName and RuleName. Framework will
-   *           find the rule name message in the I18N file
-   */
-  public void validate() throws ValidationException;
+	/**
+	 * Unique method to implement to compute validation.
+	 * 
+	 * @throws ValidationException
+	 *           Exception initialized with fieldName and RuleName. Framework will find the rule name message in the I18N file
+	 */
+	public void validate() throws ValidationException;
 }

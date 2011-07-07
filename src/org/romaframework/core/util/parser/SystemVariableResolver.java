@@ -22,22 +22,22 @@ package org.romaframework.core.util.parser;
  * 
  */
 public class SystemVariableResolver implements VariableParserListener {
-  public static final String            VAR_BEGIN = "${";
-  public static final String            VAR_END   = "}";
+	public static final String						VAR_BEGIN	= "${";
+	public static final String						VAR_END		= "}";
 
-  private static SystemVariableResolver instance  = new SystemVariableResolver();
+	private static SystemVariableResolver	instance	= new SystemVariableResolver();
 
-  public static String resolveSystemVariables(String iPath) {
-    return VariableParser.resolveVariables(iPath, VAR_BEGIN, VAR_END, instance);
-  }
+	public static String resolveSystemVariables(String iPath) {
+		return VariableParser.resolveVariables(iPath, VAR_BEGIN, VAR_END, instance);
+	}
 
-  public String resolve(String variable) {
-    String resolved = System.getProperty(variable);
+	public String resolve(String variable) {
+		String resolved = System.getProperty(variable);
 
-    if (resolved == null)
-      // TRY TO FIND THE VARIABLE BETWEEN SYSTEM'S ENVIRONMENT PROPERTIES
-      resolved = System.getenv(variable);
+		if (resolved == null)
+			// TRY TO FIND THE VARIABLE BETWEEN SYSTEM'S ENVIRONMENT PROPERTIES
+			resolved = System.getenv(variable);
 
-    return resolved;
-  }
+		return resolved;
+	}
 }

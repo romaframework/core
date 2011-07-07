@@ -29,29 +29,29 @@ import org.romaframework.aspect.session.SessionInfo;
  * 
  */
 public class AppSessionInfo extends SessionInfo {
-  protected HashMap<String, Object> properties;
-  protected Locale                  locale;
+	protected HashMap<String, Object>	properties;
+	protected Locale									locale;
 
-  public AppSessionInfo(Object id) {
-    super(id);
-  }
+	public AppSessionInfo(Object id) {
+		super(id);
+	}
 
-  public synchronized Object getProperty(String key) {
-    return properties==null?null:properties.get(key);
-  }
+	public synchronized Object getProperty(String key) {
+		return properties == null ? null : properties.get(key);
+	}
 
-  public synchronized void setProperty(String key, Object value) {
-    if (properties == null)
-      properties = new HashMap<String, Object>();
+	public synchronized void setProperty(String key, Object value) {
+		if (properties == null)
+			properties = new HashMap<String, Object>();
 
-    properties.put(key, value);
-  }
+		properties.put(key, value);
+	}
 
-  public Locale getLocale() {
-    return locale;
-  }
+	public Locale getLocale() {
+		return locale;
+	}
 
-  public void setLocale(Locale locale) {
-    this.locale = locale;
-  }
+	public void setLocale(Locale locale) {
+		this.locale = locale;
+	}
 }

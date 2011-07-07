@@ -73,6 +73,6 @@ public @interface LoggingAction {
 	 * 
 	 * @return
 	 */
-	Class<?>[] exceptionsToLog() default { Throwable.class};
+	Class<?>[] exceptionsToLog() default { Throwable.class };
 
 }

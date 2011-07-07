@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
 import org.romaframework.aspect.core.annotation.AnnotationConstants;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target( { ElementType.METHOD, ElementType.FIELD })
+@Target({ ElementType.METHOD, ElementType.FIELD })
 public @interface HookField {
 	HookScope scope() default HookScope.DEFAULT;
 

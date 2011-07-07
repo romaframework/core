@@ -13,24 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 package org.romaframework.aspect.monitoring;
 
 public class MonitoringException extends RuntimeException {
 
-	  public MonitoringException() {
-	    super();
-	  }
-
-	  public MonitoringException(String arg0, Throwable arg1) {
-	    super(arg0, arg1);
-	  }
-
-	  public MonitoringException(String arg0) {
-	    super(arg0);
-	  }
-
-	  public MonitoringException(Throwable arg0) {
-	    super(arg0);
-	  }
+	public MonitoringException() {
+		super();
 	}
+
+	public MonitoringException(String arg0, Throwable arg1) {
+		super(arg0, arg1);
+	}
+
+	public MonitoringException(String arg0) {
+		super(arg0);
+	}
+
+	public MonitoringException(Throwable arg0) {
+		super(arg0);
+	}
+}
