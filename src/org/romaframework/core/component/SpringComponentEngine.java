@@ -1,30 +1,22 @@
 package org.romaframework.core.component;
 
-import java.io.File;
-import java.util.List;
 import java.util.Map;
 
-import org.romaframework.aspect.logging.LoggingHelper;
 import org.romaframework.core.Utility;
 import org.romaframework.core.config.AbstractServiceable;
 import org.romaframework.core.config.ContextException;
-import org.romaframework.core.config.RomaApplicationContext;
 import org.romaframework.core.schema.SchemaAction;
 import org.romaframework.core.schema.SchemaClassDefinition;
 import org.romaframework.core.schema.SchemaEvent;
 import org.romaframework.core.schema.SchemaField;
-import org.romaframework.core.util.FileUtils;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
-import org.springframework.context.support.GenericApplicationContext;
-import org.springframework.core.io.FileSystemResource;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 @SuppressWarnings("unchecked")
 public class SpringComponentEngine extends AbstractServiceable implements ComponentAspect {
-	private static final String					COMPONENT_SRV_DIRECTORY			= "/WEB-INF/classes/META-INF";
-	private static final String					COMPONENT_SRV_FILE_PATTERN	= "applicationContext.*\\.xml";
+	private static final String								COMPONENT_SRV_FILE_PATTERN	= "META-INF/components/applicationContext*.xml";
 
-	protected GenericApplicationContext	springContext;
+	protected ClassPathXmlApplicationContext	springContext;
 
 	public boolean existComponent(Class<? extends Object> iComponentClass) {
 		return springContext.containsBean(Utility.getClassName(iComponentClass));
@@ -64,18 +56,7 @@ public class SpringComponentEngine extends AbstractServiceable implements Compon
 	public void startup() throws RuntimeException {
 		status = STATUS_STARTING;
 
-		springContext = new GenericApplicationContext();
-		XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(springContext);
-
-		List<File> cfgFiles = FileUtils.searchAllFiles(RomaApplicationContext.getApplicationPath() + COMPONENT_SRV_DIRECTORY, COMPONENT_SRV_FILE_PATTERN, true);
-
-		if (cfgFiles == null || cfgFiles.size() == 0)
-			LoggingHelper.raiseCfgException(getClass(), "Error on loading configuration from path: " + RomaApplicationContext.getApplicationPath() + COMPONENT_SRV_DIRECTORY
-					+ ". No files found.");
-
-		for (File f : cfgFiles) {
-			xmlReader.loadBeanDefinitions(new FileSystemResource(f));
-		}
+		springContext = new ClassPathXmlApplicationContext(new String[] { COMPONENT_SRV_FILE_PATTERN }, false);
 
 		springContext.refresh();
 		status = STATUS_UP;
