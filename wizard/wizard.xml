@@ -4,9 +4,9 @@
 	<property name="roma.home" value="${env.ROMA_HOME}" />
 	<property name="project.new-ioc-path" value="src/META-INF/components" />
 
-	<import file="${roma.home}/common/wizard/base-wizard.xml" />
+	<import file="../../../base-wizard.xml" />
 
-	<target name="add-module" depends="load-project-info">
+	<target name="add-module" >
 		<property name="module.ioc-file" value="applicationContext-core.xml" />
 		<antcall target="copy-module-ioc-file" />
 
@@ -29,80 +29,4 @@
 			</filterset>
 		</copy>
 	</target>
-
-
-	<target name="update-module-v2.0.0" depends="load-project-info">
-
-		<mkdir dir="${project.path}/${project.src}/META-INF" />
-		<copy file="${roma.home}/modules/persistence-datanucleus/scaffolding/src/META-INF/persistence.xml" todir="${project.path}/${project.src}/META-INF" />
-		<mkdir dir="${project.path}/${project.new-ioc-path}" />
-		<move todir="${project.path}/${project.new-ioc-path}">
-			<fileset dir="${project.path}/${project.ioc-path}" includes="applicationContext*.xml" />
-		</move>
-
-		<xmltask source="${project.path}/${project.new-ioc-path}/applicationContext.xml" dest="${project.path}/${project.new-ioc-path}/applicationContext.xml" preservetype="true" outputter="${ident}">
-			<xmlcatalog refid="dtds" />
-			<remove path="/beans/import" />
-		</xmltask>
-
-		<xmltask source="${project.path}/${project.new-ioc-path}/applicationContext-core.xml" dest="${project.path}/${project.new-ioc-path}/applicationContext-core.xml" preservetype="true" outputter="${ident}">
-			<xmlcatalog refid="dtds" />
-			<copy path="/beans/bean[@id='RomaApplicationContext']/*" buffer="propertyBuffer" append="true" />
-			<copy path="/beans/bean[@id='ApplicationConfiguration']" buffer="applicationConfigurationBuffer" append="true" />
-			<remove path="/beans/bean[@id='RomaApplicationContext']" />
-			<remove path="/beans/bean[@id='ApplicationConfiguration']" />
-			<remove path="/beans/bean[@id='CRUDModule']" />
-			<attr path="/beans/bean[@depends-on='RomaApplicationContext']" attr="depends-on" remove="true" />
-		</xmltask>
-
-		<xmltask source="${project.path}/${project.new-ioc-path}/applicationContext.xml" dest="${project.path}/${project.new-ioc-path}/applicationContext.xml" preservetype="true" outputter="${ident}">
-			<paste path="/beans/bean[last()]" position="after" buffer="applicationConfigurationBuffer" />
-		</xmltask>
-
-		<xmltask source="${project.path}/${project.new-ioc-path}/applicationContext.xml" dest="${project.path}/${project.new-ioc-path}/applicationContext.xml" preservetype="true" outputter="${ident}">
-			<paste path="/beans/bean[@id='ApplicationConfiguration']" buffer="propertyBuffer" />
-			<remove path="/beans/bean[@id='CRUDModule']" />
-			<insert path="/beans/bean[last()]" position="after">
-				<![CDATA[	<bean id="AspectManager" class="org.romaframework.core.aspect.AspectManager" singleton="true">
-				<property name="defaults">
-					<map>
-						<entry key="i18n" value-ref="I18NAspect" />
-						<entry key="logging" value-ref="LoggingAspect" />
-						<entry key="flow" value-ref="FlowAspect" />
-						<entry key="validation" value-ref="ValidationAspect" />
-						<entry key="authentication" value-ref="AuthenticationAspect" />
-						<entry key="serialization" value-ref="SerializationAspect" />
-					</map>
-				</property>
-			</bean>
-			<bean id="ValidationAspect" class="org.romaframework.aspect.validation.BasicValidationModule" singleton="true" />
-			<bean id="SerializationAspect"
-				class="org.romaframework.aspect.serialization.DefaultSerializationAspect" />
-			<bean id="SerializationInspectionStrategy"
-				class="org.romaframework.aspect.serialization.impl.SchemaSerializationInspectionStrategy" />
-			<bean id="SerializationFormatStrategy"
-				class="org.romaframework.aspect.serialization.impl.NativeSerializationFormatStrategy" />
-			<bean id="JsonFormatStrategy"
-				class="org.romaframework.aspect.serialization.impl.JsonSerializationFormatStrategy" />
-			<bean id="JsonFullFormatStrategy"
-				class="org.romaframework.aspect.serialization.impl.JsonFullSerializationFormatStrategy" />
-				]]></insert>
-	</xmltask>
-
-	<xmltask source="${project.path}/roma-project.xml" dest="${project.path}/roma-project.xml" preservetype="true" outputter="${ident}">
-		<replace path="/properties/entry[@key='ioc-path']/text()" withText="${project.new-ioc-path}" />
-	</xmltask>
-	<delete file="${project.path}/${project.run-time-lib}/commons-logging.jar" />
-	<delete file="${project.path}/${project.run-time-lib}/commons-collections-3.1.jar" />
-	<delete file="${project.path}/${project.run-time-lib}/commons-beanutils.jar" failonerror="false" />
-	<delete file="${project.path}/${project.run-time-lib}/commons-beanutils-bean-collections.jar" failonerror="false" />
-	<delete file="${project.path}/${project.run-time-lib}/commons-beanutils-core.jar" failonerror="false" />
-	<delete file="${project.path}/${project.run-time-lib}/commons-logging.1.0.jar" failonerror="false" />
-	<delete file="${project.path}/${project.run-time-lib}/commons-collections-3.1.jar" />
-	<antcall target="update-module-libs" />
-	<move file="${project.path}/${project.src}/${project.package-path}/i18n/domain_messages.properties" tofile="${project.path}/${project.src}/${project.package-path}/i18n/domain_messages_en.properties" failonerror="false" />
-	<move file="${project.path}/${project.src}/${project.package-path}/i18n/default_messages.properties" tofile="${project.path}/${project.src}/${project.package-path}/i18n/default_messages_en.properties" failonerror="false" />
-
-</target>
-
 </project>

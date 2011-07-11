@@ -42,6 +42,7 @@ public interface Module extends Serviceable {
 	 *          The SchemaClass instance to get the instances
 	 * @return the ObjectHandler instances that handle objects of type iClass if is handled by this module otherwise null
 	 */
+	@Deprecated
 	public List<RomaObjectHandler> getObjectHandlers(SchemaClass iClass);
 
 	/**
@@ -51,6 +52,7 @@ public interface Module extends Serviceable {
 	 *          The user POJO to get the handler
 	 * @return the ObjectHandler instance to handle the object if is handled by this module otherwise null
 	 */
+	@Deprecated
 	public RomaObjectHandler getObjectHandler(Object iUserObject);
 
 	/**
