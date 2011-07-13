@@ -93,6 +93,6 @@ public @interface HookAction {
 	 * Enable and disable the hook invoke.
 	 * 
 	 */
-	byte enabled() default AnnotationConstants.UNSETTED;
+	AnnotationConstants enabled() default AnnotationConstants.UNSETTED;
 
 }

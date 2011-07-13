@@ -17,7 +17,7 @@ import org.romaframework.aspect.core.annotation.AnnotationConstants;
 @Target({ ElementType.FIELD, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidationField {
-	byte required() default AnnotationConstants.UNSETTED;
+	AnnotationConstants required() default AnnotationConstants.UNSETTED;
 
 	/**
 	 * Validation rule to check against it
@@ -38,7 +38,7 @@ public @interface ValidationField {
 	 * 
 	 * Enable and disable the validation.
 	 */
-	byte enabled() default AnnotationConstants.UNSETTED;
+	AnnotationConstants enabled() default AnnotationConstants.UNSETTED;
 
 	public static final int	DEF_MIN	= Integer.MIN_VALUE;
 	public static final int	DEF_MAX	= Integer.MAX_VALUE;

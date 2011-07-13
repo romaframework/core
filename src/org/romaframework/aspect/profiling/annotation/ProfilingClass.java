@@ -30,6 +30,6 @@ public @interface ProfilingClass {
 	/**
 	 * Enable the profiling
 	 */
-	byte enabled() default AnnotationConstants.UNSETTED;
+	AnnotationConstants enabled() default AnnotationConstants.UNSETTED;
 
 }

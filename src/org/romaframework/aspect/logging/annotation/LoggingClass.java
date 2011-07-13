@@ -26,7 +26,7 @@ import org.romaframework.aspect.core.annotation.AnnotationConstants;
 @Target(ElementType.TYPE)
 public @interface LoggingClass {
 
-	byte enabled() default AnnotationConstants.UNSETTED;
+	AnnotationConstants enabled() default AnnotationConstants.UNSETTED;
 
 	String mode() default AnnotationConstants.DEF_VALUE;
 

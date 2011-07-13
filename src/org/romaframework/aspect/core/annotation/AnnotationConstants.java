@@ -16,10 +16,19 @@
 
 package org.romaframework.aspect.core.annotation;
 
-public class AnnotationConstants {
-	public static final String	DEF_VALUE	= "$DEFAULT_VALUE";
+public enum AnnotationConstants {
 
-	public static final byte		UNSETTED	= 0;
-	public static final byte		TRUE			= 1;
-	public static final byte		FALSE			= 2;
+	UNSETTED(null), TRUE(Boolean.TRUE), FALSE(Boolean.FALSE);
+
+	private Boolean	value;
+
+	private AnnotationConstants(Boolean value) {
+		this.value = value;
+	}
+
+	public Boolean getValue() {
+		return value;
+	}
+
+	public static final String	DEF_VALUE	= "$DEFAULT_VALUE";
 }

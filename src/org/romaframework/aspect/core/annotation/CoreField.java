@@ -39,7 +39,7 @@ public @interface CoreField {
 	 * 
 	 * @return AnnotationConstants.TRUE, AnnotationConstants.FALSE or AnnotationConstants.UNSETTED
 	 */
-	byte embedded() default AnnotationConstants.UNSETTED;
+	AnnotationConstants embedded() default AnnotationConstants.UNSETTED;
 
 	/**
 	 * Tell to use or not the runtime type found. By default is false, meaning the type found using the reflection is taken. If is
@@ -48,12 +48,12 @@ public @interface CoreField {
 	 * 
 	 * @return AnnotationConstants.TRUE, AnnotationConstants.FALSE or AnnotationConstants.UNSETTED
 	 */
-	byte useRuntimeType() default AnnotationConstants.UNSETTED;
+	AnnotationConstants useRuntimeType() default AnnotationConstants.UNSETTED;
 
 	/**
 	 * Tell if expand the fields of current field to the parent, the default value is false,
 	 * 
 	 * @return AnnotationConstants.TRUE, AnnotationConstants.FALSE or AnnotationConstants.UNSETTED
 	 */
-	byte expand() default AnnotationConstants.UNSETTED;
+	AnnotationConstants expand() default AnnotationConstants.UNSETTED;
 }

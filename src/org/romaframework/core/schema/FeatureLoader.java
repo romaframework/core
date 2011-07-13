@@ -191,10 +191,13 @@ public class FeatureLoader {
 		if (Boolean.class.equals(valueType)) {
 			if (value instanceof Boolean)
 				return value;
+			if(value instanceof AnnotationConstants){
+				return ((AnnotationConstants) value).getValue();
+			}
 			if (value instanceof Byte) {
-				if (AnnotationConstants.TRUE == (Byte) value)
+				if (1 == (Byte) value)
 					return true;
-				else if (AnnotationConstants.FALSE == (Byte) value)
+				else if (0 == (Byte) value)
 					return false;
 				return null;
 			}

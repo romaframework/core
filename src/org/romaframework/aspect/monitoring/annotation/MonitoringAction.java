@@ -26,5 +26,5 @@ import org.romaframework.aspect.core.annotation.AnnotationConstants;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface MonitoringAction {
-	byte enabled() default AnnotationConstants.UNSETTED;
+	AnnotationConstants enabled() default AnnotationConstants.UNSETTED;
 }

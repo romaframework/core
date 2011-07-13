@@ -30,7 +30,7 @@ public @interface ProfilingAction {
 	/**
 	 * Enable the profiling
 	 */
-	byte enabled() default AnnotationConstants.UNSETTED;
+	AnnotationConstants enabled() default AnnotationConstants.UNSETTED;
 
 	/**
 	 * Key where collect data.
