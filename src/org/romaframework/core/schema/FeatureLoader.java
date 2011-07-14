@@ -158,7 +158,7 @@ public class FeatureLoader {
 						classes[i] = Class.forName(exception.trim());
 					} catch (Exception e) {
 						if (log.isErrorEnabled()) {
-							log.error(" Error on loading feature " + feature.getAspectName() + " cannot initialize class " + exception);
+							log.debug(" Error on loading feature " + feature.getAspectName() + " cannot initialize class " + exception, e);
 						}
 					}
 					i++;
@@ -191,7 +191,7 @@ public class FeatureLoader {
 		if (Boolean.class.equals(valueType)) {
 			if (value instanceof Boolean)
 				return value;
-			if(value instanceof AnnotationConstants){
+			if (value instanceof AnnotationConstants) {
 				return ((AnnotationConstants) value).getValue();
 			}
 			if (value instanceof Byte) {
@@ -293,8 +293,7 @@ public class FeatureLoader {
 				cl = Class.forName(Utility.ROMA_PACKAGE + ".aspect." + aspectName + ".annotation." + name);
 				annotationClasses.put(name, cl);
 			} catch (ClassNotFoundException e) {
-				// throw new ConfigurationException("Not found expected annotation at:" + Utility.ROMA_PACKAGE + ".aspect." + aspectName +
-				// ".annotation." + name, e);
+				log.debug("Not found expected annotation at:" + Utility.ROMA_PACKAGE + ".aspect." + aspectName + ".annotation." + name, e);
 			}
 		}
 		return cl;
