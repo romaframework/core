@@ -137,8 +137,12 @@ public abstract class SchemaEvent extends SchemaAction {
 		}
 	}
 
-	protected void setEventOwner(SchemaClassDefinition eventOwner) {
+	public void setEventOwner(SchemaClassDefinition eventOwner) {
 		this.eventOwner = eventOwner;
+	}
+
+	public void setFieldOwner(SchemaField field) {
+		this.field = field;
 	}
 
 	private void fireEventException(List<SchemaEventListener> listeners, Object iContent, Exception ex) {

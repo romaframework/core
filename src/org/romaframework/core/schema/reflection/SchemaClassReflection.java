@@ -494,6 +494,16 @@ public class SchemaClassReflection extends SchemaClass {
 				eventInfo.setMethod(eventMethod);
 				field.setEvent(eventName, eventInfo);
 			}
+		} else {
+			if (field == null) {
+				eventInfo.setMethod(eventMethod);
+				eventInfo.setEventOwner(this);
+				setEvent(eventName, eventInfo);
+			} else {
+				eventInfo.setMethod(eventMethod);
+				eventInfo.setFieldOwner(field);
+				field.setEvent(eventName, eventInfo);
+			}
 		}
 	}
 
