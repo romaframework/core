@@ -21,16 +21,19 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.romaframework.aspect.flow.FlowAspect;
 import org.romaframework.aspect.i18n.I18NAspect;
 import org.romaframework.aspect.logging.LoggingAspect;
 import org.romaframework.aspect.persistence.PersistenceAspect;
 import org.romaframework.aspect.persistence.PersistenceAspectAbstract;
 import org.romaframework.aspect.persistence.PersistenceConstants;
+import org.romaframework.aspect.reporting.ReportingAspect;
 import org.romaframework.aspect.scripting.ScriptingAspect;
 import org.romaframework.aspect.scripting.ScriptingAspectListener;
 import org.romaframework.aspect.session.SessionAspect;
 import org.romaframework.aspect.session.SessionInfo;
 import org.romaframework.aspect.validation.ValidationAspect;
+import org.romaframework.aspect.view.ViewAspect;
 import org.romaframework.core.aspect.Aspect;
 import org.romaframework.core.aspect.AspectManager;
 import org.romaframework.core.exception.ConfigurationException;
@@ -67,6 +70,9 @@ public class Roma implements ScriptingAspectListener {
 	protected static I18NAspect				i18nAspect				= null;
 	protected static ScriptingAspect	scriptingAspect		= null;
 	protected static LoggingAspect		loggingAspect			= null;
+	protected static FlowAspect				flowAspect				= null;
+	protected static ViewAspect				viewAspect				= null;
+	protected static ReportingAspect	reportingAspect		= null;
 
 	// OTHER COMPONENTS
 	protected static SchemaManager		schemaManager			= null;
@@ -411,6 +417,39 @@ public class Roma implements ScriptingAspectListener {
 		}
 	}
 
+	public static FlowAspect flow() {
+		if (flowAspect == null) {
+			synchronized (Roma.class) {
+				if (flowAspect == null) {
+					flowAspect = Roma.aspect(FlowAspect.class);
+				}
+			}
+		}
+		return flowAspect;
+	}
+
+	public static ViewAspect view() {
+		if (viewAspect == null) {
+			synchronized (Roma.class) {
+				if (viewAspect == null) {
+					viewAspect = Roma.aspect(ViewAspect.class);
+				}
+			}
+		}
+		return viewAspect;
+	}
+
+	public static ReportingAspect reporting() {
+		if (reportingAspect == null) {
+			synchronized (Roma.class) {
+				if (reportingAspect == null) {
+					reportingAspect = Roma.aspect(ReportingAspect.class);
+				}
+			}
+		}
+		return reportingAspect;
+	}
+	
 	public Reader onBeforeExecution(String iLanguage, Reader iScript, Map<String, Object> iContext) {
 		iContext.put(getClass().getSimpleName(), singleton);
 		return iScript;
@@ -510,4 +549,5 @@ public class Roma implements ScriptingAspectListener {
 	public static <T extends GenericRepository<Z>, Z> T repository(Class<Z> entityClass) {
 		return entityClass != null ? (T) repository(Roma.schema().getSchemaClass(entityClass)) : null;
 	}
+
 }
