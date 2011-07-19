@@ -23,6 +23,8 @@ package org.romaframework.aspect.semantic.exception;
  */
 public class SemanticQueryException extends Exception {
 
+	private static final long	serialVersionUID	= -2741062633651816246L;
+
 	public SemanticQueryException() {
 		super();
 		// TODO Auto-generated constructor stub

@@ -23,6 +23,8 @@ package org.romaframework.aspect.profiling;
  */
 public class ProfilingException extends RuntimeException {
 
+	private static final long	serialVersionUID	= -3121123121549577642L;
+
 	public ProfilingException() {
 		super();
 	}

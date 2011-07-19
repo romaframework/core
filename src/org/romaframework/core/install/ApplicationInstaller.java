@@ -16,8 +16,6 @@
 
 package org.romaframework.core.install;
 
-import org.romaframework.core.module.SelfRegistrantModule;
-
 /**
  * Module to install the application the first time. Roma calls the install() method. If it returns true, then the application need
  * to be installed.
@@ -25,12 +23,8 @@ import org.romaframework.core.module.SelfRegistrantModule;
  * @author Luca Garulli (luca.garulli--at--assetdata.it)
  * 
  */
-public abstract class ApplicationInstaller extends SelfRegistrantModule {
+public interface ApplicationInstaller {
 	public static final String	MODULE_NAME	= "ApplicationInstaller";
-
-	public String moduleName() {
-		return MODULE_NAME;
-	}
 
 	/**
 	 * Makes all the operation needed for the application installation
@@ -45,15 +39,4 @@ public abstract class ApplicationInstaller extends SelfRegistrantModule {
 	 * @return true if already performed otherwise false.
 	 */
 	public abstract boolean alreadyInstalled();
-
-	@Override
-	public void startup() throws RuntimeException {
-		if (!alreadyInstalled()) {
-			install();
-		}
-	}
-
-	@Override
-	public void shutdown() throws RuntimeException {
-	}
 }

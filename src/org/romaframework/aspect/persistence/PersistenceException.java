@@ -20,6 +20,8 @@ import org.romaframework.core.exception.LocalizedRuntimeException;
 
 public class PersistenceException extends LocalizedRuntimeException {
 
+	private static final long	serialVersionUID	= -4300947093631915540L;
+
 	public PersistenceException() {
 		super();
 	}

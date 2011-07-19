@@ -18,6 +18,8 @@ package org.romaframework.aspect.monitoring;
 
 public class MonitoringException extends RuntimeException {
 
+	private static final long	serialVersionUID	= 8758327228396583055L;
+
 	public MonitoringException() {
 		super();
 	}

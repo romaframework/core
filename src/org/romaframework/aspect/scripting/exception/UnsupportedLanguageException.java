@@ -17,6 +17,8 @@ package org.romaframework.aspect.scripting.exception;
 
 public class UnsupportedLanguageException extends ScriptingException {
 
+	private static final long	serialVersionUID	= 7465046625996636418L;
+
 	public UnsupportedLanguageException() {
 		super();
 	}

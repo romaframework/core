@@ -17,6 +17,8 @@
 package org.romaframework.aspect.reporting;
 
 public class ReportingException extends Exception {
+	private static final long	serialVersionUID	= -6089306981266521461L;
+
 	public ReportingException() {
 		super();
 	}

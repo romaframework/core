@@ -17,6 +17,8 @@ package org.romaframework.aspect.scripting.exception;
 
 public class ScriptingException extends Exception {
 
+	private static final long	serialVersionUID	= 1250797389325938440L;
+
 	public ScriptingException() {
 		super();
 	}

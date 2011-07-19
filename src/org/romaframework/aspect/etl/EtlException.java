@@ -17,6 +17,8 @@ package org.romaframework.aspect.etl;
 
 public abstract class EtlException extends RuntimeException {
 
+	private static final long	serialVersionUID	= 9093180328541316916L;
+
 	public EtlException() {
 		super();
 	}

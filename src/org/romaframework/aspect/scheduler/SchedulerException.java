@@ -18,6 +18,8 @@ package org.romaframework.aspect.scheduler;
 
 public class SchedulerException extends RuntimeException {
 
+	private static final long	serialVersionUID	= -5541422154302232284L;
+
 	public SchedulerException() {
 		super();
 	}

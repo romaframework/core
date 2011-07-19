@@ -17,6 +17,8 @@ package org.romaframework.aspect.security.exception;
 
 public class SecurityException extends java.lang.SecurityException {
 
+	private static final long	serialVersionUID	= -8962460098964226152L;
+
 	public SecurityException() {
 		super();
 	}
