@@ -24,6 +24,7 @@ public class LoggingElementFeatures {
 	public static final Feature<String>		CATEGORY					= LoggingFieldFeatures.CATEGORY;
 
 	public static final Feature<String>		EXCEPTION					= LoggingFieldFeatures.EXCEPTION;
+	@SuppressWarnings("rawtypes")
 	public static final Feature<Class[]>	EXCEPTIONS_TO_LOG	= LoggingFieldFeatures.EXCEPTIONS_TO_LOG;
 
 	public static final Feature<String>		POST							= LoggingFieldFeatures.POST;

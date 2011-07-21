@@ -27,6 +27,7 @@ public class LoggingActionFeatures {
 	public static final Feature<String>		CATEGORY					= new Feature<String>(LoggingAspect.ASPECT_NAME, "category", FeatureType.ACTION, String.class);
 
 	public static final Feature<String>		EXCEPTION					= new Feature<String>(LoggingAspect.ASPECT_NAME, "exception", FeatureType.ACTION, String.class);
+	@SuppressWarnings("rawtypes")
 	public static final Feature<Class[]>	EXCEPTIONS_TO_LOG	= new Feature<Class[]>(LoggingAspect.ASPECT_NAME, "exceptionsToLog", FeatureType.ACTION, Class[].class);
 
 	public static final Feature<String>		POST							= new Feature<String>(LoggingAspect.ASPECT_NAME, "post", FeatureType.ACTION, String.class);

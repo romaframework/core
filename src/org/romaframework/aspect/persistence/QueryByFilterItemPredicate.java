@@ -17,12 +17,12 @@
 package org.romaframework.aspect.persistence;
 
 public class QueryByFilterItemPredicate implements QueryByFilterItem {
-	private String	fieldName;
-	private String	fieldOperator;
-	private Object	fieldValue;
+	private String				fieldName;
+	private ConditionType	fieldOperator;
+	private Object				fieldValue;
 
 	// @SpringConstructor(constructorParamsGetters = { "getFieldName", "getFieldOperator", "getFieldValue" })
-	public QueryByFilterItemPredicate(String fieldName, String operator, Object value) {
+	public QueryByFilterItemPredicate(String fieldName, ConditionType operator, Object value) {
 		this.fieldName = fieldName;
 		this.fieldOperator = operator;
 		this.fieldValue = value;
@@ -32,7 +32,7 @@ public class QueryByFilterItemPredicate implements QueryByFilterItem {
 		return fieldName;
 	}
 
-	public String getFieldOperator() {
+	public ConditionType getFieldOperator() {
 		return fieldOperator;
 	}
 

@@ -323,6 +323,7 @@ public class SchemaSerializationInspectionStrategy extends AbstractSerialization
 	 * @param copyFeatures
 	 * @return
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected Object getFieldValue(SerializationData fieldData, SchemaField field, Object currentValue, boolean copyFeatures) {
 		if (fieldData == null) {
 			return null;
