@@ -36,7 +36,6 @@ import org.romaframework.core.flow.Controller;
 import org.romaframework.core.flow.FieldRefreshListener;
 import org.romaframework.core.flow.SchemaActionListener;
 import org.romaframework.core.flow.SchemaFieldListener;
-import org.romaframework.core.handler.RomaObjectHandler;
 import org.romaframework.core.module.SelfRegistrantModule;
 import org.romaframework.core.schema.Feature;
 import org.romaframework.core.schema.SchemaAction;
@@ -45,6 +44,7 @@ import org.romaframework.core.schema.SchemaClassDefinition;
 import org.romaframework.core.schema.SchemaClassElement;
 import org.romaframework.core.schema.SchemaEvent;
 import org.romaframework.core.schema.SchemaField;
+import org.romaframework.core.schema.SchemaObject;
 
 /**
  * Aspect that intercepts events against POJO and call the registrant.
@@ -328,10 +328,11 @@ public class HookAspect extends SelfRegistrantModule implements Aspect, FieldRef
 
 		for (HookEntry entry : entries) {
 			if (entry.scope == HookScope.SESSION) {
-				List<RomaObjectHandler> handlers = Roma.getHandlers(entry.clazzElement.getEntity().getSchemaClass());
-				if (handlers != null) {
-					for (RomaObjectHandler handler : handlers) {
-						result = invokeHook(iContent, iElement, key, handler.getContent(), entry);
+				
+				List<SchemaObject> objects= Roma.session().getSchemaObjects(entry.clazzElement.getEntity().getSchemaClass());
+				if (objects != null) {
+					for (SchemaObject schemaObject : objects) {
+						result = invokeHook(iContent, iElement, key, schemaObject.getInstance(), entry);
 						if (result != null || !iFollowTheChain)
 							// BREAK THE CHAIN
 							return result;

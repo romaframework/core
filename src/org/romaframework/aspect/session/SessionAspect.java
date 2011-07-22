@@ -17,9 +17,12 @@
 package org.romaframework.aspect.session;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 
 import org.romaframework.core.aspect.Aspect;
+import org.romaframework.core.schema.SchemaClass;
+import org.romaframework.core.schema.SchemaObject;
 import org.romaframework.core.schema.SchemaObjectHandler;
 
 public interface SessionAspect extends Aspect, SchemaObjectHandler {
@@ -37,13 +40,54 @@ public interface SessionAspect extends Aspect, SchemaObjectHandler {
 
 	public Collection<SessionInfo> getSessionInfos();
 
+	public void invalidateSession(Object iSystemSession);
+
+	/**
+	 * Invalidate the current session.
+	 */
+	public void invalidate();
+
+	/**
+	 * Retrieve an instance of a specified class from session, if not exist create new.
+	 * 
+	 * @param clazz
+	 *          the type of class to retrieve.
+	 * @return the new instance.
+	 */
+	public <T> T getObject(Class<T> clazz);
+
+	/**
+	 * Retrieve an instance of a specified SchemaClass from session, if not exist create new.
+	 * 
+	 * @param clazz
+	 *          the type of class to retrieve.
+	 * @return the new instance.
+	 */
+	public <T> T getObject(SchemaClass clazz);
+
+	/**
+	 * Retrieve an instance of specified class name from session,if not exist create new.
+	 * 
+	 * @param name
+	 *          of class instance to create
+	 * @return the new instance.
+	 */
+	public <T> T getObject(String name);
+
+	/**
+	 * Retrieve the current session locale.
+	 * 
+	 * @return the locale for the session.
+	 */
 	public Locale getActiveLocale();
 
+	/**
+	 * Set the locale for the current session.
+	 * 
+	 * @param iLocale
+	 *          to set.
+	 */
 	public void setActiveLocale(Locale iLocale);
-
-	public void destroyCurrentSession();
-
-	public void destroyCurrentSession(Object iSystemSession);
 
 	/**
 	 * Get a session context attribute value.
@@ -85,6 +129,12 @@ public interface SessionAspect extends Aspect, SchemaObjectHandler {
 	 */
 	public <T> void setProperty(String iKey, T iValue);
 
-	@Deprecated
-	public void shutdown(Object iSystemSession);
+	/**
+	 * Retrieve all SchemaObjects in the current session can assign to this schemaClass.
+	 * 
+	 * @param schemaClass
+	 *          where find instances.
+	 * @return found instances of this schema class.
+	 */
+	public List<SchemaObject> getSchemaObjects(SchemaClass schemaClass);
 }

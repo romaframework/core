@@ -16,10 +16,6 @@
 
 package org.romaframework.core.module;
 
-import java.util.List;
-
-import org.romaframework.core.handler.RomaObjectHandler;
-import org.romaframework.core.schema.SchemaClass;
 
 /**
  * Base abstract class to define a self registrant module. Extend this class to make your module implementation.
@@ -37,29 +33,6 @@ public abstract class SelfRegistrantModule implements Module {
 	 * Default implementation that do nothing. Override this to provide a configuration for the module.
 	 */
 	public void showConfiguration() {
-	}
-
-	/**
-	 * Default implementation that tell to the caller that the user object is not handled by this module. Override this method to
-	 * manage it.
-	 * 
-	 * @param iUserObject
-	 *          The user POJO to get the handler
-	 * @return always null
-	 */
-	public RomaObjectHandler getObjectHandler(Object iUserObject) {
-		return null;
-	}
-
-	/**
-	 * Return the ObjectHandler instances that handle objects of type iClass
-	 * 
-	 * @param iiClass
-	 *          The SchemaClass instance to get the instances
-	 * @return the ObjectHandler instances that handle objects of type iClass if is handled by this module otherwise null
-	 */
-	public List<RomaObjectHandler> getObjectHandlers(SchemaClass iClass) {
-		return null;
 	}
 
 	public String getStatus() {

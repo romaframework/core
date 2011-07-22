@@ -16,37 +16,138 @@
 
 package org.romaframework.aspect.session;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.romaframework.core.Roma;
+import org.romaframework.core.flow.Controller;
 import org.romaframework.core.module.SelfRegistrantConfigurableModule;
 import org.romaframework.core.schema.SchemaAction;
+import org.romaframework.core.schema.SchemaClass;
 import org.romaframework.core.schema.SchemaClassDefinition;
 import org.romaframework.core.schema.SchemaEvent;
 import org.romaframework.core.schema.SchemaField;
 import org.romaframework.core.schema.SchemaObject;
+import org.romaframework.core.schema.SchemaReloadListener;
 
-public abstract class SessionAspectAbstract extends SelfRegistrantConfigurableModule<String> implements SessionAspect {
+public abstract class SessionAspectAbstract extends SelfRegistrantConfigurableModule<String> implements SessionAspect, SchemaReloadListener {
+
+	public SessionAspectAbstract() {
+		Controller.getInstance().registerListener(SchemaReloadListener.class, this);
+	}
 
 	private static final String	SESSION_SCHEMA_OBJECT	= "$$_SESSION_SCHEMA_OBJECT_$$";
+	private static final String	SESSION_OBJECT				= "$$_SESSION_OBJECT_$$";
 
-	@Override
-	public SchemaObject getSchemaObject(Object object) {
+	/**
+	 * Retrieve the map of schema object for current map.
+	 * 
+	 * @return the object-> schemaObject map
+	 */
+	public Map<Object, SchemaObject> getSchemaObjectMap() {
 		Map<Object, SchemaObject> so = getProperty(SESSION_SCHEMA_OBJECT);
 		if (so == null) {
 			so = new IdentityWeakHashMap<Object, SchemaObject>();
 			setProperty(SESSION_SCHEMA_OBJECT, so);
 		}
-		SchemaObject schemaObject = so.get(object);
-		if (schemaObject == null) {
-			if (object instanceof SchemaClassDefinition) {
-				object = ((SchemaClassDefinition) object).getSchemaClass();
-				schemaObject = new SchemaObject(((SchemaClassDefinition) object).getSchemaClass(), null);
-			} else
-				schemaObject = new SchemaObject(Roma.schema().getSchemaClass(object), object);
-			so.put(object, schemaObject);
+		return so;
+	}
+
+	/**
+	 * Retrieve the object cache for current session.
+	 * 
+	 * @param session
+	 *          where retrieve the cache.
+	 * @return the map cache for session.
+	 */
+	public Map<SchemaClass, Object> getObjectMap(SessionInfo session) {
+		Map<SchemaClass, Object> objectMap = getProperty(session, SESSION_OBJECT);
+		if (objectMap == null) {
+			objectMap = new HashMap<SchemaClass, Object>();
+			setProperty(SESSION_OBJECT, objectMap);
 		}
-		return schemaObject;
+		return objectMap;
+	}
+
+	@Override
+	public SchemaObject getSchemaObject(Object object) {
+		synchronized (getActiveSessionInfo()) {
+			Map<Object, SchemaObject> so = getSchemaObjectMap();
+			SchemaObject schemaObject = so.get(object);
+			if (schemaObject == null) {
+				if (object instanceof SchemaClassDefinition) {
+					object = ((SchemaClassDefinition) object).getSchemaClass();
+					schemaObject = new SchemaObject(((SchemaClassDefinition) object).getSchemaClass(), null);
+				} else
+					schemaObject = new SchemaObject(Roma.schema().getSchemaClass(object), object);
+				so.put(object, schemaObject);
+			}
+			return schemaObject;
+		}
+	}
+
+	@Override
+	public List<SchemaObject> getSchemaObjects(SchemaClass schemaClass) {
+		synchronized (getActiveSessionInfo()) {
+			Map<Object, SchemaObject> so = getSchemaObjectMap();
+			List<SchemaObject> objects = new ArrayList<SchemaObject>();
+			for (SchemaObject schemaObject : so.values()) {
+				if (schemaObject.getSchemaClass().isAssignableAs(schemaClass)) {
+					objects.add(schemaObject);
+				}
+			}
+			return objects;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> T getObject(SchemaClass clazz) {
+		synchronized (getActiveSessionInfo()) {
+			Map<SchemaClass, Object> map = getObjectMap(getActiveSessionInfo());
+			T value = (T) map.get(clazz);
+			if (value == null) {
+				try {
+					value = (T) clazz.newInstance();
+				} catch (Exception e) {
+					throw new RuntimeException("Error on object instanziation", e);
+				}
+			}
+			return value;
+		}
+	}
+
+	/**
+	 * When update an SchemaClass remove all instances of this from all caches.
+	 * 
+	 */
+	@Override
+	public void signalUpdatedClass(SchemaClass iClass, File iFile) {
+		for (SessionInfo info : getSessionInfos()) {
+			synchronized (info) {
+				Map<SchemaClass, Object> map = getObjectMap(getActiveSessionInfo());
+				List<SchemaClass> objects = new ArrayList<SchemaClass>();
+				for (SchemaClass schemaClass : map.keySet()) {
+					if (schemaClass.isAssignableAs(iClass)) {
+						objects.add(schemaClass);
+					}
+				}
+				for (SchemaClass schemaClass : objects) {
+					map.remove(schemaClass);
+				}
+			}
+		}
+
+	}
+
+	public <T> T getObject(Class<T> clazz) {
+		return getObject(Roma.schema().getSchemaClass(clazz));
+	}
+
+	public <T> T getObject(String name) {
+		return getObject(Roma.schema().getSchemaClass(name));
 	}
 
 	public String aspectName() {
@@ -71,8 +172,4 @@ public abstract class SessionAspectAbstract extends SelfRegistrantConfigurableMo
 	public void endConfigClass(SchemaClassDefinition iClass) {
 	}
 
-	@Deprecated
-	public void shutdown(Object iSystemSession) {
-		destroyCurrentSession(iSystemSession);
-	}
 }

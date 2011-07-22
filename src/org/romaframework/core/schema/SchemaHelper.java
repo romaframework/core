@@ -47,7 +47,6 @@ import org.romaframework.core.entity.EntityHelper;
 import org.romaframework.core.exception.ConfigurationException;
 import org.romaframework.core.exception.UserException;
 import org.romaframework.core.factory.GenericFactory;
-import org.romaframework.core.handler.RomaObjectHandler;
 import org.romaframework.core.schema.reflection.SchemaClassReflection;
 import org.romaframework.core.schema.reflection.SchemaFieldReflection;
 import org.romaframework.core.schema.virtual.VirtualObject;
@@ -350,47 +349,6 @@ public class SchemaHelper {
 		return methodSum;
 	}
 
-	@Deprecated
-	public static Object invokeEvent(RomaObjectHandler iComponent, String eventName) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
-
-		// BROWSE UP UNTIL ROOT CONTENT COMPONENT SEARCHING THE EVENT
-		SchemaObject currentSchemaInstance = iComponent.getSchemaObject();
-		RomaObjectHandler currentComponent = iComponent;
-		SchemaEvent event = null;
-		Object currentContent;
-
-		Object lastGoodContent = null;
-		SchemaEvent lastGoodEvent = null;
-
-		while (currentComponent != null) {
-			event = currentSchemaInstance.getEvent(eventName);
-
-			currentContent = currentComponent.getContent();
-
-			if (event != null) {
-				lastGoodEvent = event;
-				lastGoodContent = currentContent;
-			}
-
-			if (currentComponent.getContainerComponent() != null) {
-				currentComponent = currentComponent.getContainerComponent();
-				if (!(currentComponent.getContent() instanceof ComposedEntity<?>)) {
-					break;
-				}
-			} else {
-				break;
-			}
-
-			currentSchemaInstance = currentComponent.getSchemaObject();
-		}
-
-		// INVOKE THE FIELD EVENT IF ANY
-		if (lastGoodEvent != null) {
-			return lastGoodEvent.invoke(lastGoodContent);
-		}
-		return FAILED_EVENT_INVOKE;
-	}
-
 	public static Collection<SchemaEvent> getEvents(Object iObject, String iFieldName) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 
 		// BROWSE UP UNTIL ROOT CONTENT COMPONENT SEARCHING THE EVENT
@@ -423,37 +381,6 @@ public class SchemaHelper {
 		SchemaEvent schemaEvent = def.getEvent(eventName);
 		if (schemaEvent != null) {
 			return schemaEvent.invoke(iObject);
-		}
-		return FAILED_EVENT_INVOKE;
-	}
-
-	@Deprecated
-	public static Object invokeEvent(RomaObjectHandler romaObjectHandler, String fieldName, String eventName, Object... params) throws IllegalAccessException,
-			InvocationTargetException {
-
-		SchemaClass cls = romaObjectHandler.getSchemaObject().getSchemaClass();
-		SchemaField field = cls.getField(fieldName);
-		if (field != null) {
-
-			if (eventName == null) {
-				eventName = SchemaEvent.DEFAULT_EVENT_NAME;
-			}
-			SchemaEvent event = field.getEvent(eventName);
-			if (event == null)
-				return FAILED_EVENT_INVOKE;
-			Object content = romaObjectHandler.getContent();
-
-			while (!cls.isAssignableAs(event.getEventOwner().getSchemaClass())) {
-				if (romaObjectHandler.getContainerComponent() != null) {
-					romaObjectHandler = romaObjectHandler.getContainerComponent();
-					cls = romaObjectHandler.getSchemaObject().getSchemaClass();
-					content = romaObjectHandler.getContent();
-				} else
-					return FAILED_EVENT_INVOKE;
-			}
-			if (content != null) {
-				return event.invoke(content, params);
-			}
 		}
 		return FAILED_EVENT_INVOKE;
 	}

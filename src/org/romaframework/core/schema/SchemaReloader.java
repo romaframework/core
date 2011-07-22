@@ -80,9 +80,6 @@ public class SchemaReloader implements AutoReloadListener {
 						listener.signalUpdatedClass(classInfo, iFile);
 			}
 
-			if (classInfo != null)
-				// FLUSH ALL OBJECTS INSIDE SESSIONS
-				Controller.getInstance().flushObjectsOfClass(classInfo);
 		}
 	}
 }

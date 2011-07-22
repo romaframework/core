@@ -16,7 +16,6 @@
 package org.romaframework.core;
 
 import java.io.Reader;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -42,9 +41,6 @@ import org.romaframework.core.factory.GenericFactory;
 import org.romaframework.core.flow.Controller;
 import org.romaframework.core.flow.ObjectContext;
 import org.romaframework.core.flow.ObjectRefreshListener;
-import org.romaframework.core.handler.RomaObjectHandler;
-import org.romaframework.core.module.Module;
-import org.romaframework.core.module.ModuleManager;
 import org.romaframework.core.repository.GenericRepository;
 import org.romaframework.core.schema.Feature;
 import org.romaframework.core.schema.FeatureRegistry;
@@ -170,38 +166,6 @@ public class Roma implements ScriptingAspectListener {
 	 */
 	public static void fieldChanged(Object iUserObject, String... iFieldNames) {
 		ObjectContext.getInstance().fieldChanged(iUserObject, iFieldNames);
-	}
-
-	@Deprecated
-	public static RomaObjectHandler getHandler(Object iUserObject) throws ConfigurationNotFoundException {
-		// ASK TO ALL THE REGISTERED MODULES IF THEY MANAGE THE USER OBJECT
-		// REQUESTED.
-		RomaObjectHandler handler;
-		for (Module module : ModuleManager.getInstance().getConfigurationValues()) {
-			handler = module.getObjectHandler(iUserObject);
-			if (handler != null)
-				// FOUND THE HANDLER, USE IT FORWARD
-				return handler;
-		}
-
-		return null;
-	}
-
-	@Deprecated
-	public static List<RomaObjectHandler> getHandlers(SchemaClass iUserClass) throws ConfigurationNotFoundException {
-		// ASK TO ALL THE REGISTERED MODULES IF THEY MANAGE INSTANCE OF THE USER
-		// CLASS REQUESTED.
-		List<RomaObjectHandler> handlers = new ArrayList<RomaObjectHandler>();
-
-		List<RomaObjectHandler> moduleHandlers;
-		for (Module module : ModuleManager.getInstance().getConfigurationValues()) {
-			moduleHandlers = module.getObjectHandlers(iUserClass);
-			if (moduleHandlers != null)
-				// FOUND THE HANDLER, USE IT FORWARD
-				handlers.addAll(moduleHandlers);
-		}
-
-		return handlers;
 	}
 
 	@Deprecated

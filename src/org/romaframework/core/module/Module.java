@@ -16,11 +16,7 @@
 
 package org.romaframework.core.module;
 
-import java.util.List;
-
 import org.romaframework.core.config.Serviceable;
-import org.romaframework.core.handler.RomaObjectHandler;
-import org.romaframework.core.schema.SchemaClass;
 
 /**
  * Interface to define a module.
@@ -34,26 +30,6 @@ public interface Module extends Serviceable {
 	 * @return The module name
 	 */
 	public String moduleName();
-
-	/**
-	 * Return the ObjectHandler instances that handle objects of type iClass
-	 * 
-	 * @param iiClass
-	 *          The SchemaClass instance to get the instances
-	 * @return the ObjectHandler instances that handle objects of type iClass if is handled by this module otherwise null
-	 */
-	@Deprecated
-	public List<RomaObjectHandler> getObjectHandlers(SchemaClass iClass);
-
-	/**
-	 * Return the ObjectHandler instance to handle the object.
-	 * 
-	 * @param iUserObject
-	 *          The user POJO to get the handler
-	 * @return the ObjectHandler instance to handle the object if is handled by this module otherwise null
-	 */
-	@Deprecated
-	public RomaObjectHandler getObjectHandler(Object iUserObject);
 
 	/**
 	 * Display the module's configuration

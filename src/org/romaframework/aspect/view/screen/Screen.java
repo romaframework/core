@@ -53,4 +53,19 @@ public interface Screen {
 	 */
 	public AreaComponent getArea(String iAreaName);
 
+	/**
+	 * Set the active area for current screen.
+	 * 
+	 * @param area
+	 *          to set in screen.
+	 */
+	public void setActiveArea(String area);
+
+	/**
+	 * Retrieve the active area.
+	 * 
+	 * @return the active area.
+	 */
+	public String getActiveArea();
+
 }

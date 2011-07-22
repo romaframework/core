@@ -44,10 +44,10 @@ public class AppSessionManager extends SessionAspectAbstract {
 		return sess;
 	}
 
-	public void destroyCurrentSession() {
+	public void invalidate() {
 	}
 
-	public void destroyCurrentSession(Object systemSession) {
+	public void invalidateSession(Object systemSession) {
 	}
 
 	public Locale getActiveLocale() {
@@ -102,4 +102,5 @@ public class AppSessionManager extends SessionAspectAbstract {
 	public Object getUnderlyingComponent() {
 		return null;
 	}
+	
 }
