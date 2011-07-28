@@ -54,7 +54,7 @@
 
 	<target name="resolve-dependencies" depends="install-ivy" unless="ivy.resolve.skip">
 		<echo>Retrieving libs</echo>
-		<ivy:retrieve pattern="lib/[artifact].[ext]"/>
+		<ivy:retrieve pattern="lib/[artifact].[ext]" />
 	</target>
 
 	<target name="compile">
@@ -74,6 +74,12 @@
 
 		<mkdir dir="${project.build.src}" />
 		<mkdir dir="${project.build.test}" />
+		
+		<copy toDir="${project.build.src}">
+			<fileset dir="${project.src}">
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>
 
 		<javac destdir="${project.build.src}" debug="${project.debug}" debuglevel="source,lines,vars" source="${project.targetComp}" target="${project.targetComp}">
 			<src path="${project.src}" />
