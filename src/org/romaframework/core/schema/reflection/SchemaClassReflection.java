@@ -62,8 +62,6 @@ public class SchemaClassReflection extends SchemaClass {
 
 	private Class<?>							javaClass;
 
-	private SchemaClass						baseClass;
-
 	public static final String		GET_METHOD					= "get";
 
 	public static final String		IS_METHOD						= "is";
@@ -78,7 +76,7 @@ public class SchemaClassReflection extends SchemaClass {
 		super(Utility.getClassName(iClass));
 		javaClass = iClass;
 		// USED CLASS EQUALS FOR CROSS CLASSLOADER COMPARE
-		baseClass = iClass.getSuperclass() != null && iClass.getSuperclass().equals(Object.class) ? Roma.schema().getSchemaClass(iClass.getSuperclass()) : null;
+		superClass = iClass.getSuperclass() != null && iClass.getSuperclass().equals(Object.class) ? Roma.schema().getSchemaClass(iClass.getSuperclass()) : null;
 		config();
 	}
 
@@ -93,7 +91,7 @@ public class SchemaClassReflection extends SchemaClass {
 			throw new ConfigurationNotFoundException("Class " + iEntityName);
 
 		javaClass = iClass;
-		baseClass = iBaseClass;
+		superClass = iBaseClass;
 
 		if (iDescriptor != null) {
 			descriptor = iDescriptor;
@@ -110,7 +108,7 @@ public class SchemaClassReflection extends SchemaClass {
 	@Override
 	public Object newInstanceFinal(Object... iArgs) throws InstantiationException, IllegalAccessException, IllegalArgumentException, SecurityException, InvocationTargetException,
 			NoSuchMethodException {
-		Class<?> currClass = (Class<?>) (javaClass != null ? javaClass : baseClass.getLanguageType());
+		Class<?> currClass = (Class<?>) (javaClass != null ? javaClass : superClass.getLanguageType());
 
 		if (iArgs == null || iArgs.length == 0)
 			return currClass.newInstance();
@@ -163,7 +161,7 @@ public class SchemaClassReflection extends SchemaClass {
 	}
 
 	private void readClass() {
-		Class<?> iClass = (Class<?>) (javaClass != null ? javaClass : baseClass.getLanguageType());
+		Class<?> iClass = (Class<?>) (javaClass != null ? javaClass : superClass.getLanguageType());
 
 		ParameterizedType type = SchemaHelper.resolveParameterizedType(iClass);
 
@@ -284,11 +282,11 @@ public class SchemaClassReflection extends SchemaClass {
 			fieldInfo = createField(fieldName, javaFieldClass);
 			fieldInfo.getterMethod = method;
 		} else if (fieldInfo instanceof SchemaFieldReflection) {
-			if (fieldInfo instanceof SchemaFieldDelegate && !javaFieldClass.isAssignableFrom(((SchemaFieldReflection) fieldInfo).getLanguageType())) {
+			if (fieldInfo instanceof SchemaFieldDelegate && !((SchemaFieldReflection) fieldInfo).getLanguageType().isAssignableFrom(javaFieldClass)) {
 				fieldInfo = createField(fieldName, javaFieldClass);
 				fieldInfo.getterMethod = method;
 			} else {
-				if (javaFieldClass.isAssignableFrom(((SchemaFieldReflection) fieldInfo).getLanguageType()))
+				if (((SchemaFieldReflection) fieldInfo).getLanguageType().isAssignableFrom(javaFieldClass))
 					fieldInfo.getterMethod = method;
 			}
 		}
@@ -378,16 +376,12 @@ public class SchemaClassReflection extends SchemaClass {
 	}
 
 	public Class<?> getLanguageType() {
-		return (Class<?>) (javaClass != null ? javaClass : baseClass.getLanguageType());
+		return (Class<?>) (javaClass != null ? javaClass : superClass.getLanguageType());
 	}
 
 	@Override
 	public String toString() {
 		return name + (javaClass != null ? " (class:" + javaClass.getName() + ")" : "");
-	}
-
-	public SchemaClass getBaseClass() {
-		return baseClass;
 	}
 
 	protected void inspectInheritance() {
@@ -399,9 +393,8 @@ public class SchemaClassReflection extends SchemaClass {
 			javaSuperClass = javaClass.getSuperclass();
 		else
 			// COPY FROM BASE CLASS
-			javaSuperClass = (Class<?>) baseClass.getLanguageType();
+			javaSuperClass = (Class<?>) superClass.getLanguageType();
 
-		superClass = baseClass;
 		if (superClass == null && javaSuperClass != null) {
 			if (Roma.existComponent(SchemaManager.class)) {
 				superClass = searchForInheritedClassOrInterface(javaSuperClass);
@@ -438,7 +431,7 @@ public class SchemaClassReflection extends SchemaClass {
 	protected void makeDependency(SchemaClass iClass) {
 
 		super.makeDependency(iClass);
-		Class<?> clazz = (Class<?>) (javaClass != null ? javaClass : baseClass.getLanguageType());
+		Class<?> clazz = (Class<?>) (javaClass != null ? javaClass : superClass.getLanguageType());
 		ParameterizedType type = SchemaHelper.resolveParameterizedType(clazz);
 		for (SchemaField schemaField : fields.values()) {
 			if (schemaField instanceof SchemaField) {

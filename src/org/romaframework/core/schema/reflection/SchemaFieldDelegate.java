@@ -60,6 +60,10 @@ public class SchemaFieldDelegate extends SchemaFieldReflection {
 		return (Class<?>) this.delegate.getLanguageType();
 	}
 
+	public SchemaField getDelegate() {
+		return delegate;
+	}
+
 	@Override
 	protected void setValueFinal(Object iObject, Object iValue) throws IllegalAccessException, InvocationTargetException {
 		if (this.setterMethod != null) {
