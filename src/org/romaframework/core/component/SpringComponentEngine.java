@@ -14,7 +14,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 @SuppressWarnings("unchecked")
 public class SpringComponentEngine extends AbstractServiceable implements ComponentAspect {
-	private static final String								COMPONENT_SRV_FILE_PATTERN	= "META-INF/components/applicationContext*.xml";
+	private static final String								COMPONENT_SRV_FILE_PATTERN				= "META-INF/components/applicationContext*.xml";
+	private static final String								COMPONENT_SRV_FILE_PATTERN_SUBDIR	= "META-INF/components/*/applicationContext*.xml";
 
 	protected ClassPathXmlApplicationContext	springContext;
 
@@ -56,7 +57,7 @@ public class SpringComponentEngine extends AbstractServiceable implements Compon
 	public void startup() throws RuntimeException {
 		status = STATUS_STARTING;
 
-		springContext = new ClassPathXmlApplicationContext(new String[] { COMPONENT_SRV_FILE_PATTERN }, false);
+		springContext = new ClassPathXmlApplicationContext(new String[] { COMPONENT_SRV_FILE_PATTERN, COMPONENT_SRV_FILE_PATTERN_SUBDIR }, false);
 
 		springContext.refresh();
 		status = STATUS_UP;
