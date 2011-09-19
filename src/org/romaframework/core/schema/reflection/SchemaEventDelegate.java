@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 import org.romaframework.core.schema.SchemaClassDefinition;
+import org.romaframework.core.schema.SchemaElement;
 import org.romaframework.core.schema.SchemaEvent;
 import org.romaframework.core.schema.SchemaField;
 import org.romaframework.core.schema.SchemaParameter;
@@ -33,6 +34,10 @@ public class SchemaEventDelegate extends SchemaEventReflection {
 		}
 		iContent = object.getValue(iContent);
 		return delegate.invoke(iContent, params);
+	}
+
+	public SchemaField getFieldObject() {
+		return object;
 	}
 
 }

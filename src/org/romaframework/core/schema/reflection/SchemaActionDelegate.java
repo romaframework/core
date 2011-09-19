@@ -36,6 +36,10 @@ public class SchemaActionDelegate extends SchemaActionReflection {
 		return delegate.invoke(iContent, params);
 	}
 
+	public SchemaField getFieldObject() {
+		return object;
+	}
+	
 	@Override
 	public Method getMethod() {
 		if (this.method != null)
