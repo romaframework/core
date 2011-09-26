@@ -16,12 +16,10 @@
 
 package org.romaframework.core.flow;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.romaframework.aspect.session.SessionAspect;
 import org.romaframework.aspect.session.SessionInfo;
 import org.romaframework.core.Roma;
 import org.romaframework.core.Utility;
@@ -29,11 +27,6 @@ import org.romaframework.core.config.ApplicationConfiguration;
 import org.romaframework.core.config.ContextException;
 import org.romaframework.core.config.RomaApplicationContext;
 import org.romaframework.core.exception.ConfigurationNotFoundException;
-import org.romaframework.core.exception.UserException;
-import org.romaframework.core.schema.SchemaClass;
-import org.romaframework.core.schema.SchemaField;
-import org.romaframework.core.schema.SchemaHelper;
-import org.romaframework.core.schema.SchemaManager;
 import org.romaframework.core.schema.SchemaObject;
 
 /**
@@ -127,8 +120,9 @@ public class ObjectContext {
 	 * @param iFieldNames
 	 *          Optional field names to signal the change
 	 */
+	@Deprecated
 	public void fieldChanged(Object iUserObject, String... iFieldNames) {
-		fieldChanged(null, iUserObject, iFieldNames);
+		Roma.fieldChanged(null, iUserObject, iFieldNames);
 	}
 
 	/**
@@ -141,28 +135,9 @@ public class ObjectContext {
 	 * @param iFieldNames
 	 *          Optional field names to signal the change
 	 */
+	@Deprecated
 	public void fieldChanged(SessionInfo iUserSession, Object iUserObject, String... iFieldNames) {
-		if (iUserObject == null)
-			return;
-
-		List<FieldRefreshListener> listeners = Controller.getInstance().getListeners(FieldRefreshListener.class);
-
-		synchronized (listeners) {
-			SchemaClass clz = getComponent(SchemaManager.class).getSchemaClass(iUserObject);
-			if (clz == null)
-				return;
-
-			if (iFieldNames == null || iFieldNames.length == 0) {
-				// REFRESH ALL FIELDS
-				for (Iterator<SchemaField> it = clz.getFieldIterator(); it.hasNext();)
-					signalFieldChanged(iUserSession, iUserObject, listeners, clz, it.next().getName());
-			} else {
-				// REFRESH PASSED FIELDS
-				for (String fieldName : iFieldNames) {
-					signalFieldChanged(iUserSession, iUserObject, listeners, clz, fieldName);
-				}
-			}
-		}
+		Roma.fieldChanged(iUserSession, iUserObject, iFieldNames);
 	}
 
 	/**
@@ -176,32 +151,6 @@ public class ObjectContext {
 	@Deprecated
 	public void objectChanged(SessionInfo iUserSession, Object iUserObject) {
 		Roma.objectChanged(iUserSession, iUserObject);
-	}
-
-	protected void signalFieldChanged(SessionInfo iUserSession, Object iUserObject, List<FieldRefreshListener> listeners, SchemaClass iClass, String iFieldName) {
-		try {
-			SchemaField field = null;
-			if (iFieldName != null) {
-				// GET THE TARGET OBJECT FOR THAT FIELD
-				iUserObject = SchemaHelper.getFieldObject(iUserObject, iFieldName);
-
-				field = iClass.getField(iFieldName);
-
-				if (field == null) {
-					log.warn("[ObjectContext.signalFieldChanged] Field '" + iFieldName + "' not found for class: " + iClass);
-					return;
-				}
-			}
-
-			if (iUserSession == null)
-				iUserSession = getComponent(SessionAspect.class).getActiveSessionInfo();
-
-			for (FieldRefreshListener listener : listeners) {
-				listener.onFieldRefresh(iUserSession, iUserObject, field);
-			}
-		} catch (UserException e) {
-			log.info("[ObjectContext.fieldChanged] Cannot refresh field '" + iFieldName + "' in object " + iUserObject + " since it not exists for current view", e);
-		}
 	}
 
 	/**
