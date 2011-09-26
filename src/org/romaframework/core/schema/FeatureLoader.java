@@ -48,7 +48,8 @@ public class FeatureLoader {
 	 *          the Xml descriptor with configurations to load on features.
 	 */
 	@SuppressWarnings("unchecked")
-	static public void loadFeatures(SchemaFeatures schemaFeatures, AnnotatedElement baseAnnotatedElement, AnnotatedElement additionalAnnotatedElement, XmlAnnotation descriptor) {
+	static public void loadFeatures(SchemaFeatures schemaFeatures, AnnotatedElement baseAnnotatedElement,
+			AnnotatedElement additionalAnnotatedElement, XmlAnnotation descriptor) {
 		Map<String, Annotation> annotations = new HashMap<String, Annotation>();
 		Map<String, Annotation> additionalAnnotations = new HashMap<String, Annotation>();
 
@@ -70,9 +71,9 @@ public class FeatureLoader {
 				value = getAnnotationValue(additionalAnnotatedElement, additionalAnnotations, feature);
 			}
 
-			if (value != null)
+			if (value != null) {
 				schemaFeatures.setFeature(feature, value);
-
+			}
 		}
 	}
 
@@ -104,7 +105,8 @@ public class FeatureLoader {
 				return readAnnotationValue(feature, mt.invoke(annInstance));
 			} catch (Exception e) {
 				log.error("Problem on reading of declared feature:" + feature.getName() + " on Annotation:" + annInstance, e);
-				throw new ConfigurationException("Problem on reading of declared feature:" + feature.getName() + " on Annotation:" + annInstance, e);
+				throw new ConfigurationException("Problem on reading of declared feature:" + feature.getName() + " on Annotation:"
+						+ annInstance, e);
 			}
 		}
 		return null;
@@ -128,6 +130,9 @@ public class FeatureLoader {
 			return "true".equalsIgnoreCase((String) value) || "1".equals(value) || "t".equalsIgnoreCase((String) value);
 		}
 		if (SchemaClass.class.equals(valueType)) {
+			if (value.equals(FeatureNotSet.class.getSimpleName())) {
+				return null;
+			}
 			return Roma.schema().getSchemaClass(value);
 		}
 		if (Integer.class.equals(valueType)) {
@@ -206,7 +211,13 @@ public class FeatureLoader {
 		}
 		if (SchemaClass.class.equals(valueType)) {
 			if (value instanceof String) {
+				if (value.equals(AnnotationConstants.DEF_VALUE)) {
+					return null;
+				}
 				return Roma.schema().getSchemaClass((String) value);
+			}
+			if (value != null && value.equals(FeatureNotSet.class)) {
+				return null;
 			}
 			return Roma.schema().getSchemaClass(value);
 		}

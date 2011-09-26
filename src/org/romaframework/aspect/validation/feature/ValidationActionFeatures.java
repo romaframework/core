@@ -22,6 +22,6 @@ import org.romaframework.core.schema.FeatureType;
 
 public class ValidationActionFeatures {
 
-	public static final Feature<Boolean>	VALIDATE	= new Feature<Boolean>(ValidationAspect.ASPECT_NAME, "validate", FeatureType.ACTION, Boolean.class, Boolean.TRUE);
+	public static final Feature<Boolean>	VALIDATE	= new Feature<Boolean>(ValidationAspect.ASPECT_NAME, "validate", FeatureType.ACTION, Boolean.class, Boolean.FALSE);
 
 }

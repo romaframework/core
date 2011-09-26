@@ -22,6 +22,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.romaframework.aspect.core.annotation.AnnotationConstants;
+import org.romaframework.core.schema.FeatureNotSet;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
@@ -31,7 +32,7 @@ public @interface FlowAction {
 	 * 
 	 * @return
 	 */
-	Class<?> next() default Object.class;
+	Class<?> next() default FeatureNotSet.class;
 
 	/**
 	 * Position where to render the next object. If not specified default desktop position is taken.
