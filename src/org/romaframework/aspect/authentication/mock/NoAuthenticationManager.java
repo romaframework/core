@@ -28,7 +28,7 @@ import org.romaframework.aspect.authentication.AuthenticationException;
  */
 public class NoAuthenticationManager extends AuthenticationAspectAbstract {
 
-	public Object authenticate(Object iContext, String iUserName, String iPassword, Map<String, String> iAdditionalInfo) {
+	public Object authenticate(String iUserName, String iPassword, Map<String, String> iAdditionalInfo) {
 		return null;
 	}
 
@@ -45,10 +45,6 @@ public class NoAuthenticationManager extends AuthenticationAspectAbstract {
 	}
 
 	public Object getCurrentProfile() {
-		return null;
-	}
-
-	public Object getCurrentRealm() {
 		return null;
 	}
 }

@@ -15,7 +15,6 @@
 	<xsd:include schemaLocation="roma-service.xsd" />
 	<xsd:include schemaLocation="roma-serialization.xsd" />
 	<xsd:include schemaLocation="roma-view.xsd" />
-	<xsd:include schemaLocation="roma-map.xsd" />
 	<xsd:include schemaLocation="roma-validation.xsd" />
 	<xsd:include schemaLocation="roma-security.xsd" />
 	<xsd:element name="class" type="classType" />
@@ -73,7 +72,6 @@
 						<xsd:element name="core" type="aspectFieldTypeCore" minOccurs="0" maxOccurs="1" />
 						<xsd:element name="i18n" type="aspectFieldTypeI18n" minOccurs="0" maxOccurs="1" />
 						<xsd:element name="logging" type="aspectFieldTypeLogging" minOccurs="0" maxOccurs="1" />
-						<xsd:element name="map" type="aspectFieldTypeMap" minOccurs="0" maxOccurs="1" />
 						<xsd:element name="module" type="aspectElementTypeModule" minOccurs="0" maxOccurs="unbounded" />
 						<xsd:element name="monitoring" type="aspectFieldTypeMonitoring" minOccurs="0" maxOccurs="1" />
 						<xsd:element name="persistence" type="aspectTypePersistence" minOccurs="0" maxOccurs="1" />
@@ -86,7 +84,6 @@
 					</xsd:choice>
 				</xsd:complexType>
 			</xsd:element>
-			<xsd:element ref="class" minOccurs="0" maxOccurs="1" />
 			<xsd:element name="events" minOccurs="0" maxOccurs="1">
 				<xsd:complexType>
 					<xsd:sequence minOccurs="0" maxOccurs="1">

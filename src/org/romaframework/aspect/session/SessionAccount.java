@@ -27,5 +27,4 @@ public interface SessionAccount {
 
 	public void setProfile(Object iProfile);
 
-	public Object getRealm();
 }
