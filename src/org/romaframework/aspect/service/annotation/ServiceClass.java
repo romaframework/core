@@ -21,15 +21,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.romaframework.aspect.core.annotation.AnnotationConstants;
+import org.romaframework.core.schema.FeatureNotSet;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ServiceClass {
 
-	Class<?> interfaceClass() default Object.class;
+	Class<?> interfaceClass() default FeatureNotSet.class;
 
 	String serviceName() default AnnotationConstants.DEF_VALUE;
 
-	Class<?> aspectImplementation() default Object.class;
+	Class<?> aspectImplementation() default FeatureNotSet.class;
 
 }

@@ -21,6 +21,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.romaframework.core.schema.FeatureNotSet;
+
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CoreClass {
@@ -33,7 +35,7 @@ public @interface CoreClass {
 	 * 
 	 * @return
 	 */
-	Class<?> entity() default Object.class;
+	Class<?> entity() default FeatureNotSet.class;
 
 	/*
 	 * Order of fields. Field names must be separated by spaces.

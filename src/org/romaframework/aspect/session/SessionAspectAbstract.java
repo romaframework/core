@@ -127,7 +127,7 @@ public abstract class SessionAspectAbstract extends SelfRegistrantConfigurableMo
 	public void signalUpdatedClass(SchemaClass iClass, File iFile) {
 		for (SessionInfo info : getSessionInfos()) {
 			synchronized (info) {
-				Map<SchemaClass, Object> map = getObjectMap(getActiveSessionInfo());
+				Map<SchemaClass, Object> map = getObjectMap(info);
 				List<SchemaClass> objects = new ArrayList<SchemaClass>();
 				for (SchemaClass schemaClass : map.keySet()) {
 					if (schemaClass.isAssignableAs(iClass)) {
