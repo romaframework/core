@@ -17,9 +17,12 @@ package org.romaframework.core;
 
 import java.io.Reader;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.romaframework.aspect.flow.FlowAspect;
 import org.romaframework.aspect.i18n.I18NAspect;
 import org.romaframework.aspect.logging.LoggingAspect;
@@ -37,8 +40,10 @@ import org.romaframework.core.aspect.Aspect;
 import org.romaframework.core.aspect.AspectManager;
 import org.romaframework.core.exception.ConfigurationException;
 import org.romaframework.core.exception.ConfigurationNotFoundException;
+import org.romaframework.core.exception.UserException;
 import org.romaframework.core.factory.GenericFactory;
 import org.romaframework.core.flow.Controller;
+import org.romaframework.core.flow.FieldRefreshListener;
 import org.romaframework.core.flow.ObjectContext;
 import org.romaframework.core.flow.ObjectRefreshListener;
 import org.romaframework.core.repository.GenericRepository;
@@ -48,6 +53,8 @@ import org.romaframework.core.schema.FeatureType;
 import org.romaframework.core.schema.SchemaClass;
 import org.romaframework.core.schema.SchemaFeatures;
 import org.romaframework.core.schema.SchemaFeaturesChangeListener;
+import org.romaframework.core.schema.SchemaField;
+import org.romaframework.core.schema.SchemaHelper;
 import org.romaframework.core.schema.SchemaManager;
 import org.romaframework.core.schema.SchemaObject;
 
@@ -75,6 +82,7 @@ public class Roma implements ScriptingAspectListener {
 	protected static RomaContext			context						= new RomaContext();
 
 	protected static Roma							singleton					= new Roma();
+	private static Log								log									= LogFactory.getLog(Roma.class);
 
 	protected Roma() {
 		Controller.getInstance().registerListener(ScriptingAspectListener.class, this);
@@ -156,18 +164,77 @@ public class Roma implements ScriptingAspectListener {
 	}
 
 	/**
-	 * Refresh a property feature and/or value of the current active session.
+	 * Refresh a property feature and/or value.
 	 * 
-	 * @see ObjectContext#fieldChanged(Object, String...)
 	 * @param iUserObject
 	 *          The User Object of changed property
 	 * @param iFieldNames
 	 *          Optional field names to signal the change
 	 */
 	public static void fieldChanged(Object iUserObject, String... iFieldNames) {
-		ObjectContext.getInstance().fieldChanged(iUserObject, iFieldNames);
+		fieldChanged(null, iUserObject, iFieldNames);
 	}
+	
+	/**
+	 * Refresh a property feature and/or value of iUserSession session.
+	 * 
+	 * @param iUserSession
+	 *          The User Session
+	 * @param iUserObject
+	 *          The User Object of changed property
+	 * @param iFieldNames
+	 *          Optional field names to signal the change
+	 */
+	public static void fieldChanged(SessionInfo iUserSession, Object iUserObject, String... iFieldNames) {
+		if (iUserObject == null)
+			return;
 
+		if (iUserSession == null)
+			iUserSession = component(SessionAspect.class).getActiveSessionInfo();
+		
+		List<FieldRefreshListener> listeners = Controller.getInstance().getListeners(FieldRefreshListener.class);
+
+		synchronized (listeners) {
+			SchemaClass clz = component(SchemaManager.class).getSchemaClass(iUserObject);
+			if (clz == null)
+				return;
+
+			if (iFieldNames == null || iFieldNames.length == 0) {
+				// REFRESH ALL FIELDS
+				for (Iterator<SchemaField> it = clz.getFieldIterator(); it.hasNext();)
+					signalFieldChanged(iUserSession, iUserObject, listeners, clz, it.next().getName());
+			} else {
+				// REFRESH PASSED FIELDS
+				for (String fieldName : iFieldNames) {
+					signalFieldChanged(iUserSession, iUserObject, listeners, clz, fieldName);
+				}
+			}
+		}
+	}
+	
+	protected static void signalFieldChanged(SessionInfo iUserSession, Object iUserObject, List<FieldRefreshListener> listeners, SchemaClass iClass, String iFieldName) {
+		try {
+			SchemaField field = null;
+			if (iFieldName != null) {
+				// GET THE TARGET OBJECT FOR THAT FIELD
+				iUserObject = SchemaHelper.getFieldObject(iUserObject, iFieldName);
+
+				field = iClass.getField(iFieldName);
+
+				if (field == null) {
+					log.warn("[ObjectContext.signalFieldChanged] Field '" + iFieldName + "' not found for class: " + iClass);
+					return;
+				}
+			}
+			for (FieldRefreshListener listener : listeners) {
+				listener.onFieldRefresh(iUserSession, iUserObject, field);
+			}
+		} catch (UserException e) {
+			log.info("[ObjectContext.fieldChanged] Cannot refresh field '" + iFieldName + "' in object " + iUserObject + " since it not exists for current view", e);
+		}
+	}
+	
+	
 	@Deprecated
 	@SuppressWarnings("rawtypes")
 	public static boolean setFieldFeature(Object iUserObject, String iAspectName, String iFieldName, String iFeatureName, Object iFeatureValue) throws ConfigurationNotFoundException {

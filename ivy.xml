@@ -2,19 +2,20 @@
 	xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
 	<info organisation="org.romaframework" module="roma-core" revision="2.9" />
 	<configurations defaultconfmapping="*->*,!sources,!javadoc,!optional">
-		<conf name="test" />
-		<conf name="wizard"  />
+		<conf name="compile" visibility="public" />
+		<conf name="test" visibility="public" />
+		<conf name="wizard" visibility="public" />
 	</configurations>
 	<publications>
-		<artifact name="roma-core" ext="jar" type="jar"></artifact>
+		<artifact name="roma-core" ext="jar" type="jar" conf="compile"></artifact>
 		<artifact name="roma-core-test" ext="jar" type="jar" conf="test"></artifact>
 		<artifact name="roma-core-wizard" ext="zip" type="zip" conf="wizard"></artifact>
 	</publications>
 	<dependencies>
-		<dependency org="org.springframework" name="spring-context" rev="latest.integration"  />
-		<dependency org="commons-io" name="commons-io" rev="latest.integration"  />
-		<dependency org="commons-beanutils" name="commons-beanutils" rev="latest.integration"  />
-		<dependency org="commons-jxpath" name="commons-jxpath" rev="latest.integration"  />
+		<dependency org="org.springframework" name="spring-context" rev="latest.integration" conf="*" />
+		<dependency org="commons-io" name="commons-io" rev="latest.integration" conf="*" />
+		<dependency org="commons-beanutils" name="commons-beanutils" rev="latest.integration" conf="*" />
+		<dependency org="commons-jxpath" name="commons-jxpath" rev="latest.integration" conf="*" />
 		<dependency org="junit" name="junit" rev="latest.integration" conf="test" />
 		<dependency org="org.springframework" name="spring-mock" rev="latest.integration" conf="test" />
 	</dependencies>
