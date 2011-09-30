@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource" singleton="true">
+		<property name="basename" value="messages" />
+	</bean>
+
+	<bean id="ApplicationConfiguration" singleton="true" class="#{project.package}.CustomApplicationConfiguration">
+		<property name="applicationName">
+			<value>#{project.name}</value>
+		</property>
+		<property name="applicationPackage">
+			<value>#{project.package}</value>
+		</property>
+		<property name="applicationDevelopment">
+			<value>true</value>
+		</property>
+        <property name="configuration">
+            <map></map>
+        </property>
+	</bean>
+
+	<bean id="AspectManager" class="org.romaframework.core.aspect.AspectManager" singleton="true">
+		<property name="defaults">
+			<map>
+				<entry key="i18n" value-ref="I18NAspect" />
+				<entry key="logging" value-ref="LoggingAspect" />
+				<entry key="flow" value-ref="FlowAspect" />
+				<entry key="authentication" value-ref="AuthenticationAspect" />
+				<entry key="validation" value-ref="ValidationAspect" />
+				<entry key="serialization" value-ref="SerializationAspect" />
+				<entry key="hook" value-ref="HookAspect" />
+			</map>
+		</property>
+	</bean>
+
+</beans>

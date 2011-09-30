@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <project basedir="." default="add-module" name="roma-core-wizard">
-	<property environment="env" />
-	<property name="roma.home" value="${env.ROMA_HOME}" />
-	<property name="project.new-ioc-path" value="src/META-INF/components" />
 
 	<import file="base-wizard.xml" />
 
 	<target name="add-module" >
+		<property name="module.ioc-file" value="applicationContext.xml" />
+		<antcall target="copy-module-ioc-file" />
+
 		<property name="module.ioc-file" value="applicationContext-core.xml" />
 		<antcall target="copy-module-ioc-file" />
 
