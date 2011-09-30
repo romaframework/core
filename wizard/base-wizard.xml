@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="load-project" name="base-wizard">
+	<property environment="env" />
+	<path id="common.libs">
+		<fileset dir="${env.ROMA_HOME}/common/lib" includes="*.jar" />
+	</path>
+	<taskdef name="xmltask" classname="com.oopsconsultancy.xmltask.ant.XmlTask" classpathref="common.libs" />
+	<taskdef name="if" classname="net.sf.antcontrib.logic.IfTask" classpathref="common.libs" />
+	<taskdef name="replaceregexp" classname="org.apache.tools.ant.taskdefs.optional.ReplaceRegExp" classpathref="common.libs" />
+
+	<property name="ident" value="simple:4" />
+
+	<xmlcatalog id="dtds">
+		<dtd publicId="JAVA PROPERTIES" location="${env.ROMA_HOME}/common/wizard/java-properties.dtd" />
+		<dtd publicId="-//SPRING//DTD BEAN//EN" location="${env.ROMA_HOME}/common/wizard/spring-beans.dtd" />
+		<dtd publicId="-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" location="${env.ROMA_HOME}/common/wizard/web-app_2_3.dtd" />
+	</xmlcatalog>
+
+	<target name="copy-module-ioc-file">
+		<delete file="${project.path}/${project.ioc-path}/${module.ioc-file}" />
+
+		<copy file="${module.ioc-file}" todir="${project.path}/${project.ioc-path}">
+			<filterset>
+				<filter token="project.package" value="${project.package}" />
+				<filter token="project.name" value="${project.name}" />
+			</filterset>
+		</copy>
+	</target>
+
+	<target name="register-def-aspect">
+		<echo>Register this module as default Aspect in applicationContext.xml -></echo>
+		<xmltask source="${project.path}/${project.ioc-path}/${project.ioc-file}" dest="${project.path}/${project.ioc-path}/${project.ioc-file}" preservetype="true" expandEntityReferences="false">
+			<xmlcatalog refid="dtds" />
+			<remove path="/beans/bean[@id='AspectManager']/property[@name='defaults']/map/entry[@key='${module.aspect-name}']" />
+			<insert path="/beans/bean[@id='AspectManager']/property[@name='defaults']/map/entry[last()]" position="after">
+				<![CDATA[<entry key='${module.aspect-name}' value-ref='${module.aspect-component}' />]]>
+			</insert>
+		</xmltask>
+	</target>
+
+	<target name="load-project">
+		<!-- READ CURRENT PROJECT NAME -->
+		<!--
+		<xmltask source="${env.ROMA_HOME}/config/projects.xml">
+			<xmlcatalog refid="dtds" />
+			<copy path="properties/entry[@key='lastProject']/text()" property="project.name" />
+		</xmltask>
+		<antcall target="load-project-info" />
+		-->
+	</target>
+
+	<target name="show-project-info">
+		<antcall target="load-project-info">
+			<param name="dump-properties" value="true" />
+		</antcall>
+	</target>
+
+
+	<target name="load-project-info">
+		<!-- READ CURRENT PROJECT PATH -->
+		<!--
+		<xmltask source="${env.ROMA_HOME}/config/projects.xml">
+			<xmlcatalog refid="dtds" />
+			<copy path="properties/entry[@key='${project.name}.path']/text()" property="project.path" />
+		</xmltask>
+
+		<echo>Loading project info from ${project.path}/roma-project.xml</echo>
+
+		<xmltask source="${project.path}/roma-project.xml">
+			<xmlcatalog refid="dtds" />
+			<copy path="properties/entry[@key='package']/text()" property="project.package" />
+			<copy path="properties/entry[@key='package-path']/text()" property="project.package-path" />
+			<copy path="properties/entry[@key='ioc-path']/text()" property="project.ioc-path" />
+			<copy path="properties/entry[@key='ioc-file']/text()" property="project.ioc-file" />
+			<copy path="properties/entry[@key='src']/text()" property="project.src" />
+		</xmltask>
+		<if>
+			<isset property="dump-properties" />
+			<then>
+				<echo>Project              = ${project.name}</echo>
+				<echo> - path              = ${project.path}</echo>
+				<echo> - package           = ${project.package}</echo>
+				<echo> - package-path      = ${project.package-path}</echo>
+				<echo> - run-time-lib      = ${project.run-time-lib}</echo>
+				<echo> - compile-time-lib  = ${project.compile-time-lib}</echo>
+				<echo> - src               = ${project.src}</echo>
+				<echo> - ioc-path          = ${project.ioc-path}</echo>
+				<echo> - ioc-file          = ${project.ioc-file}</echo>
+			</then>
+		</if>
+	-->
+	</target>
+</project>

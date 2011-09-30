@@ -4,7 +4,7 @@
 	<property name="roma.home" value="${env.ROMA_HOME}" />
 	<property name="project.new-ioc-path" value="src/META-INF/components" />
 
-	<import file="../../../base-wizard.xml" />
+	<import file="base-wizard.xml" />
 
 	<target name="add-module" >
 		<property name="module.ioc-file" value="applicationContext-core.xml" />
