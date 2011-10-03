@@ -11,7 +11,7 @@
 		<echo>${project.name}</echo>
 		<echo>${project.package}</echo>
 		<copy file="${module.ioc-file}" todir="${project.path}/${project.ioc-path}">
-			<filterset>
+			<filterset begintoken="#{" endtoken="}">
 				<filter token="project.package" value="${project.package}" />
 				<filter token="project.name" value="${project.name}" />
 			</filterset>

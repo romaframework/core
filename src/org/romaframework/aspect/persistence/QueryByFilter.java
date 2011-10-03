@@ -27,16 +27,16 @@ public class QueryByFilter extends Query {
 	private List<QueryByFilterOrder>	orders;
 	private String										predicateOperator;
 
-	public static final ConditionType	FIELD_LIKE					= ConditionType.FIELD_LIKE;
-	public static final ConditionType	FIELD_NOT_EQUALS		= ConditionType.FIELD_NOT_EQUALS;
-	public static final ConditionType	FIELD_MAJOR_EQUALS	= ConditionType.FIELD_MAJOR_EQUALS;
-	public static final ConditionType	FIELD_MINOR_EQUALS	= ConditionType.FIELD_MINOR_EQUALS;
-	public static final ConditionType	FIELD_MAJOR					= ConditionType.FIELD_MAJOR;
-	public static final ConditionType	FIELD_MINOR					= ConditionType.FIELD_MINOR;
-	public static final ConditionType	FIELD_EQUALS				= ConditionType.FIELD_EQUALS;
-	public static final ConditionType	FIELD_CONTAINS			= ConditionType.FIELD_CONTAINS;
-	public static final ConditionType	FIELD_IN						= ConditionType.FIELD_IN;
-	public static final ConditionType	FIELD_NOT_IN				= ConditionType.FIELD_NOT_IN;
+	public static final QueryOperator	FIELD_LIKE					= QueryOperator.LIKE;
+	public static final QueryOperator	FIELD_NOT_EQUALS		= QueryOperator.NOT_EQUALS;
+	public static final QueryOperator	FIELD_MAJOR_EQUALS	= QueryOperator.MAJOR_EQUALS;
+	public static final QueryOperator	FIELD_MINOR_EQUALS	= QueryOperator.MINOR_EQUALS;
+	public static final QueryOperator	FIELD_MAJOR					= QueryOperator.MAJOR;
+	public static final QueryOperator	FIELD_MINOR					= QueryOperator.MINOR;
+	public static final QueryOperator	FIELD_EQUALS				= QueryOperator.EQUALS;
+	public static final QueryOperator	FIELD_CONTAINS			= QueryOperator.CONTAINS;
+	public static final QueryOperator	FIELD_IN						= QueryOperator.IN;
+	public static final QueryOperator	FIELD_NOT_IN				= QueryOperator.NOT_IN;
 
 	public static final String				PREDICATE_AND				= "and";
 	public static final String				PREDICATE_OR				= "or";
@@ -69,7 +69,7 @@ public class QueryByFilter extends Query {
 		return candidateClass;
 	}
 
-	public void addItem(String iName, ConditionType iOperator, Object iValue) {
+	public void addItem(String iName, QueryOperator iOperator, Object iValue) {
 		addItem(new QueryByFilterItemPredicate(iName, iOperator, iValue));
 	}
 

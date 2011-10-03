@@ -28,7 +28,7 @@ public class QueryByFilterItemGroup implements QueryByFilterItem {
 		return items;
 	}
 
-	public void addItem(String iName, ConditionType iOperator, Object iValue) {
+	public void addItem(String iName, QueryOperator iOperator, Object iValue) {
 		addItem(new QueryByFilterItemPredicate(iName, iOperator, iValue));
 	}
 
