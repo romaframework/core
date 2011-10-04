@@ -54,7 +54,7 @@
 
 	<target name="resolve-dependencies" depends="install-ivy" unless="ivy.resolve.skip">
 		<echo>Retrieving libs</echo>
-		<ivy:retrieve pattern="lib/[artifact].[ext]" />
+		<ivy:retrieve pattern="${project.lib}/[artifact].[ext]" />
 	</target>
 
 	<target name="compile">
