@@ -132,4 +132,11 @@ public interface FlowAspect extends Aspect {
 	 *          User session to use (null for the current user session)
 	 */
 	public void clearHistory(SessionInfo currentSession);
+	
+	/**
+	 * opens an alert dialog with given title and body
+	 * @param iTitle the alert title 
+	 * @param iBody the alert text
+	 */
+	public void alert(String iTitle, String iBody);
 }
