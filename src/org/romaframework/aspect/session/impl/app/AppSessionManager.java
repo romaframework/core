@@ -102,5 +102,15 @@ public class AppSessionManager extends SessionAspectAbstract {
 	public Object getUnderlyingComponent() {
 		return null;
 	}
+
+	@Override
+	public void setTimeout(int mins) {
+		
+	}
+
+	@Override
+	public int getTimeout() {
+		return -1;
+	}
 	
 }

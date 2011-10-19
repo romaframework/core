@@ -137,4 +137,16 @@ public interface SessionAspect extends Aspect, SchemaObjectHandler {
 	 * @return found instances of this schema class.
 	 */
 	public List<SchemaObject> getSchemaObjects(SchemaClass schemaClass);
+	
+	/**
+	 * sets session timeout 
+	 * @param mins number of minutes to timeout
+	 */
+	public void setTimeout(int mins);
+	
+	/**
+	 * returns sesson timeout in minutes
+	 * @return the session timeout in minutes
+	 */
+	public int getTimeout();
 }
