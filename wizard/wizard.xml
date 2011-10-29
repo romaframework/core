@@ -3,9 +3,13 @@
 
 	<import file="base-wizard.xml" />
 
-	<target name="add-module" >
-		<property name="module.ioc-file" value="applicationContext.xml" />
-		<antcall target="copy-module-ioc-file" />
+	<target name="add-module">
+		<copy file="applicationContext.xml" todir="${project.path}/${project.ioc-path}">
+			<filterset begintoken="#{" endtoken="}">
+				<filter token="project.package" value="${project.package}" />
+				<filter token="project.name" value="${project.name}" />
+			</filterset>
+		</copy>
 
 		<property name="module.ioc-file" value="applicationContext-core.xml" />
 		<antcall target="copy-module-ioc-file" />

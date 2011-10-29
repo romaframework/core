@@ -1,6 +1,5 @@
 package org.romaframework.core.util.parser;
 
-import org.apache.commons.beanutils.PropertyUtils;
 import org.romaframework.core.schema.SchemaHelper;
 
 public class ObjectVariableResolver implements VariableParserListener {
@@ -45,7 +44,7 @@ public class ObjectVariableResolver implements VariableParserListener {
 		} catch (Exception exception) {
 		}
 		try {
-			Object value = PropertyUtils.getProperty(val0Arg, iVariable);
+			Object value = SchemaHelper.getFieldValue(val0Arg, iVariable);
 			return value == null ? null : value.toString();
 		} catch (Exception e) {
 		}

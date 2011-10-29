@@ -74,8 +74,6 @@
 	<bean id="SerializationAspect" class="org.romaframework.aspect.serialization.DefaultSerializationAspect" />
 	<bean id="SerializationInspectionStrategy" class="org.romaframework.aspect.serialization.impl.SchemaSerializationInspectionStrategy" />
 	<bean id="SerializationFormatStrategy" class="org.romaframework.aspect.serialization.impl.NativeSerializationFormatStrategy" />
-	<bean id="JsonFormatStrategy" class="org.romaframework.aspect.serialization.impl.JsonSerializationFormatStrategy" />
-	<bean id="JsonFullFormatStrategy" class="org.romaframework.aspect.serialization.impl.JsonFullSerializationFormatStrategy" />
 
 	<bean id="HookAspect" class="org.romaframework.aspect.hook.HookAspect" />
 </beans>
