@@ -116,7 +116,7 @@ public interface PersistenceAspect extends Aspect {
 	 * @return The persistent object (or the same one passed in some implementations)
 	 * @throws PersistenceException
 	 */
-	public <T> T createObject(Object iObject) throws PersistenceException;
+	public <T> T createObject(T iObject) throws PersistenceException;
 
 	/**
 	 * Create an object in the repository. Prior of this call the object exists as transient. It use a strategy different by the
@@ -129,7 +129,7 @@ public interface PersistenceAspect extends Aspect {
 	 * @return The persistent object (or the same one passed in some implementations)
 	 * @throws PersistenceException
 	 */
-	public <T> T createObject(Object iObject, byte iStrategy) throws PersistenceException;
+	public <T> T createObject(T iObject, byte iStrategy) throws PersistenceException;
 
 	/**
 	 * Update a persistent object in the repository.
@@ -139,7 +139,7 @@ public interface PersistenceAspect extends Aspect {
 	 * @return The persistent object (or the same one passed in some implementations)
 	 * @throws PersistenceException
 	 */
-	public <T> T updateObject(Object iObject) throws PersistenceException;
+	public <T> T updateObject(T iObject) throws PersistenceException;
 
 	/**
 	 * Update a persistent object in the repository using a strategy different by the PersistenceAspect's default.
@@ -151,7 +151,7 @@ public interface PersistenceAspect extends Aspect {
 	 * @return The persistent object (or the same one passed in some implementations)
 	 * @throws PersistenceException
 	 */
-	public <T> T updateObject(Object iObject, byte iStrategy) throws PersistenceException;
+	public <T> T updateObject(T iObject, byte iStrategy) throws PersistenceException;
 
 	/**
 	 * Update more persistent objects in one shot.
