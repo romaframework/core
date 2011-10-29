@@ -7,9 +7,7 @@
 	<target name="copy-module-ioc-file">
 		<delete file="${project.path}/${project.ioc-path}/${module.ioc-file}" />
 		
-		<echo>${module.ioc-file}</echo>
-		<echo>${project.name}</echo>
-		<echo>${project.package}</echo>
+		<echo>Coping ${module.ioc-file}</echo>
 		<copy file="${module.ioc-file}" todir="${project.path}/${project.ioc-path}">
 			<filterset begintoken="#{" endtoken="}">
 				<filter token="project.package" value="${project.package}" />

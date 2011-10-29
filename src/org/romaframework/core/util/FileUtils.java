@@ -24,7 +24,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -33,7 +38,6 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.romaframework.core.Roma;
@@ -90,7 +94,7 @@ public class FileUtils {
 			tempImage = new File(sessionId + "_" + getFileName(completeName) + "." + getFileType(completeName));
 
 			tempImage.delete();
-			IOUtils.copy(in, new FileOutputStream(tempImage));
+			copyStream(in, new FileOutputStream(tempImage));
 		} catch (IOException ioe) {
 			log.error(ioe);
 			tempImage = null;
@@ -101,25 +105,22 @@ public class FileUtils {
 		return tempImage;
 	}
 
-	/**
-	 * 
-	 * Method that write data from a given <code>InputStream</code> to a given <code>OutputStream</code>
-	 * 
-	 * @param iInput
-	 *          the origin InputStream
-	 * @param iOutput
-	 *          the destination OutputStream
-	 * @return Number of bytes written
-	 * @throws IOException
-	 */
-	public static long writeFile(InputStream iInput, OutputStream iOutput) throws IOException {
-		return IOUtils.copy(iInput, iOutput);
+	public static long copyStream(InputStream input, OutputStream output) throws IOException {
+		Writer w =new OutputStreamWriter(output);
+		long writed = copyStream(new InputStreamReader(input), w);
+		w.flush();
+		return writed; 
 	}
 
-	public static void writeFile(String iContent, File iFile) throws FileNotFoundException, IOException {
-		FileOutputStream out = new FileOutputStream(iFile);
-		IOUtils.write(iContent, out);
-		out.close();
+	public static long copyStream(Reader input, Writer output) throws IOException {
+		char[] buffer = new char[1024];
+		long count = 0;
+		int n = 0;
+		while (-1 != (n = input.read(buffer))) {
+			output.write(buffer, 0, n);
+			count += n;
+		}
+		return count;
 	}
 
 	public static String getFileName(String iCompleteName) {
@@ -262,7 +263,7 @@ public class FileUtils {
 				log.info("Decompressing file: " + entry.getName());
 				attachment = new File(sessionId + "_" + entry.getName());
 				// write the files to the disk
-				IOUtils.copy(zis, new FileOutputStream(attachment));
+				copyStream(zis, new FileOutputStream(attachment));
 			}
 		}
 		if (attachment != null)
@@ -294,7 +295,7 @@ public class FileUtils {
 				log.info("Decompressing file: " + entry.getName());
 				File file = new File(iFileName + "_" + entry.getName());
 				// write the files to the disk
-				IOUtils.copy(zis, new FileOutputStream(file));
+				copyStream(zis, new FileOutputStream(file));
 				file.deleteOnExit();
 				attachments.add(file);
 			}
@@ -339,7 +340,7 @@ public class FileUtils {
 
 	public static File copyFile(File iOriginalFile, File iNewFile) {
 		try {
-			org.apache.commons.io.FileUtils.copyFile(iOriginalFile, iNewFile);
+			copyStream(new FileInputStream(iOriginalFile), new FileOutputStream(iNewFile));
 			return iNewFile;
 		} catch (IOException ioe) {
 			log.error("Unable to copy file \"" + iOriginalFile.getName() + "\" to \"" + iNewFile.getName() + " cause: " + ioe, ioe);
@@ -347,24 +348,11 @@ public class FileUtils {
 		return null;
 	}
 
-	public static byte[] readFile(File iOriginalFile) {
-		try {
-			return org.apache.commons.io.FileUtils.readFileToByteArray(iOriginalFile);
-		} catch (FileNotFoundException fnfe) {
-			log.error("Unable to read file \"" + iOriginalFile.getName() + "\" cause: " + fnfe, fnfe);
-		} catch (IOException ioe) {
-			log.error("Unable to read file \"" + iOriginalFile.getName() + "\" cause: " + ioe, ioe);
-		}
-		return null;
-	}
-
 	public static StringBuilder readFileAsText(File iOriginalFile) throws FileNotFoundException {
 		try {
-			return new StringBuilder(org.apache.commons.io.FileUtils.readFileToString(iOriginalFile));
+			return readStreamAsText(new FileInputStream(iOriginalFile));
 		} catch (FileNotFoundException fnfe) {
 			log.error("Unable to read file \"" + iOriginalFile.getName() + "\" cause: " + fnfe, fnfe);
-		} catch (IOException ioe) {
-			log.error("Unable to read file \"" + iOriginalFile.getName() + "\" cause: " + ioe, ioe);
 		}
 		return null;
 	}
@@ -374,7 +362,9 @@ public class FileUtils {
 			return null;
 
 		try {
-			return new StringBuilder(IOUtils.toString(iStream));
+			StringWriter writer = new StringWriter();
+			copyStream(new InputStreamReader(iStream), writer);
+			return new StringBuilder(writer.getBuffer());
 		} catch (FileNotFoundException fnfe) {
 			log.error("Unable to read stream cause: " + fnfe, fnfe);
 		} catch (IOException ioe) {
@@ -422,65 +412,6 @@ public class FileUtils {
 		}
 	}
 
-	public static void zipDirectory(ZipOutputStream out, File iDirectory, boolean iRecursive) throws IOException {
-		if (log.isDebugEnabled())
-			log.debug("[FileUtils.zipDirectory] Compressing directory" + iDirectory.getAbsolutePath() + "...");
-
-		zipDirectory(out, iDirectory, iDirectory.getName(), iRecursive);
-	}
-
-	public static void zipDirectory(ZipOutputStream out, File iDirectory, String iRelativePath, boolean iRecursive) throws IOException {
-
-		if (iRelativePath == null)
-			iRelativePath = "";
-		else if (!iRelativePath.endsWith("/"))
-			iRelativePath += "/";
-
-		if (log.isDebugEnabled())
-			log.debug("[FileUtils.zipDirectory] Compressing directory" + iRelativePath + iDirectory.getName() + "...");
-
-		File[] files = iDirectory.listFiles();
-
-		for (int i = 0; i < files.length; i++) {
-			if (files[i].isDirectory() && iRecursive)
-				zipDirectory(out, files[i], iRelativePath, iRecursive);
-			else
-				zipFile(out, files[i], iRelativePath);
-		}
-	}
-
-	public static void zipFile(ZipOutputStream out, File iFile, String iRelativePath) throws FileNotFoundException, IOException {
-		if (log.isDebugEnabled())
-			log.debug("[FileUtils.zipFile] Compressing file" + iRelativePath + iFile.getName() + "...");
-
-		FileInputStream in = new FileInputStream(iFile);
-		zipStream(out, in, iRelativePath + iFile.getName());
-	}
-
-	public static void zipFile(ZipOutputStream out, File iFile) throws FileNotFoundException, IOException {
-		if (log.isDebugEnabled())
-			log.debug("[FileUtils.zipFile] Compressing file" + iFile.getAbsolutePath() + "...");
-
-		FileInputStream in = new FileInputStream(iFile.getAbsolutePath());
-		zipStream(out, in, iFile.getPath());
-	}
-
-	public static void zipFile(ZipOutputStream out, InputStream iStream, String iFileName) throws FileNotFoundException, IOException {
-		if (log.isDebugEnabled())
-			log.debug("[FileUtils.zipFile] Compressing stream as file: " + iFileName + "...");
-
-		zipStream(out, iStream, iFileName);
-	}
-
-	private static void zipStream(ZipOutputStream out, InputStream iStream, String iFileName) throws IOException {
-		out.putNextEntry(new ZipEntry(iFileName));
-
-		IOUtils.copy(iStream, out);
-
-		out.closeEntry();
-		iStream.close();
-	}
-
 	public static int unzipArchive(File archive, File outputDir) {
 		int i = 0;
 
@@ -515,7 +446,7 @@ public class FileUtils {
 		BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(outputFile));
 
 		try {
-			IOUtils.copy(inputStream, outputStream);
+			copyStream(inputStream, outputStream);
 		} finally {
 			outputStream.close();
 			inputStream.close();
