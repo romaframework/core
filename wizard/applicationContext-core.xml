@@ -39,27 +39,8 @@
 
 	<bean id="SchemaReloader" class="org.romaframework.core.schema.SchemaReloader" singleton="true" />
 
-	<bean id="AuthenticationAspect" class="org.romaframework.aspect.authentication.mock.NoAuthenticationManager" singleton="true" />
-
-	<bean id="ScreenConfigurationLoader" class="org.romaframework.aspect.view.screen.config.ScreenConfigurationLoader" singleton="true" />
-
-	<bean id="RenderingModeManager" class="org.romaframework.aspect.view.rendering.RenderingModeManager" singleton="true">
-		<property name="components">
-			<list></list>
-		</property>
-	</bean>
-
-	<bean class="org.romaframework.aspect.view.area.AreaModeManager" dependency-check="default" id="AreaModeManager" singleton="true">
-		<property name="components">
-			<list></list>
-		</property>
-	</bean>
-
-	<bean id="LayoutModeManager" class="org.romaframework.aspect.view.layout.LayoutModeManager" singleton="true">
-		<property name="components">
-			<list></list>
-		</property>
-	</bean>
+	<bean id="AuthenticationAspect" class="org.romaframework.aspect.authentication.mock.NoAuthenticationManager"
+		singleton="true" />
 
 	<bean id="LoggingAspect" class="org.romaframework.aspect.logging.LoggingCommonAspect" singleton="true" />
 

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <project basedir="." default="add-module" name="roma-core-wizard">
 
-	<import file="base-wizard.xml" />
+	<import file="${wizard.path}/base-wizard.xml" />
 
 	<target name="add-module">
 		<copy file="applicationContext.xml" todir="${project.path}/${project.ioc-path}">

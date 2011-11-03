@@ -154,6 +154,12 @@ public abstract class SessionAspectAbstract extends SelfRegistrantConfigurableMo
 		return ASPECT_NAME;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends SessionAccount> T getAccount() {
+		return (T) getActiveSessionInfo().getAccount();
+	}
+
 	public void beginConfigClass(SchemaClassDefinition iClass) {
 	}
 

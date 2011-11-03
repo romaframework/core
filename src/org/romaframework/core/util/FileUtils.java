@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -106,10 +105,14 @@ public class FileUtils {
 	}
 
 	public static long copyStream(InputStream input, OutputStream output) throws IOException {
-		Writer w =new OutputStreamWriter(output);
-		long writed = copyStream(new InputStreamReader(input), w);
-		w.flush();
-		return writed; 
+		byte[] buffer = new byte[1024];
+		long count = 0;
+		int n = 0;
+		while (-1 != (n = input.read(buffer))) {
+			output.write(buffer, 0, n);
+			count += n;
+		}
+		return count;
 	}
 
 	public static long copyStream(Reader input, Writer output) throws IOException {
