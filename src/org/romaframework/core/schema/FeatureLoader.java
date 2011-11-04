@@ -48,8 +48,7 @@ public class FeatureLoader {
 	 *          the Xml descriptor with configurations to load on features.
 	 */
 	@SuppressWarnings("unchecked")
-	static public void loadFeatures(SchemaFeatures schemaFeatures, AnnotatedElement baseAnnotatedElement,
-			AnnotatedElement additionalAnnotatedElement, XmlAnnotation descriptor) {
+	static public void loadFeatures(SchemaFeatures schemaFeatures, AnnotatedElement baseAnnotatedElement, AnnotatedElement additionalAnnotatedElement, XmlAnnotation descriptor) {
 		Map<String, Annotation> annotations = new HashMap<String, Annotation>();
 		Map<String, Annotation> additionalAnnotations = new HashMap<String, Annotation>();
 
@@ -105,8 +104,7 @@ public class FeatureLoader {
 				return readAnnotationValue(feature, mt.invoke(annInstance));
 			} catch (Exception e) {
 				log.error("Problem on reading of declared feature:" + feature.getName() + " on Annotation:" + annInstance, e);
-				throw new ConfigurationException("Problem on reading of declared feature:" + feature.getName() + " on Annotation:"
-						+ annInstance, e);
+				throw new ConfigurationException("Problem on reading of declared feature:" + feature.getName() + " on Annotation:" + annInstance, e);
 			}
 		}
 		return null;
@@ -208,6 +206,14 @@ public class FeatureLoader {
 			}
 			if (value instanceof String)
 				return "true".equalsIgnoreCase((String) value) || "1".equals(value) || "t".equalsIgnoreCase((String) value);
+		}
+		if (Class.class.equals(valueType)) {
+			if (value instanceof Class) {
+				if (!value.equals(FeatureNotSet.class)) {
+					return value;
+				}
+				return null;
+			}
 		}
 		if (SchemaClass.class.equals(valueType)) {
 			if (value instanceof String) {
