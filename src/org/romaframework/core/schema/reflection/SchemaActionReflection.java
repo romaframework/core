@@ -29,6 +29,7 @@ import org.romaframework.core.schema.SchemaParameter;
 import org.romaframework.core.schema.config.SchemaConfiguration;
 import org.romaframework.core.schema.virtual.VirtualObject;
 import org.romaframework.core.schema.xmlannotations.XmlActionAnnotation;
+import org.romaframework.core.schema.xmlannotations.XmlParameterAnnotation;
 
 /**
  * Represent a method of a class.
@@ -68,6 +69,16 @@ public class SchemaActionReflection extends SchemaAction {
 		for (Aspect aspect : Roma.aspects()) {
 			// CONFIGURE THE SCHEMA OBJECT WITH CURRENT ASPECT
 			aspect.configAction(this);
+		}
+		int i = 0;
+		List<XmlParameterAnnotation> paramAnn = null;
+		if (parentDescriptor != null)
+			paramAnn = parentDescriptor.getParameters();
+		for (SchemaParameter parameter : getParameters().values()) {
+			XmlParameterAnnotation xmlParam = null;
+			if (paramAnn != null)
+				xmlParam = paramAnn.get(i++);
+			parameter.configure(method, xmlParam);
 		}
 	}
 
