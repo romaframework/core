@@ -171,7 +171,7 @@ public class SchemaClassReflection extends SchemaClass {
 			// JUMP STATIC FIELDS OR NOT PUBLIC FIELDS
 			if (isToIgnoreMethod(method))
 				continue;
-			if (isGetterForField(method, type) || isSetterForField(method, type))
+			if (initGetterForField(method, type) || initSetterForField(method, type))
 				continue;
 			else if (isEvent(method)) {
 				eventsToAdd.add(method);
@@ -259,7 +259,7 @@ public class SchemaClassReflection extends SchemaClass {
 		return fieldInfo;
 	}
 
-	public Boolean isGetterForField(Method method, ParameterizedType owner) {
+	public Boolean initGetterForField(Method method, ParameterizedType owner) {
 		int prefixLength;
 		String fieldName = method.getName();
 		if (fieldName.startsWith(GET_METHOD) && checkIfFirstCharAfterPrefixIsUpperCase(fieldName, GET_METHOD))
@@ -286,15 +286,17 @@ public class SchemaClassReflection extends SchemaClass {
 				fieldInfo = createField(fieldName, javaFieldClass);
 				fieldInfo.getterMethod = method;
 			} else {
-				if (((SchemaFieldReflection) fieldInfo).getLanguageType().isAssignableFrom(javaFieldClass))
-					fieldInfo.getterMethod = method;
+				fieldInfo.getterMethod = method;
+				if (!((SchemaFieldReflection) fieldInfo).getLanguageType().isAssignableFrom(javaFieldClass)){
+					fieldInfo.setterMethod = null;
+				}
 			}
 		}
 
 		return true;
 	}
 
-	public boolean isSetterForField(Method method, ParameterizedType owner) {
+	public boolean initSetterForField(Method method, ParameterizedType owner) {
 		String fieldName = method.getName();
 		if (!fieldName.startsWith(SET_METHOD) || !checkIfFirstCharAfterPrefixIsUpperCase(fieldName, SET_METHOD))
 			return false;
