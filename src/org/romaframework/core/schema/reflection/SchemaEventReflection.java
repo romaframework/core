@@ -30,6 +30,7 @@ import org.romaframework.core.schema.SchemaParameter;
 import org.romaframework.core.schema.config.SchemaConfiguration;
 import org.romaframework.core.schema.virtual.VirtualObject;
 import org.romaframework.core.schema.xmlannotations.XmlActionAnnotation;
+import org.romaframework.core.schema.xmlannotations.XmlParameterAnnotation;
 
 /**
  * Represent an event of a class.
@@ -92,6 +93,18 @@ public class SchemaEventReflection extends SchemaEvent {
 			// CONFIGURE THE SCHEMA OBJECT WITH CURRENT ASPECT
 			aspect.configEvent(this);
 		}
+		int i = 0;
+		List<XmlParameterAnnotation> paramAnn = null;
+		if (parentDescriptor != null)
+			paramAnn = parentDescriptor.getParameters();
+		for (SchemaParameter parameter : getParameters().values()) {
+			XmlParameterAnnotation xmlParam = null;
+			paramAnn.get(i++);
+			if (paramAnn != null)
+				xmlParam = paramAnn.get(i++);
+			parameter.configure(method, xmlParam);
+		}
+
 	}
 
 }

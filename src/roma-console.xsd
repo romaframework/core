@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://www.romaframework.org/xml/roma" xmlns="http://www.romaframework.org/xml/roma"
+	version="2.0" attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<xsd:complexType name="aspectClassTypeConsole">
+		<xsd:attribute name="name" type="xsd:string" use="optional" />
+		<xsd:attribute name="description" type="xsd:string" use="optional" />
+	</xsd:complexType>
+	<xsd:complexType name="aspectActionTypeConsole">
+		<xsd:attribute name="name" type="xsd:string" use="optional" />
+		<xsd:attribute name="description" type="xsd:string" use="optional" />
+	</xsd:complexType>
+	<xsd:complexType name="aspectParameterTypeConsole">
+		<xsd:attribute name="name" type="xsd:string" use="optional" />
+		<xsd:attribute name="description" type="xsd:string" use="optional" />
+	</xsd:complexType>
+</xsd:schema>

@@ -237,7 +237,7 @@ public class SchemaClassReflection extends SchemaClass {
 		if (actionInfo == null) {
 			List<SchemaParameter> orderedParameters = new ArrayList<SchemaParameter>();
 			for (int i = 0; i < method.getParameterTypes().length; ++i) {
-				orderedParameters.add(new SchemaParameter("param" + i, Roma.schema().getSchemaClassIfExist(method.getParameterTypes()[i])));
+				orderedParameters.add(new SchemaParameter("param" + i, i, Roma.schema().getSchemaClassIfExist(method.getParameterTypes()[i])));
 			}
 			// ACTION NOT EXISTENT: CREATE IT AND INSERT IN THE COLLECTION
 			actionInfo = new SchemaActionReflection(this, methodSignature, orderedParameters);
@@ -478,7 +478,8 @@ public class SchemaClassReflection extends SchemaClass {
 			// EVENT NOT EXISTENT: CREATE IT AND INSERT IN THE COLLECTION
 			List<SchemaParameter> orderedParameters = new ArrayList<SchemaParameter>();
 			for (int i = 0; i < eventMethod.getParameterTypes().length; ++i) {
-				orderedParameters.add(new SchemaParameter("param" + i, Roma.schema().getSchemaClassIfExist(eventMethod.getParameterTypes()[i])));
+				SchemaParameter param = new SchemaParameter("param" + i, i, Roma.schema().getSchemaClassIfExist(eventMethod.getParameterTypes()[i]));
+				orderedParameters.add(param);
 			}
 			if (field == null) {
 				eventInfo = new SchemaEventReflection(this, eventName, orderedParameters);
