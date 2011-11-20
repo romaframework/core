@@ -48,7 +48,7 @@ public class SchemaParameter extends SchemaElement {
 		if (method != null)
 			annotations = method.getParameterAnnotations();
 		Annotation[] paramAnnotations = null;
-		if (annotations.length > this.index)
+		if (annotations != null && annotations.length > this.index)
 			paramAnnotations = annotations[this.index];
 		FeatureLoader.loadParameterFeatures(this, paramAnnotations, xmlParam);
 	}
