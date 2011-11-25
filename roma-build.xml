@@ -35,10 +35,18 @@
 	</target>
 
 	<target name="clean-ivy-cache" depends="install-ivy">
-		<ivy:cleancache />
+		<ivy:info />
+		<echo>${ivy.cache.dir}/org.romaframework</echo>
+		<delete dir="${ivy.cache.dir}/org.romaframework" />
 	</target>
 
-	<target name="clean-all" depends="clean,clean-dist,clean-ivy">
+	<target name="clean-all" depends="clean,clean-dist,clean-ivy-cache,clean-ivy">
+	</target>
+
+	<target name="clean-local" depends="install-ivy" >
+		<ivy:info />
+		<echo>${ivy.local.default.root}/org.romaframework</echo>
+		<delete dir="${ivy.local.default.root}/org.romaframework"/>
 	</target>
 
 	<target name="download-ivy" unless="ivy.download.skip">
