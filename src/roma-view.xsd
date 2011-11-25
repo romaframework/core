@@ -71,7 +71,7 @@
 		<xsd:attribute name="type" type="xsd:string" use="optional" default="placeholder">
 			<xsd:annotation>
 				<xsd:documentation>
-					Define rendering component to use: placeholder cell column row grid dashboard tab popup
+					Define rendering component to use: placeholder column row grid form
 				</xsd:documentation>
 			</xsd:annotation>
 		</xsd:attribute>
