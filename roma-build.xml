@@ -40,7 +40,7 @@
 		<delete dir="${ivy.cache.dir}/org.romaframework" />
 	</target>
 
-	<target name="clean-all" depends="clean,clean-dist,clean-ivy-cache,clean-ivy">
+	<target name="clean-all" depends="clean,clean-dist,clean-ivy">
 	</target>
 
 	<target name="clean-local" depends="install-ivy" >
