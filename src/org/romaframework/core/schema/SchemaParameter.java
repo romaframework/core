@@ -15,19 +15,42 @@
  */
 package org.romaframework.core.schema;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+
+import org.romaframework.core.schema.xmlannotations.XmlParameterAnnotation;
+
 public class SchemaParameter extends SchemaElement {
 
 	private static final long	serialVersionUID	= -1471432131609926218L;
 
 	private SchemaClass				type;
+	private int								index;
 
-	public SchemaParameter(String iName, SchemaClass iType) {
+	public SchemaParameter(String iName, int index, SchemaClass iType) {
 		super(iName, FeatureType.PARAMETER);
 		type = iType;
+		this.index = index;
 	}
 
 	public SchemaParameter(String iName) {
 		super(iName, FeatureType.PARAMETER);
+	}
+
+	public void configure(Method method, XmlParameterAnnotation xmlParam) {
+
+		if (xmlParam != null && xmlParam.getName() != null && !xmlParam.getName().trim().isEmpty()) {
+			// TODO: move on init of schema parameter.
+			this.name = xmlParam.getName();
+		}
+
+		Annotation[][] annotations = null;
+		if (method != null)
+			annotations = method.getParameterAnnotations();
+		Annotation[] paramAnnotations = null;
+		if (annotations != null && annotations.length > this.index)
+			paramAnnotations = annotations[this.index];
+		FeatureLoader.loadParameterFeatures(this, paramAnnotations, xmlParam);
 	}
 
 	public SchemaClass getType() {

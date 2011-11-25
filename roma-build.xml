@@ -30,11 +30,23 @@
 		<delete dir="${project.dist}" />
 	</target>
 
-	<target name="clean-ivy" description="--> clean the ivy installation">
+	<target name="clean-ivy">
 		<delete dir="${project.lib}" />
 	</target>
 
-	<target name="clean-all" depends="clean,clean-ivy,clean-dist">
+	<target name="clean-ivy-cache" depends="install-ivy">
+		<ivy:info />
+		<echo>${ivy.cache.dir}/org.romaframework</echo>
+		<delete dir="${ivy.cache.dir}/org.romaframework" />
+	</target>
+
+	<target name="clean-all" depends="clean,clean-dist,clean-ivy">
+	</target>
+
+	<target name="clean-local" depends="install-ivy" >
+		<ivy:info />
+		<echo>${ivy.local.default.root}/org.romaframework</echo>
+		<delete dir="${ivy.local.default.root}/org.romaframework"/>
 	</target>
 
 	<target name="download-ivy" unless="ivy.download.skip">
@@ -74,7 +86,7 @@
 
 		<mkdir dir="${project.build.src}" />
 		<mkdir dir="${project.build.test}" />
-		
+
 		<copy toDir="${project.build.src}">
 			<fileset dir="${project.src}">
 				<exclude name="**/*.java" />
@@ -137,10 +149,20 @@
 	</target>
 
 	<target name="publish" depends="dist">
-		<ivy:publish resolver="local" overwrite="true">
-			<artifacts pattern="${project.dist}/[artifact].[ext]" />
+		<ivy:publish resolver="local" overwrite="true" conf="default,wizard,test">
+			<ivy:artifacts pattern="${project.dist}/[artifact].[ext]" />
 		</ivy:publish>
 	</target>
+
+	<target name="remote-publish" depends="dist">
+		<ivy:settings file="${ivy.default.ivy.user.dir}/ivysettings.xml" id="pub" />
+		<ivy:deliver deliverpattern="${project.dist}/[artifact].[ext]" />
+		<ivy:makepom ivyfile="${project.dist}/ivy.xml" pomfile="${project.dist}/${ant.project.name}.pom" />
+		<ivy:publish resolver="remote" overwrite="true" settingsref="pub" conf="default,wizard,publish">
+			<ivy:artifacts pattern="${project.dist}/[artifact].[ext]" />
+		</ivy:publish>
+	</target>
+
 
 
 	<target name="javadoc">

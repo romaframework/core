@@ -23,6 +23,7 @@ import org.romaframework.core.schema.xmlannotations.XmlAnnotation;
 import org.romaframework.core.schema.xmlannotations.XmlAspectAnnotation;
 import org.romaframework.core.schema.xmlannotations.XmlFieldAnnotation;
 import org.romaframework.core.schema.xmlannotations.XmlFormAreaAnnotation;
+import org.romaframework.core.schema.xmlannotations.XmlParameterAnnotation;
 
 @SuppressWarnings("rawtypes")
 public class FeatureLoader {
@@ -48,8 +49,7 @@ public class FeatureLoader {
 	 *          the Xml descriptor with configurations to load on features.
 	 */
 	@SuppressWarnings("unchecked")
-	static public void loadFeatures(SchemaFeatures schemaFeatures, AnnotatedElement baseAnnotatedElement,
-			AnnotatedElement additionalAnnotatedElement, XmlAnnotation descriptor) {
+	static public void loadFeatures(SchemaFeatures schemaFeatures, AnnotatedElement baseAnnotatedElement, AnnotatedElement additionalAnnotatedElement, XmlAnnotation descriptor) {
 		Map<String, Annotation> annotations = new HashMap<String, Annotation>();
 		Map<String, Annotation> additionalAnnotations = new HashMap<String, Annotation>();
 
@@ -105,8 +105,7 @@ public class FeatureLoader {
 				return readAnnotationValue(feature, mt.invoke(annInstance));
 			} catch (Exception e) {
 				log.error("Problem on reading of declared feature:" + feature.getName() + " on Annotation:" + annInstance, e);
-				throw new ConfigurationException("Problem on reading of declared feature:" + feature.getName() + " on Annotation:"
-						+ annInstance, e);
+				throw new ConfigurationException("Problem on reading of declared feature:" + feature.getName() + " on Annotation:" + annInstance, e);
 			}
 		}
 		return null;
@@ -209,6 +208,14 @@ public class FeatureLoader {
 			if (value instanceof String)
 				return "true".equalsIgnoreCase((String) value) || "1".equals(value) || "t".equalsIgnoreCase((String) value);
 		}
+		if (Class.class.equals(valueType)) {
+			if (value instanceof Class) {
+				if (!value.equals(FeatureNotSet.class)) {
+					return value;
+				}
+				return null;
+			}
+		}
 		if (SchemaClass.class.equals(valueType)) {
 			if (value instanceof String) {
 				if (value.equals(AnnotationConstants.DEF_VALUE)) {
@@ -296,7 +303,7 @@ public class FeatureLoader {
 	 *          the aspect .
 	 * @return the Annotation class correspondent to feature Type/aspect (example "View"+"Field")
 	 */
-	static public Class<?> getAnnotationClass(FeatureType featureType, String aspectName) {
+	public static Class<?> getAnnotationClass(FeatureType featureType, String aspectName) {
 		String name = Character.toUpperCase(aspectName.charAt(0)) + aspectName.substring(1) + featureType.getBaseName();
 		Class<?> cl = annotationClasses.get(name);
 		if (cl == null) {
@@ -368,7 +375,7 @@ public class FeatureLoader {
 	 * @param descriptor
 	 *          the xml descriptor with additional feature.
 	 */
-	static public void loadClassFeatures(SchemaClass clazz, SchemaConfiguration descriptor) {
+	public static void loadClassFeatures(SchemaClass clazz, SchemaConfiguration descriptor) {
 		AnnotatedElement element = null;
 		if (clazz instanceof SchemaClassReflection) {
 			element = ((SchemaClassReflection) clazz).getLanguageType();
@@ -379,4 +386,48 @@ public class FeatureLoader {
 			ann = descriptor.getType();
 		loadFeatures(clazz, element, null, ann);
 	}
+
+	@SuppressWarnings("unchecked")
+	public static void loadParameterFeatures(SchemaParameter parameter, Annotation[] annotations, XmlParameterAnnotation descriptor) {
+		List<Feature> features = FeatureRegistry.getFeatures(parameter.getFeatureType());
+		Map<String, Annotation> alreadyFound = new HashMap<String, Annotation>();
+		for (Feature feature : features) {
+			Object value = null;
+			if (descriptor != null) {
+				XmlAspectAnnotation aspectAnn = descriptor.aspect(feature.getAspectName());
+				if (aspectAnn != null) {
+					String xmlValue = aspectAnn.getAttribute(feature.getName());
+					value = readXmlValue(feature, xmlValue);
+				}
+			}
+			Annotation annInstance = alreadyFound.get(feature.getAspectName());
+			if (annInstance == null) {
+				Class ann = getAnnotationClass(feature.getType(), feature.getAspectName());
+				if (ann != null) {
+					for (Annotation annotation : annotations) {
+						if (ann.equals(annotation.annotationType())) {
+							annInstance = annotation;
+							alreadyFound.put(feature.getAspectName(), annInstance);
+						}
+						break;
+					}
+				}
+			}
+			if (annInstance != null) {
+				try {
+					Method mt = annInstance.getClass().getMethod(feature.getName());
+					value = readAnnotationValue(feature, mt.invoke(annInstance));
+				} catch (Exception e) {
+					log.error("Problem on reading of declared feature:" + feature.getName() + " on Annotation:" + annInstance, e);
+					throw new ConfigurationException("Problem on reading of declared feature:" + feature.getName() + " on Annotation:" + annInstance, e);
+				}
+			}
+
+			if (value != null) {
+				parameter.setFeature(feature, value);
+			}
+		}
+
+	}
+
 }

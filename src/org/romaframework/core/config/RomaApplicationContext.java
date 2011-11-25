@@ -42,6 +42,7 @@ public class RomaApplicationContext implements Serviceable {
 	protected ComponentAspect								componentAspect;
 
 	protected static String									applicationPath;
+	protected static ResourceAccessor				resourceAccessor;
 	protected final static String						OS_VAR_ROMA_HOME	= "ROMA_HOME";
 	protected final static String						APP_VAR_ROMA_HOME	= "roma.home";
 
@@ -170,5 +171,13 @@ public class RomaApplicationContext implements Serviceable {
 
 	public void setComponentAspect(ComponentAspect componentAspect) {
 		this.componentAspect = componentAspect;
+	}
+
+	public static ResourceAccessor getResourceAccessor() {
+		return resourceAccessor;
+	}
+
+	public static void setResourceAccessor(ResourceAccessor resourceAccessor) {
+		RomaApplicationContext.resourceAccessor = resourceAccessor;
 	}
 }
