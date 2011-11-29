@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema targetNamespace="http://www.romaframework.org/xml/roma" xmlns="http://www.romaframework.org/xml/roma"
-	version="2.0" attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	version="3.0" attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 	<xsd:include schemaLocation="roma-core.xsd" />
 	<xsd:include schemaLocation="roma-flow.xsd" />
 	<xsd:include schemaLocation="roma-i18n.xsd" />
