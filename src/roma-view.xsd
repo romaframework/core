@@ -5,7 +5,7 @@
 		<xsd:sequence>
 			<xsd:element name="form" type="areaLayoutType" minOccurs="0" maxOccurs="1" />
 		</xsd:sequence>
-		<xsd:attribute type="xsd:string" name="layout" use="optional" />
+		<xsd:attribute type="xsd:string" name="position" use="optional" />
 		<xsd:attribute type="xsd:byte" name="columns" use="optional" default="1" />
 		<xsd:attribute type="xsd:string" name="label" use="optional" />
 		<xsd:attribute type="xsd:string" name="style" use="optional" />
@@ -15,7 +15,7 @@
 		<xsd:attribute name="description" type="xsd:string" />
 	</xsd:complexType>
 	<xsd:complexType name="aspectFieldTypeView">
-		<xsd:attribute name="layout" type="xsd:string" use="optional" />
+		<xsd:attribute name="position" type="xsd:string" use="optional" />
 		<xsd:attribute name="visible" type="xsd:boolean" use="optional" default="false" />
 		<xsd:attribute name="enabled" type="xsd:boolean" use="optional" default="false" />
 		<xsd:attribute name="match" type="xsd:string" use="optional" />
@@ -41,7 +41,7 @@
 		</xsd:attribute>
 	</xsd:complexType>
 	<xsd:complexType name="aspectActionTypeView">
-		<xsd:attribute name="layout" type="xsd:string" use="optional" />
+		<xsd:attribute name="position" type="xsd:string" use="optional" />
 		<xsd:attribute name="bind" type="xsd:boolean" use="optional" default="true" />
 		<xsd:attribute name="validation" type="xsd:boolean" use="optional" default="true" />
 		<xsd:attribute name="label" type="xsd:string" use="optional" />
@@ -65,7 +65,7 @@
 		</xsd:sequence>
 		<xsd:attribute name="name" type="xsd:string" use="optional">
 			<xsd:annotation>
-				<xsd:documentation>Area name to be referenced by setting the layout: area-name</xsd:documentation>
+				<xsd:documentation>Area name to be referenced by setting the position: area-name</xsd:documentation>
 			</xsd:annotation>
 		</xsd:attribute>
 		<xsd:attribute name="type" type="xsd:string" use="optional" default="placeholder">

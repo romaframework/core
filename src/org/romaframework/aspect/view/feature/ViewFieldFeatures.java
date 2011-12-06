@@ -25,7 +25,7 @@ import org.romaframework.core.schema.SchemaClass;
 public class ViewFieldFeatures {
 	
 	public static final Feature<String>					DESCRIPTION						= new Feature<String>(ViewAspect.ASPECT_NAME, "description", FeatureType.FIELD, String.class);
-	public static final Feature<String>					LAYOUT								= new Feature<String>(ViewAspect.ASPECT_NAME, "layout", FeatureType.FIELD, String.class);
+	public static final Feature<String>					POSITION								= new Feature<String>(ViewAspect.ASPECT_NAME, "position", FeatureType.FIELD, String.class);
 	public static final Feature<String>					RENDER								= new Feature<String>(ViewAspect.ASPECT_NAME, "render", FeatureType.FIELD, String.class);
 	public static final Feature<String>					STYLE									= new Feature<String>(ViewAspect.ASPECT_NAME, "style", FeatureType.FIELD, String.class);
 	public static final Feature<String>					LABEL									= new Feature<String>(ViewAspect.ASPECT_NAME, "label", FeatureType.FIELD, String.class);

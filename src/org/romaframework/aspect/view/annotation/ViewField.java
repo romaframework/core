@@ -43,7 +43,7 @@ public @interface ViewField {
 
 	String render() default AnnotationConstants.DEF_VALUE;
 
-	String layout() default AnnotationConstants.DEF_VALUE;
+	String position() default AnnotationConstants.DEF_VALUE;
 
 	String style() default AnnotationConstants.DEF_VALUE;
 
