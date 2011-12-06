@@ -5,7 +5,7 @@
 		<view>
 			<form>
 				<area name="main" type="column">
-					<area name="fields" type="grid" size="2" />
+					<area name="fields" type="form" size="1" />
 					<area name="actions" type="row" />
 				</area>
 			</form>
