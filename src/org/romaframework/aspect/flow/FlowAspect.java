@@ -16,7 +16,8 @@
 
 package org.romaframework.aspect.flow;
 
-import java.util.List;
+import java.util.Map;
+import java.util.Stack;
 
 import org.romaframework.aspect.session.SessionInfo;
 import org.romaframework.aspect.view.screen.Screen;
@@ -108,7 +109,7 @@ public interface FlowAspect extends Aspect {
 	 * 
 	 * @return list of pair as POJO and Position where is displayed.
 	 */
-	public List<Pair<Object, String>> getHistory();
+	public Map<String, Stack<Object>> getHistory();
 
 	/**
 	 * Returns the history of the user session passed as parameter. The history is a list of pair as POJO and Position where is
@@ -118,7 +119,7 @@ public interface FlowAspect extends Aspect {
 	 *          User session to use (null for the current user session)
 	 * @return list of pair as POJO and Position where is displayed.
 	 */
-	public List<Pair<Object, String>> getHistory(SessionInfo iSession);
+	public Map<String, Stack<Object>> getHistory(SessionInfo iSession);
 
 	/**
 	 * Clear the current history closing also all the open popups if any.

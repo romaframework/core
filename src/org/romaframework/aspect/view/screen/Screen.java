@@ -31,20 +31,6 @@ public interface Screen {
 	public static final String	NULL	= "null";
 
 	/**
-	 * Display a component in the specified area
-	 * 
-	 * @return area name where the component was displayed
-	 */
-	public String view(String iArea, Object iComponent);
-
-	/**
-	 * Close a popup opened
-	 * 
-	 * @param iWindow
-	 */
-	public void close(Object iWindow);
-
-	/**
 	 * Return the area component
 	 * 
 	 * @param iAreaName
@@ -67,5 +53,13 @@ public interface Screen {
 	 * @return the active area.
 	 */
 	public String getActiveArea();
+
+	/**
+	 * Retrieve the default area configured for screen.
+	 * 
+	 * 
+	 * \return the default area
+	 */
+	public String getDefautlArea();
 
 }
