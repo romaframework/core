@@ -20,4 +20,6 @@ public interface AreaComponent extends TreeNode {
 	public String getAreaAlign();
 
 	public String getStyle();
+	
+	public void clear();
 }
