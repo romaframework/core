@@ -15,6 +15,7 @@
  */
 package org.romaframework.core.domain.type;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -31,9 +32,12 @@ import org.romaframework.aspect.core.annotation.CoreClass;
  *          value type
  */
 @CoreClass(orderFields = "key value")
-public class Pair<K, V> implements Map.Entry<K, V> {
-	protected K	key;
-	protected V	value;
+public class Pair<K, V> implements Map.Entry<K, V>, Serializable {
+
+	private static final long	serialVersionUID	= -1879944397252619800L;
+
+	protected K								key;
+	protected V								value;
 
 	public Pair() {
 	}
