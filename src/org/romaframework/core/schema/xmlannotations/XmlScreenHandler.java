@@ -66,8 +66,13 @@ public class XmlScreenHandler extends DefaultHandler {
 		throw new SAXException("invalid node: " + nodeType);
 	}
 
-	private XmlScreenAnnotation createScreen(Attributes attributes, Object object) {
+	private XmlScreenAnnotation createScreen(Attributes attributes, Object object) throws SAXException {
 		XmlScreenAnnotation result = new XmlScreenAnnotation();
+		String defaultArea = attributes.getValue("defaultArea");
+		if (defaultArea == null) {
+			throw new SAXException("Required attribute defaultArea for screen");
+		}
+		result.setDefaultArea(defaultArea);
 		return result;
 	}
 
