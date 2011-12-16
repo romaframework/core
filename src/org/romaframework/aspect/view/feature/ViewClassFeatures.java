@@ -23,7 +23,6 @@ import org.romaframework.core.schema.xmlannotations.XmlFormAreaAnnotation;
 
 public class ViewClassFeatures {
 	public static final Feature<String>									DESCRIPTION				= new Feature<String>(ViewAspect.ASPECT_NAME, "description", FeatureType.CLASS, String.class);
-	public static final Feature<String>									POSITION					= new Feature<String>(ViewAspect.ASPECT_NAME, "position", FeatureType.CLASS, String.class);
 	public static final Feature<String>									RENDER						= new Feature<String>(ViewAspect.ASPECT_NAME, "render", FeatureType.CLASS, String.class);
 	public static final Feature<String>									STYLE							= new Feature<String>(ViewAspect.ASPECT_NAME, "style", FeatureType.CLASS, String.class);
 	public static final Feature<String>									LABEL							= new Feature<String>(ViewAspect.ASPECT_NAME, "label", FeatureType.CLASS, String.class);

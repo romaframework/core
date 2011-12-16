@@ -5,7 +5,6 @@
 		<xsd:sequence>
 			<xsd:element name="form" type="areaLayoutType" minOccurs="0" maxOccurs="1" />
 		</xsd:sequence>
-		<xsd:attribute type="xsd:string" name="position" use="optional" />
 		<xsd:attribute type="xsd:byte" name="columns" use="optional" default="1" />
 		<xsd:attribute type="xsd:string" name="label" use="optional" />
 		<xsd:attribute type="xsd:string" name="style" use="optional" />
