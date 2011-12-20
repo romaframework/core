@@ -16,9 +16,13 @@
  */
 package org.romaframework.core;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Stack;
 
 import org.romaframework.aspect.persistence.PersistenceAspect;
+import org.romaframework.core.config.RomaApplicationContext;
 import org.romaframework.core.flow.ContextLifecycleListener;
 import org.romaframework.core.flow.Controller;
 import org.romaframework.core.flow.ObjectContext;
@@ -29,6 +33,7 @@ import org.romaframework.core.flow.ObjectContext;
  */
 public class RomaContext {
 	private static final String	CTX_CREATED	= "_CTX_CREATED_";
+	private static final String	CTX_STACK		= "_CTX_STACK_";
 
 	public PersistenceAspect persistence() {
 		return ObjectContext.getInstance().getContextComponent(PersistenceAspect.class);
@@ -90,5 +95,65 @@ public class RomaContext {
 
 	public void setComponent(Class<? extends Object> iClass, Object iValue) {
 		ObjectContext.getInstance().setContextComponent(iClass, iValue);
+	}
+
+	/**
+	 * Check if a component was configured in the IoC system.
+	 * 
+	 * @param iClass
+	 *          Interface of component implementation
+	 * @return true if was configured, otherwise null
+	 */
+	public boolean existComponent(Class<? extends Object> iClass) {
+		return existComponent(Utility.getClassName(iClass));
+	}
+
+	/**
+	 * Check if a component was configured in the IoC system.
+	 * 
+	 * @param iComponentName
+	 *          Name of component to search
+	 * @return true if was configured, otherwise null
+	 */
+	public boolean existComponent(String iComponentName) {
+		return RomaApplicationContext.getInstance().getComponentAspect().existComponent(iComponentName);
+	}
+
+	public void push() {
+		Stack<Map<String, Object>> stack = ObjectContext.getInstance().getContextComponent(CTX_STACK);
+		if (stack == null) {
+			stack = new Stack<Map<String, Object>>();
+			ObjectContext.getInstance().setContextComponent(CTX_STACK, stack);
+		}
+		Map<String, Object> current = new HashMap<String, Object>();
+		Integer counter = ObjectContext.getInstance().getContextComponent(CTX_CREATED);
+		current.put(CTX_STACK, counter);
+		stack.push(current);
+		ObjectContext.getInstance().setContextComponent(CTX_CREATED, null);
+		List<ContextLifecycleListener> contextListener = Controller.getInstance().getListeners(ContextLifecycleListener.class);
+		for (ContextLifecycleListener listener : contextListener) {
+			listener.onContextPush(current);
+		}
+		create();
+	}
+
+	public void pop() {
+		Stack<Map<String, Object>> stack = ObjectContext.getInstance().getContextComponent(CTX_STACK);
+		if (stack != null) {
+			Integer counter = null;
+			do {
+				destroy();
+				counter = ObjectContext.getInstance().getContextComponent(CTX_CREATED);
+			} while (counter != null);
+			Map<String, Object> current = stack.pop();
+			if (stack.isEmpty()) {
+				ObjectContext.getInstance().setContextComponent(CTX_STACK, null);
+			}
+			ObjectContext.getInstance().setContextComponent(CTX_CREATED, current.get(CTX_CREATED));
+			List<ContextLifecycleListener> contextListener = Controller.getInstance().getListeners(ContextLifecycleListener.class);
+			for (ContextLifecycleListener listener : contextListener) {
+				listener.onContextPop(current);
+			}
+		}
 	}
 }

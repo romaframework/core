@@ -15,6 +15,8 @@
  */
 package org.romaframework.aspect.persistence;
 
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.romaframework.aspect.persistence.feature.PersistenceFeatures;
@@ -54,6 +56,28 @@ public class PersistenceContextInjector implements ContextLifecycleListener, Sch
 			return setPersistenceAspectInContext(PersistenceConstants.MODE_TX);
 		}
 		return null;
+	}
+
+	@Override
+	public void onContextPop(Map<String, Object> current) {
+		PersistenceAspect pa = (PersistenceAspect) current.get(PersistenceAspect.class.getSimpleName());
+		if (pa != null) {
+			ObjectContext.getInstance().setContextComponent(PersistenceAspect.class, pa);
+		}
+	}
+
+	@Override
+	public void onContextPush(Map<String, Object> current) {
+		if (!ObjectContext.getInstance().existContextComponent(PersistenceAspect.class)) {
+			PersistenceAspect pa = ObjectContext.getInstance().getContextComponent(PersistenceAspect.class);
+			if (pa != null) {
+				if (log.isDebugEnabled()) {
+					log.debug("[PersistenceContextInjector.push of current context]");
+				}
+				current.put(PersistenceAspect.class.getSimpleName(), pa);
+				ObjectContext.getInstance().setContextComponent(PersistenceAspect.class, null);
+			}
+		}
 	}
 
 	public void onAfterAction(Object iContent, SchemaAction iAction, Object returnedValue) {
