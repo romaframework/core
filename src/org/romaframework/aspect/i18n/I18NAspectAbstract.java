@@ -94,7 +94,7 @@ public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModul
 			keyToSearch.append(key.substring(pos + I18nFieldFeatures.CONTENT_VAR.length()));
 		}
 
-		Object ret = resolveString(Roma.schema().getSchemaClass(iContent), keyToSearch.toString());
+		Object ret = resolve(iContent, keyToSearch.toString(), Type.CONTENT);
 		if (ret != null) {
 			return ret;
 		} else {
@@ -113,7 +113,7 @@ public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModul
 	public String getLabel(SchemaObject iObject, String iElementName, String iElementLabel) {
 		if (iElementLabel != null) {
 			// CUSTOM LABEL FOUND: RETURN
-			return resolveString(iObject, iElementLabel);
+			return resolve(iObject.getInstance(), iElementLabel, Type.LABEL);
 		}
 
 		StringBuilder nameToSearch = new StringBuilder();
@@ -157,7 +157,7 @@ public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModul
 	}
 
 	public String getString(String iText) {
-		return getString(iText, getLocale());
+		return get(iText, getLocale());
 	}
 
 	/**
@@ -170,7 +170,7 @@ public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModul
 	 *          The string to analyze and search
 	 * @return The I18N string if it starts with $ prefix
 	 */
-	public String resolveString(SchemaClassDefinition iObjectClass, String iText, Object... iArgs) {
+	public String resolve(SchemaClassDefinition iObjectClass, String iText, Object... iArgs) {
 		if (!iText.startsWith(VARNAME_PREFIX)) {
 			return iText;
 		}
@@ -190,7 +190,7 @@ public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModul
 			buffer.append(CONTEXT_SEPARATOR);
 			buffer.append(varName);
 
-			result = resolveString(buffer.toString(), iArgs);
+			result = resolve(buffer.toString(), iArgs);
 			if (result != null) {
 				return result;
 			}
@@ -199,7 +199,7 @@ public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModul
 		}
 
 		// NOT FOUND, TRY WITH DEFAULT
-		result = resolveString(VARNAME_PREFIX + GlobalConstants.ROOT_CLASS + Utility.PACKAGE_SEPARATOR + varName, iArgs);
+		result = resolve(VARNAME_PREFIX + GlobalConstants.ROOT_CLASS + Utility.PACKAGE_SEPARATOR + varName, iArgs);
 
 		return result;
 	}
@@ -212,7 +212,7 @@ public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModul
 	 *          The string to analyze and search
 	 * @return The I18N string if it starts with $ prefix, otherwise iLabel
 	 */
-	public String resolveString(String iText, Object... iArgs) {
+	public String resolve(String iText, Object... iArgs) {
 		if (iText != null && iText.startsWith(VARNAME_PREFIX)) {
 			// VARNAME_PREFIX FOUND: RESOLVE THE LABEL WITH I18N SETTINGS
 			iText = getString(iText.substring(VARNAME_PREFIX.length()));
@@ -255,7 +255,7 @@ public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModul
 		if (iLocale == null) {
 			iLocale = getLocale();
 		}
-		String format = getString(DATE_TIME_FORMAT_VAR, iLocale);
+		String format = get(DATE_TIME_FORMAT_VAR, iLocale);
 		if (format == null)
 			format = "dd/MM/yyyy HH:mm:ss";
 		return new SimpleDateFormat(format);
@@ -269,7 +269,7 @@ public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModul
 		if (iLocale == null) {
 			iLocale = getLocale();
 		}
-		String format = getString(DATE_FORMAT_VAR, iLocale);
+		String format = get(DATE_FORMAT_VAR, iLocale);
 		if (format == null)
 			format = "dd/MM/yyyy";
 		return new SimpleDateFormat(format, iLocale);
@@ -283,7 +283,7 @@ public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModul
 		if (iLocale == null) {
 			iLocale = getLocale();
 		}
-		String format = getString(TIME_FORMAT_VAR, iLocale);
+		String format = get(TIME_FORMAT_VAR, iLocale);
 		if (format == null)
 			format = "HH:mm:ss";
 		return new SimpleDateFormat(format, iLocale);
@@ -298,14 +298,14 @@ public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModul
 		if (iLocale == null) {
 			iLocale = getLocale();
 		}
-		String format = getString(NUMBER_FORMAT_VAR, iLocale);
+		String format = get(NUMBER_FORMAT_VAR, iLocale);
 		if (format == null)
 			format = "###,###,###.#####";
 		return new DecimalFormat(format, new DecimalFormatSymbols(iLocale));
 	}
 
-	public String resolveString(Class<?> iObjectClass, String iText, Object... iArgs) {
-		return resolveString(Roma.schema().getSchemaClass(iObjectClass), iText, iArgs);
+	public String resolve(Class<?> iObjectClass, String iText, Object... iArgs) {
+		return resolve(Roma.schema().getSchemaClass(iObjectClass), iText, iArgs);
 	}
 
 	public String aspectName() {

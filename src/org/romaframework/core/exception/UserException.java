@@ -17,6 +17,7 @@
 package org.romaframework.core.exception;
 
 import org.romaframework.aspect.i18n.I18NAspect;
+import org.romaframework.aspect.i18n.I18NAspect.Type;
 import org.romaframework.core.Roma;
 import org.romaframework.core.schema.SchemaClass;
 
@@ -46,8 +47,7 @@ public class UserException extends RuntimeException {
 		if (iText == null)
 			return;
 
-		SchemaClass cls = obj != null ? Roma.schema().getSchemaClass(obj) : null;
-		String i18NMessage = Roma.component(I18NAspect.class).resolveString(cls, iText);
+		String i18NMessage = Roma.component(I18NAspect.class).resolve(obj, iText,Type.EXCEPTION);
 
 		if (i18NMessage != null)
 			message.append(i18NMessage);

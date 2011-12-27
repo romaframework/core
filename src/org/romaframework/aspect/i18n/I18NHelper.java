@@ -28,7 +28,7 @@ public class I18NHelper {
 			label = null;
 		else {
 			label += LABEL_POSTFIX;
-			label = Roma.component(I18NAspect.class).resolveString(iElement.getEntity().getSchemaClass(), label);
+			label = Roma.i18n().resolve(iElement.getEntity().getSchemaClass(), label);
 		}
 
 		if (label == null)
@@ -45,7 +45,7 @@ public class I18NHelper {
 			return hint;
 		}
 		hint += HINT_POSTFIX;
-		hint = Roma.component(I18NAspect.class).resolveString(iElement.getEntity().getSchemaClass(), hint);
+		hint = Roma.component(I18NAspect.class).resolve(iElement.getEntity().getSchemaClass(), hint);
 		if (hint == null) {
 			hint = Utility.getClearName(iElement.getName());
 		}
@@ -60,7 +60,7 @@ public class I18NHelper {
 			return label;
 		}
 		label += "." + postfix;
-		label = Roma.component(I18NAspect.class).resolveString(iElement.getEntity().getSchemaClass(), label);
+		label = Roma.component(I18NAspect.class).resolve(iElement.getEntity().getSchemaClass(), label);
 		if (label == null) {
 			label = Utility.getClearName(iElement.getName());
 		}
@@ -75,7 +75,7 @@ public class I18NHelper {
 			// RETURN FIXED LABEL
 			return label;
 		}
-		label = Roma.component(I18NAspect.class).resolveString(iClass.getSchemaClass(), label);
+		label = Roma.component(I18NAspect.class).resolve(iClass.getSchemaClass(), label);
 		if (label == null) {
 			label = Utility.getClearName(iClass.getSchemaClass().getName());
 		}

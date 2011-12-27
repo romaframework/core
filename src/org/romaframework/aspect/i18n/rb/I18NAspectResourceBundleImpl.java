@@ -38,10 +38,6 @@ public class I18NAspectResourceBundleImpl extends I18NAspectAbstract implements 
 		return fileManager.getAvailableLanguages();
 	}
 
-	@Override
-	public String getString(String iText, Locale iLocale) {
-		return fileManager.getString(iText, iLocale);
-	}
 
 	@Override
 	public void addResource(File iFile, String iName, String iPackagePrefix, String iStartingPackage) {
