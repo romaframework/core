@@ -114,6 +114,20 @@ public interface I18NAspect extends Aspect {
 	public String get(String string, Object... iArgs);
 
 	/**
+	 * Resolve the string with specified key and locale.
+	 * 
+	 * @param locale
+	 *          to use to find string.
+	 * @param string
+	 *          the string to find.
+	 * @param iArgs
+	 *          arguments for fill resolved strings.
+	 * 
+	 * @return resolved string.
+	 */
+	public String get(Locale locale, String string, Object... iArgs);
+
+	/**
 	 * Retrieve a string from i18n using current locale for the specified object.
 	 * 
 	 * @param obj

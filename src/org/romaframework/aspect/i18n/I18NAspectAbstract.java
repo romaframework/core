@@ -283,6 +283,13 @@ public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModul
 		return null;
 	}
 
+	public String get(Locale locale, String string, Object... iArgs) {
+		String find = find(string, locale);
+		if (find == null)
+			return "";
+		return fill(find, iArgs);
+	}
+
 	public String get(String string, Object... iArgs) {
 		String find = find(string);
 		if (find == null)
