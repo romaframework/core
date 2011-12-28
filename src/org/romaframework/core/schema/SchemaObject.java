@@ -144,4 +144,9 @@ public class SchemaObject extends SchemaClassDefinition {
 			for (SchemaObjectListener l : listeners)
 				l.onCreate(this);
 	}
+
+	@Override
+	public <T> boolean isRuntimeSet(Feature<T> feature) {
+		return super.hasFeature(feature);
+	}
 }

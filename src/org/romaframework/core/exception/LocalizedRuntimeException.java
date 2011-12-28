@@ -58,7 +58,7 @@ public class LocalizedRuntimeException extends RuntimeException {
 	public String getLocalizedMessage(Locale iLocale) {
 		String msg = getMessage();
 		if (msg.startsWith(I18NAspect.VARNAME_PREFIX))
-			return Roma.component(I18NAspect.class).resolveString(msg, iLocale);
+			return Roma.component(I18NAspect.class).resolve(msg, iLocale);
 
 		if (args != null && args.length > 0)
 			return new PositionalVariableResolver(msg).resolve(args);

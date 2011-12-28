@@ -1,10 +1,10 @@
 package org.romaframework.aspect.i18n;
 
 import org.romaframework.core.Roma;
-import org.romaframework.core.Utility;
 import org.romaframework.core.schema.SchemaClassDefinition;
 import org.romaframework.core.schema.SchemaClassElement;
 
+@Deprecated
 public class I18NHelper {
 
 	public static final String	CLASS_LABEL_POSTFIX	= "label";
@@ -18,68 +18,19 @@ public class I18NHelper {
 	}
 
 	public static String getLabel(SchemaClassElement iElement, String label) {
-		if (label == null)
-			label = I18NAspect.VARNAME_PREFIX + iElement.getName();
-		else if (!label.startsWith(I18NAspect.VARNAME_PREFIX))
-			// RETURN FIXED LABEL
-			return label;
-
-		if (iElement.getEntity() == null)
-			label = null;
-		else {
-			label += LABEL_POSTFIX;
-			label = Roma.component(I18NAspect.class).resolveString(iElement.getEntity().getSchemaClass(), label);
-		}
-
-		if (label == null)
-			label = Utility.getClearName(iElement.getName());
-
-		return label;
+		return Roma.i18n().get(iElement, I18NType.LABEL);
 	}
 
 	public static String getHint(SchemaClassElement iElement, String hint) {
-		if (hint == null) {
-			hint = I18NAspect.VARNAME_PREFIX + iElement.getName();
-		} else if (!hint.startsWith(I18NAspect.VARNAME_PREFIX)) {
-			// RETURN FIXED LABEL
-			return hint;
-		}
-		hint += HINT_POSTFIX;
-		hint = Roma.component(I18NAspect.class).resolveString(iElement.getEntity().getSchemaClass(), hint);
-		if (hint == null) {
-			hint = Utility.getClearName(iElement.getName());
-		}
-		return hint;
+		return Roma.i18n().get(iElement, I18NType.HINT);
 	}
 
 	public static String getLabel(SchemaClassElement iElement, String label, String postfix) {
-		if (label == null) {
-			label = I18NAspect.VARNAME_PREFIX + iElement.getName();
-		} else if (!label.startsWith(I18NAspect.VARNAME_PREFIX)) {
-			// RETURN FIXED LABEL
-			return label;
-		}
-		label += "." + postfix;
-		label = Roma.component(I18NAspect.class).resolveString(iElement.getEntity().getSchemaClass(), label);
-		if (label == null) {
-			label = Utility.getClearName(iElement.getName());
-		}
-		return label;
+		return Roma.i18n().get(iElement.getEntity().getSchemaClass(), I18NType.LABEL);
 	}
 
 	public static String getLabel(SchemaClassDefinition iClass, String label) {
-
-		if (label == null) {
-			label = I18NAspect.VARNAME_PREFIX + CLASS_LABEL_POSTFIX;
-		} else if (!label.startsWith(I18NAspect.VARNAME_PREFIX)) {
-			// RETURN FIXED LABEL
-			return label;
-		}
-		label = Roma.component(I18NAspect.class).resolveString(iClass.getSchemaClass(), label);
-		if (label == null) {
-			label = Utility.getClearName(iClass.getSchemaClass().getName());
-		}
-		return label;
+		return Roma.i18n().get(iClass.getSchemaClass(), I18NType.LABEL);
 	}
 
 	public static String getLabel(SchemaClassDefinition iClass) {

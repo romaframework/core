@@ -75,6 +75,8 @@ public abstract class SessionAspectAbstract extends SelfRegistrantConfigurableMo
 	@Override
 	public SchemaObject getSchemaObject(Object object) {
 		synchronized (getActiveSessionInfo()) {
+			if (object == null)
+				return null;
 			Map<Object, SchemaObject> so = getSchemaObjectMap();
 			SchemaObject schemaObject = so.get(object);
 			if (schemaObject == null) {

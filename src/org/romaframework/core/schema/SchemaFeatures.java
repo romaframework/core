@@ -74,6 +74,18 @@ public abstract class SchemaFeatures implements Cloneable, Serializable {
 	}
 
 	public <T> boolean isSettedFeature(Feature<T> feature) {
+		if (hasFeature(feature))
+			return true;
+		if (parent == null)
+			return false;
+		return parent.isSettedFeature(feature);
+	}
+
+	public FeatureType getFeatureType() {
+		return featureType;
+	}
+
+	protected <T> boolean hasFeature(Feature<T> feature) {
 		if (features != null) {
 			Object[] aspectFeature = features[feature.getAspectId()];
 			if (aspectFeature != null) {
@@ -83,12 +95,10 @@ public abstract class SchemaFeatures implements Cloneable, Serializable {
 				}
 			}
 		}
-		if (parent == null)
-			return false;
-		return parent.isSettedFeature(feature);
+		return false;
 	}
 
-	public FeatureType getFeatureType() {
-		return featureType;
+	public <T> boolean isRuntimeSet(Feature<T> feature) {
+		return false;
 	}
 }
