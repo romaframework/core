@@ -254,9 +254,12 @@ public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModul
 		if (featureOverride != null && iObjectClass.isSettedFeature(featureOverride)) {
 			return iObjectClass.getFeature(featureOverride);
 		}
-		if (iObjectClass instanceof SchemaElement)
-			return Utility.getClearName(((SchemaElement) iObjectClass).getName());
-		return Utility.getClearName(((SchemaClassDefinition) iObjectClass).getName());
+		if (".label".equals(type)) {
+			if (iObjectClass instanceof SchemaElement)
+				return Utility.getClearName(((SchemaElement) iObjectClass).getName());
+			return Utility.getClearName(((SchemaClassDefinition) iObjectClass).getName());
+		}
+		return "";
 	}
 
 	private String findWithSchemaElement(SchemaElement element, String type) {
