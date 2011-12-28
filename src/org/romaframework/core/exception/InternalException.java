@@ -17,7 +17,7 @@
 package org.romaframework.core.exception;
 
 import org.romaframework.aspect.i18n.I18NAspect;
-import org.romaframework.aspect.i18n.I18NAspect.Type;
+import org.romaframework.aspect.i18n.I18NType;
 import org.romaframework.core.Roma;
 
 public class InternalException extends RuntimeException {
@@ -51,7 +51,7 @@ public class InternalException extends RuntimeException {
 	private void init(Object iObject, String iText) {
 		message = new StringBuilder();
 
-		String i18NMessage = Roma.component(I18NAspect.class).resolve(iObject, iText, Type.EXCEPTION);
+		String i18NMessage = Roma.component(I18NAspect.class).resolve(iObject, iText, I18NType.EXCEPTION);
 
 		if (i18NMessage != null)
 			message.append(i18NMessage);

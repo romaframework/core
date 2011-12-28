@@ -123,4 +123,8 @@ public class I18nFileManager {
 		this.defaultLocale = defaultLocale;
 	}
 
+	public void put(String toFind, String value, Locale locale) {
+		values.put(locale.toString() + KEY_LANGUAGE_SEPARETOR + toFind, value);
+	}
+
 }

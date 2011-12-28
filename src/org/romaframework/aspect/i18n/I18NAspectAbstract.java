@@ -25,16 +25,18 @@ import java.util.Locale;
 
 import org.romaframework.aspect.i18n.feature.I18nFieldFeatures;
 import org.romaframework.aspect.session.SessionAspect;
-import org.romaframework.core.GlobalConstants;
 import org.romaframework.core.Roma;
 import org.romaframework.core.Utility;
 import org.romaframework.core.flow.Controller;
 import org.romaframework.core.flow.SchemaFieldListener;
 import org.romaframework.core.module.SelfRegistrantConfigurableModule;
+import org.romaframework.core.schema.Feature;
 import org.romaframework.core.schema.SchemaAction;
-import org.romaframework.core.schema.SchemaClass;
 import org.romaframework.core.schema.SchemaClassDefinition;
+import org.romaframework.core.schema.SchemaClassElement;
+import org.romaframework.core.schema.SchemaElement;
 import org.romaframework.core.schema.SchemaEvent;
+import org.romaframework.core.schema.SchemaFeatures;
 import org.romaframework.core.schema.SchemaField;
 import org.romaframework.core.schema.SchemaObject;
 import org.romaframework.core.util.parser.ObjectVariableResolver;
@@ -82,67 +84,12 @@ public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModul
 			return iCurrentValue;
 		}
 
-		StringBuilder keyToSearch = new StringBuilder(VARNAME_PREFIX);
-
-		int pos = key.indexOf(I18nFieldFeatures.CONTENT_VAR);
-		if (pos == -1) {
-			keyToSearch.append(key);
-		} else {
-			// REPLACE CONTENT_VAR WITH REAL VALUE
-			keyToSearch.append(key.substring(0, pos));
-			keyToSearch.append(iCurrentValue.toString());
-			keyToSearch.append(key.substring(pos + I18nFieldFeatures.CONTENT_VAR.length()));
-		}
-
-		Object ret = resolve(iContent, keyToSearch.toString(), Type.CONTENT);
+		Object ret = resolve(iField, iCurrentValue.toString(), I18NType.CONTENT, iContent);
 		if (ret != null) {
 			return ret;
 		} else {
 			return iCurrentValue;
 		}
-	}
-
-	/**
-	 * Find the label walking on entity inheritance tree.
-	 * 
-	 * @param resource
-	 * @param iObject
-	 * @param iElementName
-	 * @return
-	 */
-	public String getLabel(SchemaObject iObject, String iElementName, String iElementLabel) {
-		if (iElementLabel != null) {
-			// CUSTOM LABEL FOUND: RETURN
-			return resolve(iObject.getInstance(), iElementLabel, Type.LABEL);
-		}
-
-		StringBuilder nameToSearch = new StringBuilder();
-		String label = null;
-		SchemaClass clazz = iObject.getSchemaClass();
-
-		while (clazz != null) {
-			// COMPOSE THE NAME TO SEARCH
-			nameToSearch.setLength(0);
-			nameToSearch.append(clazz.getSchemaClass().getName());
-			if (iElementName != null) {
-				nameToSearch.append(CONTEXT_SEPARATOR).append(iElementName);
-			}
-			nameToSearch.append(CONTEXT_SEPARATOR).append(LABEL_NAME);
-
-			label = getString(nameToSearch.toString());
-			if (label != null) {
-				break;
-			}
-
-			clazz = clazz.getSchemaClass().getSuperClass();
-		}
-
-		if (label == null) {
-			// AUTO COMPOSE LABEL IF NOT EXISTS
-			label = Utility.getClearName(iElementName != null ? iElementName : iObject.getSchemaClass().getName());
-		}
-
-		return label;
 	}
 
 	public Locale getLocale() {
@@ -154,72 +101,6 @@ public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModul
 		if (loc == null)
 			loc = Locale.getDefault();
 		return loc;
-	}
-
-	public String getString(String iText) {
-		return get(iText, getLocale());
-	}
-
-	/**
-	 * Resolve a string using the I18N. If the string starts with $ prefix, then search that name in the resource bundle configured,
-	 * otherwise returns the same string passed in input.
-	 * 
-	 * @param iObjectClass
-	 *          The class of object for tree search
-	 * @param iText
-	 *          The string to analyze and search
-	 * @return The I18N string if it starts with $ prefix
-	 */
-	public String resolve(SchemaClassDefinition iObjectClass, String iText, Object... iArgs) {
-		if (!iText.startsWith(VARNAME_PREFIX)) {
-			return iText;
-		}
-
-		String result = null;
-
-		String varName = iText.substring(VARNAME_PREFIX.length());
-
-		StringBuilder buffer = new StringBuilder();
-		SchemaClass currentClass = iObjectClass != null ? iObjectClass.getSchemaClass() : null;
-
-		// SEARCH BROWSING ALL CLASS TREE UNTIL OBJECT CLASS
-		while (currentClass != null) {
-			buffer.setLength(0);
-			buffer.append(VARNAME_PREFIX);
-			buffer.append(currentClass.getName());
-			buffer.append(CONTEXT_SEPARATOR);
-			buffer.append(varName);
-
-			result = resolve(buffer.toString(), iArgs);
-			if (result != null) {
-				return result;
-			}
-
-			currentClass = currentClass.getSuperClass();
-		}
-
-		// NOT FOUND, TRY WITH DEFAULT
-		result = resolve(VARNAME_PREFIX + GlobalConstants.ROOT_CLASS + Utility.PACKAGE_SEPARATOR + varName, iArgs);
-
-		return result;
-	}
-
-	/**
-	 * Resolve a string using the I18N. If the string starts with $ prefix, then search that name in the resource bundle configured,
-	 * otherwise returns the same string passed in input.
-	 * 
-	 * @param iText
-	 *          The string to analyze and search
-	 * @return The I18N string if it starts with $ prefix, otherwise iLabel
-	 */
-	public String resolve(String iText, Object... iArgs) {
-		if (iText != null && iText.startsWith(VARNAME_PREFIX)) {
-			// VARNAME_PREFIX FOUND: RESOLVE THE LABEL WITH I18N SETTINGS
-			iText = getString(iText.substring(VARNAME_PREFIX.length()));
-			if (iText != null && iArgs != null && iArgs.length > 0)
-				iText = new ObjectVariableResolver(iText).resolveVariables(iArgs);
-		}
-		return iText;
 	}
 
 	public Object onBeforeFieldRead(Object content, SchemaField field, Object currentValue) {
@@ -255,7 +136,7 @@ public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModul
 		if (iLocale == null) {
 			iLocale = getLocale();
 		}
-		String format = get(DATE_TIME_FORMAT_VAR, iLocale);
+		String format = find(DATE_TIME_FORMAT_VAR, iLocale);
 		if (format == null)
 			format = "dd/MM/yyyy HH:mm:ss";
 		return new SimpleDateFormat(format);
@@ -269,7 +150,7 @@ public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModul
 		if (iLocale == null) {
 			iLocale = getLocale();
 		}
-		String format = get(DATE_FORMAT_VAR, iLocale);
+		String format = find(DATE_FORMAT_VAR, iLocale);
 		if (format == null)
 			format = "dd/MM/yyyy";
 		return new SimpleDateFormat(format, iLocale);
@@ -283,7 +164,7 @@ public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModul
 		if (iLocale == null) {
 			iLocale = getLocale();
 		}
-		String format = get(TIME_FORMAT_VAR, iLocale);
+		String format = find(TIME_FORMAT_VAR, iLocale);
 		if (format == null)
 			format = "HH:mm:ss";
 		return new SimpleDateFormat(format, iLocale);
@@ -298,14 +179,159 @@ public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModul
 		if (iLocale == null) {
 			iLocale = getLocale();
 		}
-		String format = get(NUMBER_FORMAT_VAR, iLocale);
+		String format = find(NUMBER_FORMAT_VAR, iLocale);
 		if (format == null)
 			format = "###,###,###.#####";
 		return new DecimalFormat(format, new DecimalFormatSymbols(iLocale));
 	}
 
-	public String resolve(Class<?> iObjectClass, String iText, Object... iArgs) {
-		return resolve(Roma.schema().getSchemaClass(iObjectClass), iText, iArgs);
+	public String get(Object obj, I18NType type, Object... iArgs) {
+		return get(getSchemaClassDefinition(obj), type, rebuildArgs(obj, iArgs));
+	}
+
+	protected SchemaClassDefinition getSchemaClassDefinition(Object obj) {
+		SessionAspect sessionAspect = Roma.session();
+		if (sessionAspect != null)
+			return sessionAspect.getSchemaObject(obj);
+		return Roma.schema().getSchemaClass(obj);
+	}
+
+	protected SchemaFeatures getSchemaElement(Object obj, String key) {
+		SchemaClassDefinition scd = getSchemaClassDefinition(obj);
+		if (scd == null || key == null)
+			return null;
+		SchemaFeatures sf = scd.getField(key);
+		if (sf == null) {
+			sf = scd.getAction(key);
+		}
+		return sf;
+	}
+
+	public String get(Object obj, String key, I18NType type, Object... iArgs) {
+		return get(getSchemaElement(obj, key), type, rebuildArgs(obj, iArgs));
+	}
+
+	private Object[] rebuildArgs(Object obj, Object[] args) {
+		if (args == null)
+			return new Object[] { obj };
+		if (args.length > 0 && args[0] == obj)
+			return args;
+		Object[] newa = new Object[args.length + 1];
+		newa[0] = obj;
+		System.arraycopy(args, 0, newa, 1, args.length);
+		return newa;
+	}
+
+	public String get(SchemaFeatures iObjectClass, I18NType type, Object... iArgs) {
+		return getFeatures(iObjectClass, type.getName(), null, iArgs);
+	}
+
+	public String get(SchemaFeatures iObjectClass, String customType, Object... iArgs) {
+		return getFeatures(iObjectClass, CONTEXT_SEPARATOR + customType, null, iArgs);
+	}
+
+	public String get(SchemaFeatures iObjectClass, I18NType type, Feature<String> featureOverride, Object... iArgs) {
+		return getFeatures(iObjectClass, type.getName(), featureOverride, iArgs);
+	}
+
+	private String getFeatures(SchemaFeatures iObjectClass, String type, Feature<String> featureOverride, Object... iArgs) {
+		if (iObjectClass == null || type == null)
+			return "";
+		if (iObjectClass instanceof SchemaObject) {
+			iArgs = rebuildArgs(((SchemaObject) iObjectClass).getInstance(), iArgs);
+		}
+		if (featureOverride != null && iObjectClass.isRuntimeSet(featureOverride)) {
+			return iObjectClass.getFeature(featureOverride);
+		}
+		String solved = null;
+		if (iObjectClass instanceof SchemaElement) {
+			solved = findWithSchemaElement(((SchemaElement) iObjectClass), type);
+		} else if (iObjectClass instanceof SchemaClassDefinition) {
+			solved = findWithSchemaClass(((SchemaClassDefinition) iObjectClass), type);
+		}
+		if (solved != null)
+			return fill(solved, iArgs);
+		if (featureOverride != null && iObjectClass.isSettedFeature(featureOverride)) {
+			return iObjectClass.getFeature(featureOverride);
+		}
+		if (iObjectClass instanceof SchemaElement)
+			return Utility.getClearName(((SchemaElement) iObjectClass).getName());
+		return Utility.getClearName(((SchemaClassDefinition) iObjectClass).getName());
+	}
+
+	private String findWithSchemaElement(SchemaElement element, String type) {
+		if (!(element instanceof SchemaClassElement))
+			return null;
+		SchemaClassElement classElement = (SchemaClassElement) element;
+		return findWithSchemaClass(classElement.getEntity(), CONTEXT_SEPARATOR + classElement.getName() + type);
+	}
+
+	private String findWithSchemaClass(SchemaClassDefinition clazz, String type) {
+		Class<?> entity = (Class<?>) clazz.getSchemaClass().getLanguageType();
+		StringBuilder builder = new StringBuilder();
+		do {
+			builder.append(entity.getSimpleName());
+			builder.append(type);
+			String res = find(builder.toString());
+			if (res != null) {
+				put(((Class<?>) clazz.getSchemaClass().getLanguageType()).getSimpleName() + type, res, getLocale());
+				return res;
+			}
+			builder.setLength(0);
+			entity = entity.getSuperclass();
+		} while (entity != null);
+		return null;
+	}
+
+	public String get(String string, Object... iArgs) {
+		String find = find(string);
+		if (find == null)
+			return "";
+		return fill(find, iArgs);
+	}
+
+	public String resolve(String iText, Object... iArgs) {
+		if (!iText.startsWith("$"))
+			return fill(iText, iArgs);
+		return get(iText.substring(1), iArgs);
+	}
+
+	public String resolve(Object obj, String iText, I18NType type, Object... iArgs) {
+		iArgs = rebuildArgs(obj, iArgs);
+		if (!iText.startsWith(VARNAME_PREFIX))
+			return fill(iText, iArgs);
+		SchemaClassDefinition scd = getSchemaClassDefinition(obj);
+		if (scd == null)
+			return "";
+		String str = findWithSchemaClass(scd, CONTEXT_SEPARATOR + iText.substring(1) + type.getName());
+		if (str == null)
+			return "";
+		return fill(str, iArgs);
+	}
+
+	public String resolve(Object obj, String iText, String customType, Object... iArgs) {
+		iArgs = rebuildArgs(obj, iArgs);
+		if (!iText.startsWith(VARNAME_PREFIX))
+			return fill(iText, iArgs);
+		SchemaClassDefinition scd = getSchemaClassDefinition(obj);
+		String str = findWithSchemaClass(scd, CONTEXT_SEPARATOR + iText.substring(1) + CONTEXT_SEPARATOR + customType);
+		if (str == null)
+			return "";
+		return fill(str, iArgs);
+	}
+
+	protected String find(String toFind) {
+		return find(toFind, getLocale());
+	}
+
+	protected abstract String find(String toFind, Locale locale);
+
+	protected abstract void put(String toFind, String value, Locale locale);
+
+	protected String fill(String toFill, Object[] iArgs) {
+		if (toFill != null && iArgs != null && iArgs.length > 0)
+			toFill = new ObjectVariableResolver(toFill).resolveVariables(iArgs);
+		return toFill;
 	}
 
 	public String aspectName() {

@@ -22,7 +22,8 @@ import java.util.Locale;
 import java.util.Set;
 
 import org.romaframework.core.aspect.Aspect;
-import org.romaframework.core.schema.SchemaClassDefinition;
+import org.romaframework.core.schema.Feature;
+import org.romaframework.core.schema.SchemaFeatures;
 
 /**
  * I18N Aspect behavior interface.
@@ -34,10 +35,6 @@ public interface I18NAspect extends Aspect {
 	public static final String	VARNAME_PREFIX		= "$";
 	public static final String	CONTEXT_SEPARATOR	= ".";
 	public static final String	DEFAULT_VALUE_KEY	= "$content";
-
-	public enum Type {
-		LABEL, HINT, FORMAT, CONFIRM, EXCEPTION,CONTENT
-	}
 
 	/**
 	 * Retrieve the available locale for current.
@@ -127,7 +124,7 @@ public interface I18NAspect extends Aspect {
 	 *          the arguments used for fill string.
 	 * @return resolved string.
 	 */
-	public String get(Object obj, Type type, Object... iArgs);
+	public String get(Object obj, I18NType type, Object... iArgs);
 
 	/**
 	 * Resolve a string from i18n using current locale for the specified object and element.
@@ -142,12 +139,88 @@ public interface I18NAspect extends Aspect {
 	 *          arguments used to fill resolved string.
 	 * @return the resolved string
 	 */
-	public String get(Object obj, String key, Type type, Object... iArgs);
+	public String get(Object obj, String key, I18NType type, Object... iArgs);
 
-	public String resolve(SchemaClassDefinition iObjectClass, String iText, Object... iArgs);
+	/**
+	 * Find a string from i18n using current locale for specified schema information.
+	 * 
+	 * @param iObjectClass
+	 *          the schema information.
+	 * @param type
+	 *          the type of string to find.
+	 * @param iArgs
+	 *          additional fill arguments.
+	 * @return the resolved string.
+	 */
+	public String get(SchemaFeatures iObjectClass, I18NType type, Object... iArgs);
 
-	public String resolve(Object obj, String iText, Type type, Object... iArgs);
+	/**
+	 * Find a string from i18n using current locale for specified schema information and manage the use and override of gived feature.
+	 * 
+	 * @param iObjectClass
+	 *          the schema information.
+	 * @param type
+	 *          the type of string to find.
+	 * @param iArgs
+	 *          additional fill arguments.
+	 * @param featureOverride
+	 *          feature to menage the override.
+	 * @return the resolved string.
+	 */
+	public String get(SchemaFeatures iObjectClass, I18NType type, Feature<String> featureOverride, Object... iArgs);
 
+	/**
+	 * Find a string from i18n using current locale for specified schema information.
+	 * 
+	 * @param iObjectClass
+	 *          the schema information.
+	 * @param customType
+	 *          the type of string to find.
+	 * @param iArgs
+	 *          additional fill arguments.
+	 * @return the resolved string.
+	 */
+	public String get(SchemaFeatures iObjectClass, String customType, Object... iArgs);
+
+	/**
+	 * Resolve a string if start with "$" from i18n otherwise return iText.
+	 * 
+	 * @param iText
+	 *          String to resolve.
+	 * @param iArgs
+	 *          with fill the string.
+	 * @return the resolved string.
+	 */
 	public String resolve(String iText, Object... iArgs);
+
+	/**
+	 * Resolve a string if start with "$" from i18n otherwise return iText.
+	 * 
+	 * @param obj
+	 *          the base Object used for find the type to prepend to key to find, and used as first arguments for resolve.
+	 * @param iText
+	 *          String to resolve.
+	 * @param type
+	 *          the type of resolved.
+	 * @param iArgs
+	 *          fill additional arguments.
+	 * @return resolved string.
+	 */
+	public String resolve(Object obj, String iText, I18NType type, Object... iArgs);
+
+	/**
+	 * Resolve a string if start with "$" from i18n otherwise return iText.
+	 * 
+	 * @param obj
+	 *          the base Object used for find the type to prepend to key to find, and used as first arguments for resolve.
+	 * @param iText
+	 *          String to resolve.
+	 * @param customType
+	 *          the type of resolved.
+	 * @param iArgs
+	 *          fill additional arguments.
+	 * @return resolved string.
+	 */
+	public String resolve(Object obj, String iText, String customType, Object... iArgs);
 
 }

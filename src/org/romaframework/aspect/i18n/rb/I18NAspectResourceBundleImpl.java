@@ -38,7 +38,6 @@ public class I18NAspectResourceBundleImpl extends I18NAspectAbstract implements 
 		return fileManager.getAvailableLanguages();
 	}
 
-
 	@Override
 	public void addResource(File iFile, String iName, String iPackagePrefix, String iStartingPackage) {
 		if (packages == null)
@@ -117,6 +116,15 @@ public class I18NAspectResourceBundleImpl extends I18NAspectAbstract implements 
 
 	public void setDefaultLocale(String defaultLocale) {
 		this.fileManager.setDefaultLocale(defaultLocale);
+	}
+
+	@Override
+	protected String find(String toFind, Locale locale) {
+		return fileManager.getString(toFind, locale);
+	}
+	
+	protected void put(String toFind, String value, Locale locale)	{
+		fileManager.put(toFind,value,locale);
 	}
 
 }
