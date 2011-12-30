@@ -47,7 +47,8 @@ import org.romaframework.core.util.parser.ObjectVariableResolver;
  * 
  * @author Luca Garulli (luca.garulli--at--assetdata.it)
  */
-public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModule<String> implements I18NAspect, SchemaFieldListener {
+public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModule<String> implements I18NAspect,
+		SchemaFieldListener {
 
 	private static final String	DATE_TIME_FORMAT_VAR	= "Application.DateTimeFormat";
 	private static final String	TIME_FORMAT_VAR				= "Application.TimeFormat";
@@ -301,12 +302,16 @@ public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModul
 	}
 
 	public String resolve(String iText, Object... iArgs) {
+		if (iText == null)
+			return null;
 		if (!iText.startsWith("$"))
 			return fill(iText, iArgs);
 		return get(iText.substring(1), iArgs);
 	}
 
 	public String resolve(Object obj, String iText, I18NType type, Object... iArgs) {
+		if (iText == null)
+			return null;
 		iArgs = rebuildArgs(obj, iArgs);
 		if (!iText.startsWith(VARNAME_PREFIX))
 			return fill(iText, iArgs);
@@ -320,6 +325,8 @@ public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModul
 	}
 
 	public String resolve(Object obj, String iText, String customType, Object... iArgs) {
+		if (iText == null)
+			return null;
 		iArgs = rebuildArgs(obj, iArgs);
 		if (!iText.startsWith(VARNAME_PREFIX))
 			return fill(iText, iArgs);
