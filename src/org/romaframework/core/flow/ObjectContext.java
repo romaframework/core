@@ -202,8 +202,8 @@ public class ObjectContext {
 	 * @throws ConfigurationNotFoundException
 	 */
 	@Deprecated
-	public boolean setFieldFeature(Object iUserObject, String iAspectName, String iFieldName, String iFeatureName, Object iFeatureValue) throws ConfigurationNotFoundException {
-		return Roma.setFieldFeature(iUserObject, iAspectName, iFieldName, iFeatureName, iFeatureValue);
+	public boolean setFeature(Object iUserObject, String iAspectName, String iFieldName, String iFeatureName, Object iFeatureValue) throws ConfigurationNotFoundException {
+		return Roma.setFeature(iUserObject, iAspectName, iFieldName, iFeatureName, iFeatureValue);
 	}
 
 	/**
