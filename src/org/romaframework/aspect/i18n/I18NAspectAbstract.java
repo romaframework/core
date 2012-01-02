@@ -191,10 +191,14 @@ public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModul
 	}
 
 	protected SchemaClassDefinition getSchemaClassDefinition(Object obj) {
-		SessionAspect sessionAspect = Roma.session();
-		if (sessionAspect != null)
-			return sessionAspect.getSchemaObject(obj);
-		return Roma.schema().getSchemaClass(obj);
+		if (obj instanceof SchemaClassDefinition) {
+			return (SchemaClassDefinition) obj;
+		} else {
+			SessionAspect sessionAspect = Roma.session();
+			if (sessionAspect != null)
+				return sessionAspect.getSchemaObject(obj);
+			return Roma.schema().getSchemaClass(obj);
+		}
 	}
 
 	protected SchemaFeatures getSchemaElement(Object obj, String key) {
