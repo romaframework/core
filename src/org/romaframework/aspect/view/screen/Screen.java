@@ -62,4 +62,10 @@ public interface Screen {
 	 */
 	public String getDefautlArea();
 
+	/**
+	 * Clear all screen attached information.
+	 * 
+	 */
+	public void clear();
+
 }

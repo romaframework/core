@@ -16,6 +16,7 @@
 
 package org.romaframework.core.schema;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -32,13 +33,13 @@ import org.romaframework.core.flow.Controller;
  * @author Luca Garulli (luca.garulli--at--assetdata.it)
  */
 public class SchemaObject extends SchemaClassDefinition {
-	private static final long	serialVersionUID	= -228110121477948747L;
-	private SchemaClass				schemaClass;
-	private Object						instance;
-	private static Log				log								= LogFactory.getLog(SchemaObject.class);
+	private static final long			serialVersionUID	= -228110121477948747L;
+	private SchemaClass						schemaClass;
+	private WeakReference<Object>	instance;
+	private static Log						log								= LogFactory.getLog(SchemaObject.class);
 
 	public SchemaObject(SchemaClass iEntityInfo, Object iInstance) {
-		instance = iInstance;
+		instance = new WeakReference<Object>(iInstance);
 		schemaClass = iEntityInfo;
 		copyDefinition(schemaClass);
 		invokeListeners();
@@ -83,11 +84,11 @@ public class SchemaObject extends SchemaClassDefinition {
 	}
 
 	public Object getInstance() {
-		return instance;
+		return instance.get();
 	}
 
 	public void setInstance(Object instance) {
-		this.instance = instance;
+		this.instance = new WeakReference<Object>(instance);
 	}
 
 	@Override
