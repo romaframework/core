@@ -275,6 +275,8 @@ public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModul
 	}
 
 	private String findWithSchemaClass(SchemaClassDefinition clazz, String type) {
+		if (clazz == null || clazz.getSchemaClass() == null || clazz.getSchemaClass().getLanguageType() == null)
+			return null;
 		Class<?> entity = (Class<?>) clazz.getSchemaClass().getLanguageType();
 		StringBuilder builder = new StringBuilder();
 		do {
@@ -301,7 +303,7 @@ public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModul
 	public String get(String string, Object... iArgs) {
 		String find = find(string);
 		if (find == null)
-			return "";
+			return null;
 		return fill(find, iArgs);
 	}
 

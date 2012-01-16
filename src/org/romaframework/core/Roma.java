@@ -51,6 +51,7 @@ import org.romaframework.core.schema.Feature;
 import org.romaframework.core.schema.FeatureRegistry;
 import org.romaframework.core.schema.FeatureType;
 import org.romaframework.core.schema.SchemaClass;
+import org.romaframework.core.schema.SchemaClassDefinition;
 import org.romaframework.core.schema.SchemaFeatures;
 import org.romaframework.core.schema.SchemaFeaturesChangeListener;
 import org.romaframework.core.schema.SchemaField;
@@ -82,7 +83,7 @@ public class Roma implements ScriptingAspectListener {
 	protected static RomaContext			context						= new RomaContext();
 
 	protected static Roma							singleton					= new Roma();
-	private static Log								log									= LogFactory.getLog(Roma.class);
+	private static Log								log								= LogFactory.getLog(Roma.class);
 
 	protected Roma() {
 		Controller.getInstance().registerListener(ScriptingAspectListener.class, this);
@@ -174,7 +175,7 @@ public class Roma implements ScriptingAspectListener {
 	public static void fieldChanged(Object iUserObject, String... iFieldNames) {
 		fieldChanged(null, iUserObject, iFieldNames);
 	}
-	
+
 	/**
 	 * Refresh a property feature and/or value of iUserSession session.
 	 * 
@@ -191,28 +192,29 @@ public class Roma implements ScriptingAspectListener {
 
 		if (iUserSession == null)
 			iUserSession = component(SessionAspect.class).getActiveSessionInfo();
-		
+
 		List<FieldRefreshListener> listeners = Controller.getInstance().getListeners(FieldRefreshListener.class);
 
 		synchronized (listeners) {
-			SchemaClass clz = component(SchemaManager.class).getSchemaClass(iUserObject);
-			if (clz == null)
+			SchemaObject sObj = Roma.session().getSchemaObject(iUserObject);
+			if (sObj == null)
 				return;
 
 			if (iFieldNames == null || iFieldNames.length == 0) {
 				// REFRESH ALL FIELDS
-				for (Iterator<SchemaField> it = clz.getFieldIterator(); it.hasNext();)
-					signalFieldChanged(iUserSession, iUserObject, listeners, clz, it.next().getName());
+				for (Iterator<SchemaField> it = sObj.getFieldIterator(); it.hasNext();)
+					signalFieldChanged(iUserSession, iUserObject, listeners, sObj, it.next().getName());
 			} else {
 				// REFRESH PASSED FIELDS
 				for (String fieldName : iFieldNames) {
-					signalFieldChanged(iUserSession, iUserObject, listeners, clz, fieldName);
+					signalFieldChanged(iUserSession, iUserObject, listeners, sObj, fieldName);
 				}
 			}
 		}
 	}
-	
-	protected static void signalFieldChanged(SessionInfo iUserSession, Object iUserObject, List<FieldRefreshListener> listeners, SchemaClass iClass, String iFieldName) {
+
+	protected static void signalFieldChanged(SessionInfo iUserSession, Object iUserObject, List<FieldRefreshListener> listeners,
+			SchemaClassDefinition iClass, String iFieldName) {
 		try {
 			SchemaField field = null;
 			if (iFieldName != null) {
@@ -221,8 +223,8 @@ public class Roma implements ScriptingAspectListener {
 
 				field = iClass.getField(iFieldName);
 
-				if (field == null) {
-					log.warn("[ObjectContext.signalFieldChanged] Field '" + iFieldName + "' not found for class: " + iClass);
+				if (field == null && iClass.getSchemaClass().getField(iFieldName) == null) {
+					log.error("[ObjectContext.signalFieldChanged] Field '" + iFieldName + "' not found for class: " + iClass);
 					return;
 				}
 			}
@@ -230,14 +232,15 @@ public class Roma implements ScriptingAspectListener {
 				listener.onFieldRefresh(iUserSession, iUserObject, field);
 			}
 		} catch (UserException e) {
-			log.info("[ObjectContext.fieldChanged] Cannot refresh field '" + iFieldName + "' in object " + iUserObject + " since it not exists for current view", e);
+			log.error("[ObjectContext.fieldChanged] Cannot refresh field '" + iFieldName + "' in object " + iUserObject
+					+ " since it not exists for current view", e);
 		}
 	}
-	
-	
+
 	@Deprecated
 	@SuppressWarnings("rawtypes")
-	public static boolean setFeature(Object iUserObject, String iAspectName, String iFieldName, String iFeatureName, Object iFeatureValue) throws ConfigurationNotFoundException {
+	public static boolean setFeature(Object iUserObject, String iAspectName, String iFieldName, String iFeatureName,
+			Object iFeatureValue) throws ConfigurationNotFoundException {
 		Feature fae = FeatureRegistry.getFeature(iAspectName, FeatureType.FIELD, iFeatureName);
 		return setFeature(iUserObject, iFieldName, fae, iFeatureValue);
 	}
@@ -250,7 +253,8 @@ public class Roma implements ScriptingAspectListener {
 
 	@Deprecated
 	@SuppressWarnings("rawtypes")
-	public static boolean setClassFeature(Object iUserObject, String iAspectName, String iFeatureName, Object iFeatureValue) throws ConfigurationNotFoundException {
+	public static boolean setClassFeature(Object iUserObject, String iAspectName, String iFeatureName, Object iFeatureValue)
+			throws ConfigurationNotFoundException {
 		Feature fae = FeatureRegistry.getFeature(iAspectName, FeatureType.CLASS, iFeatureName);
 		return setFeature(iUserObject, fae, iFeatureValue);
 	}
@@ -263,8 +267,8 @@ public class Roma implements ScriptingAspectListener {
 
 	@SuppressWarnings("rawtypes")
 	@Deprecated
-	public static boolean setActionFeature(Object iUserObject, String iAspectName, String iActionName, String iFeatureName, Object iFeatureValue)
-			throws ConfigurationNotFoundException {
+	public static boolean setActionFeature(Object iUserObject, String iAspectName, String iActionName, String iFeatureName,
+			Object iFeatureValue) throws ConfigurationNotFoundException {
 		Feature fae = FeatureRegistry.getFeature(iAspectName, FeatureType.ACTION, iFeatureName);
 		return setFeature(iUserObject, fae, iFeatureValue);
 	}
@@ -480,7 +484,7 @@ public class Roma implements ScriptingAspectListener {
 		}
 		return reportingAspect;
 	}
-	
+
 	public Reader onBeforeExecution(String iLanguage, Reader iScript, Map<String, Object> iContext) {
 		iContext.put(getClass().getSimpleName(), singleton);
 		return iScript;
