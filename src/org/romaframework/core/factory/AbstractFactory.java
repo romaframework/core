@@ -13,7 +13,7 @@ public abstract class AbstractFactory<T> implements GenericFactory<T> {
 
 	private static Log	log	= LogFactory.getLog(AbstractFactory.class);
 
-	public T create(Object... iArgs) {
+	public T createInstance(Object... iArgs) {
 		if (iArgs == null || iArgs.length == 0)
 			return create();
 

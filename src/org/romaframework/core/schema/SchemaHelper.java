@@ -1006,7 +1006,7 @@ public class SchemaHelper {
 				// INVOKE THE EMPTY CONSTRUCTOR
 				newInstance = factory.create();
 			else
-				newInstance = factory.create(iArgs);
+				newInstance = factory.createInstance(iArgs);
 		} catch (ContextException ex) {
 			newInstance = iClass.newInstance(iArgs);
 		}

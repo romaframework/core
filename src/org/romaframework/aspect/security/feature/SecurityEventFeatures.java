@@ -6,5 +6,5 @@ import org.romaframework.core.schema.FeatureType;
 
 public class SecurityEventFeatures {
 
-	public static final Feature<String[]>	ROLES	= new Feature<String[]>(SecurityAspect.ASPECT_NAME, "roles", FeatureType.ACTION, String[].class);
+	public static final Feature<String[]>	ROLES	= new Feature<String[]>(SecurityAspect.ASPECT_NAME, "roles", FeatureType.EVENT, String[].class);
 }

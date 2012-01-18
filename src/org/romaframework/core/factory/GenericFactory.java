@@ -43,7 +43,7 @@ public interface GenericFactory<T> {
 	 *          Variable arguments to pass to the constructor.
 	 * @return The Object created
 	 */
-	public T create(Object... iArgs);
+	public T createInstance(Object... iArgs);
 
 	/**
 	 * returns the {@link Class} of the objects that are instantiated by this factory

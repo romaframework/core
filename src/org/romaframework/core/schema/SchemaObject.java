@@ -96,7 +96,7 @@ public class SchemaObject extends SchemaClassDefinition {
 		StringBuilder buffer = new StringBuilder();
 		if (instance != null) {
 			buffer.append("Instance: ");
-			buffer.append(instance);
+			buffer.append(instance.get());
 			buffer.append(" ");
 		}
 		if (schemaClass != null) {
