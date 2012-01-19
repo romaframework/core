@@ -38,6 +38,7 @@ import org.romaframework.aspect.validation.ValidationAspect;
 import org.romaframework.aspect.view.ViewAspect;
 import org.romaframework.core.aspect.Aspect;
 import org.romaframework.core.aspect.AspectManager;
+import org.romaframework.core.config.RomaApplicationContext;
 import org.romaframework.core.exception.ConfigurationException;
 import org.romaframework.core.exception.ConfigurationNotFoundException;
 import org.romaframework.core.exception.UserException;
@@ -94,19 +95,21 @@ public class Roma implements ScriptingAspectListener {
 	}
 
 	public static boolean existComponent(String iName) {
-		return ObjectContext.getInstance().existComponent(iName);
+		return RomaApplicationContext.getInstance().getComponentAspect().existComponent(iName);
 	}
 
 	public static <T> boolean existComponent(Class<T> iClass) {
-		return ObjectContext.getInstance().existComponent(iClass);
+		return RomaApplicationContext.getInstance().getComponentAspect().existComponent(iClass);
 	}
 
 	public static <T> T component(String iName) {
-		return (T) ObjectContext.getInstance().getComponent(iName);
+		return (T) RomaApplicationContext.getInstance().getComponentAspect().getComponent(iName);
 	}
 
 	public static <T> T component(Class<T> iClass) {
-		return (T) ObjectContext.getInstance().getComponent(iClass);
+		if (Utility.getClassName(iClass).endsWith("Aspect"))
+			return aspect(iClass);
+		return RomaApplicationContext.getInstance().getComponentAspect().getComponent(iClass);
 	}
 
 	public static <T> T aspect(Class<? extends T> iClass) {
@@ -213,8 +216,7 @@ public class Roma implements ScriptingAspectListener {
 		}
 	}
 
-	protected static void signalFieldChanged(SessionInfo iUserSession, Object iUserObject, List<FieldRefreshListener> listeners,
-			SchemaClassDefinition iClass, String iFieldName) {
+	protected static void signalFieldChanged(SessionInfo iUserSession, Object iUserObject, List<FieldRefreshListener> listeners, SchemaClassDefinition iClass, String iFieldName) {
 		try {
 			SchemaField field = null;
 			if (iFieldName != null) {
@@ -232,15 +234,13 @@ public class Roma implements ScriptingAspectListener {
 				listener.onFieldRefresh(iUserSession, iUserObject, field);
 			}
 		} catch (UserException e) {
-			log.error("[ObjectContext.fieldChanged] Cannot refresh field '" + iFieldName + "' in object " + iUserObject
-					+ " since it not exists for current view", e);
+			log.error("[ObjectContext.fieldChanged] Cannot refresh field '" + iFieldName + "' in object " + iUserObject + " since it not exists for current view", e);
 		}
 	}
 
 	@Deprecated
 	@SuppressWarnings("rawtypes")
-	public static boolean setFeature(Object iUserObject, String iAspectName, String iFieldName, String iFeatureName,
-			Object iFeatureValue) throws ConfigurationNotFoundException {
+	public static boolean setFeature(Object iUserObject, String iAspectName, String iFieldName, String iFeatureName, Object iFeatureValue) throws ConfigurationNotFoundException {
 		Feature fae = FeatureRegistry.getFeature(iAspectName, FeatureType.FIELD, iFeatureName);
 		return setFeature(iUserObject, iFieldName, fae, iFeatureValue);
 	}
@@ -253,8 +253,7 @@ public class Roma implements ScriptingAspectListener {
 
 	@Deprecated
 	@SuppressWarnings("rawtypes")
-	public static boolean setClassFeature(Object iUserObject, String iAspectName, String iFeatureName, Object iFeatureValue)
-			throws ConfigurationNotFoundException {
+	public static boolean setClassFeature(Object iUserObject, String iAspectName, String iFeatureName, Object iFeatureValue) throws ConfigurationNotFoundException {
 		Feature fae = FeatureRegistry.getFeature(iAspectName, FeatureType.CLASS, iFeatureName);
 		return setFeature(iUserObject, fae, iFeatureValue);
 	}
@@ -267,8 +266,8 @@ public class Roma implements ScriptingAspectListener {
 
 	@SuppressWarnings("rawtypes")
 	@Deprecated
-	public static boolean setActionFeature(Object iUserObject, String iAspectName, String iActionName, String iFeatureName,
-			Object iFeatureValue) throws ConfigurationNotFoundException {
+	public static boolean setActionFeature(Object iUserObject, String iAspectName, String iActionName, String iFeatureName, Object iFeatureValue)
+			throws ConfigurationNotFoundException {
 		Feature fae = FeatureRegistry.getFeature(iAspectName, FeatureType.ACTION, iFeatureName);
 		return setFeature(iUserObject, fae, iFeatureValue);
 	}
