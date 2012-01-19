@@ -15,11 +15,9 @@
  */
 package org.romaframework.core;
 
-import java.io.Reader;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -66,7 +64,7 @@ import org.romaframework.core.schema.SchemaObject;
  * @author Luca Garulli (luca.garulli--at--assetdata.it)
  */
 @SuppressWarnings("unchecked")
-public class Roma implements ScriptingAspectListener {
+public class Roma {
 	// CACHED ASPECTS
 	protected static AspectManager		aspectManager			= null;
 	protected static SessionAspect		sessionAspect			= null;
@@ -83,7 +81,6 @@ public class Roma implements ScriptingAspectListener {
 	protected static SchemaManager		schemaManager			= null;
 	protected static RomaContext			context						= new RomaContext();
 
-	protected static Roma							singleton					= new Roma();
 	private static Log								log								= LogFactory.getLog(Roma.class);
 
 	protected Roma() {
@@ -110,6 +107,14 @@ public class Roma implements ScriptingAspectListener {
 		if (Utility.getClassName(iClass).endsWith("Aspect"))
 			return aspect(iClass);
 		return RomaApplicationContext.getInstance().getComponentAspect().getComponent(iClass);
+	}
+
+	public static <T> T autoComponent(Class<T> iClass) {
+		return RomaApplicationContext.getInstance().getComponentAspect().autoComponent(iClass);
+	}
+
+	public static <T> T autoComponent(String iName) {
+		return RomaApplicationContext.getInstance().getComponentAspect().autoComponent(iName);
 	}
 
 	public static <T> T aspect(Class<? extends T> iClass) {
@@ -484,15 +489,6 @@ public class Roma implements ScriptingAspectListener {
 		return reportingAspect;
 	}
 
-	public Reader onBeforeExecution(String iLanguage, Reader iScript, Map<String, Object> iContext) {
-		iContext.put(getClass().getSimpleName(), singleton);
-		return iScript;
-	}
-
-	public Object onAfterExecution(String iLanguage, Reader iScript, Map<String, Object> iContext, Object iReturnedValue) {
-		return iReturnedValue;
-	}
-
 	/**
 	 * returns a domain factory (if defined) for a particular schema class.
 	 * 
@@ -504,10 +500,7 @@ public class Roma implements ScriptingAspectListener {
 	 */
 	public static <T extends GenericFactory<?>> T factory(SchemaClass entityClass) {
 		String factoryName = entityClass.getName() + "Factory";
-		if (Roma.existComponent(factoryName)) {
-			return (T) Roma.component(factoryName);
-		}
-		return null;
+		return autoComponent(factoryName);
 	}
 
 	/**
@@ -547,9 +540,7 @@ public class Roma implements ScriptingAspectListener {
 	public static <T extends GenericRepository<?>> T repository(SchemaClass entityClass) {
 		if (entityClass != null) {
 			String repositoryName = entityClass.getName() + "Repository";
-			if (Roma.existComponent(repositoryName)) {
-				return (T) Roma.component(repositoryName);
-			}
+			return Roma.autoComponent(repositoryName);
 		}
 		return null;
 	}

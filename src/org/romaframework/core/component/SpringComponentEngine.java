@@ -1,7 +1,11 @@
 package org.romaframework.core.component;
 
+import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.romaframework.core.Roma;
 import org.romaframework.core.Utility;
 import org.romaframework.core.config.AbstractServiceable;
 import org.romaframework.core.config.ContextException;
@@ -14,22 +18,40 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 @SuppressWarnings("unchecked")
 public class SpringComponentEngine extends AbstractServiceable implements ComponentAspect {
+	private Log																log																= LogFactory.getLog(SpringComponentEngine.class);
 	private static final String								COMPONENT_SRV_FILE_PATTERN				= "META-INF/components/applicationContext*.xml";
 	private static final String								COMPONENT_SRV_FILE_PATTERN_SUBDIR	= "META-INF/components/*/applicationContext*.xml";
 
 	protected ClassPathXmlApplicationContext	springContext;
+	protected Map<String, Object>							components													= new HashMap<String, Object>();
 
 	public boolean existComponent(Class<? extends Object> iComponentClass) {
-		return springContext.containsBean(Utility.getClassName(iComponentClass));
+		return existComponent(Utility.getClassName(iComponentClass));
 	}
 
 	public boolean existComponent(String iComponentName) {
-		return springContext.containsBean(iComponentName);
+		boolean exist = springContext.containsBean(iComponentName);
+		if (!exist) {
+			synchronized (components) {
+				exist = components.containsKey(iComponentName);
+			}
+		}
+		return exist;
 	}
 
 	public <T> T getComponent(Class<T> iComponentClass) throws ContextException {
 		try {
-			return (T) springContext.getBean(Utility.getClassName(iComponentClass), iComponentClass);
+			String iComponentName = Utility.getClassName(iComponentClass);
+			T val = (T) springContext.getBean(iComponentName, iComponentClass);
+			if (val == null) {
+				Object comp;
+				synchronized (components) {
+					comp = components.get(iComponentName);
+				}
+				if (comp != null && iComponentClass.isAssignableFrom(comp.getClass()))
+					val = (T) comp;
+			}
+			return val;
 		} catch (BeansException e) {
 			throw new ContextException("Error on retrieving component '" + Utility.getClassName(iComponentClass) + "'", e);
 		}
@@ -37,7 +59,13 @@ public class SpringComponentEngine extends AbstractServiceable implements Compon
 
 	public <T> T getComponent(String iComponentName) throws ContextException {
 		try {
-			return (T) springContext.getBean(iComponentName);
+			T val = (T) springContext.getBean(iComponentName);
+			if (val == null) {
+				synchronized (components) {
+					val = (T) components.get(iComponentName);
+				}
+			}
+			return val;
 		} catch (BeansException e) {
 			throw new ContextException("Error on retrieving component '" + iComponentName + "'", e);
 		}
@@ -45,9 +73,65 @@ public class SpringComponentEngine extends AbstractServiceable implements Compon
 
 	public <T> Map<String, T> getComponentsOfClass(Class<T> iComponentClass) throws ContextException {
 		try {
-			return springContext.getBeansOfType(iComponentClass);
+			Map<String, T> classes = springContext.getBeansOfType(iComponentClass);
+			synchronized (components) {
+				for (Map.Entry<String, Object> entry : components.entrySet()) {
+					if (entry.getValue() != null && iComponentClass.isAssignableFrom(entry.getValue().getClass())) {
+						classes.put(entry.getKey(), (T) entry.getValue());
+					}
+				}
+			}
+			return classes;
 		} catch (BeansException e) {
 			throw new ContextException("Error on retrieving components of class '" + iComponentClass + "'", e);
+		}
+	}
+
+	public <T> T autoComponent(Class<?> iClass) {
+		try {
+			String iComponentName = Utility.getClassName(iClass);
+			T val = (T) springContext.getBean(iComponentName, iClass);
+			if (val == null) {
+				Object comp;
+				synchronized (components) {
+					comp = components.get(iComponentName);
+					if (comp == null) {
+						try {
+							comp = iClass.newInstance();
+							components.put(iComponentName, comp);
+						} catch (Exception e) {
+							log.warn("Error create new instance of component:'" + Utility.getClassName(iClass) + "'", e);
+						}
+					}
+				}
+				if (comp != null && iClass.isAssignableFrom(comp.getClass()))
+					val = (T) comp;
+			}
+			return val;
+		} catch (BeansException e) {
+			throw new ContextException("Error on retrieving component '" + Utility.getClassName(iClass) + "'", e);
+		}
+	}
+
+	public <T> T autoComponent(String iName) {
+		try {
+			T val = (T) springContext.getBean(iName);
+			if (val == null) {
+				synchronized (components) {
+					val = (T) components.get(iName);
+					if (val == null) {
+						try {
+							val = (T) Roma.schema().getSchemaClass(iName).newInstance();
+							components.put(iName, val);
+						} catch (Exception e) {
+							log.warn("Error create new instance of component:'" + iName + "'", e);
+						}
+					}
+				}
+			}
+			return val;
+		} catch (BeansException e) {
+			throw new ContextException("Error on retrieving component '" + iName + "'", e);
 		}
 	}
 

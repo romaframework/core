@@ -74,4 +74,22 @@ public interface ComponentAspect extends Aspect, Serviceable {
 	 * @return true if was configured, otherwise null
 	 */
 	public boolean existComponent(String iComponentName);
+
+	/**
+	 * The same behaviour of getComponent but if component not exist try to instance and register it.
+	 * 
+	 * @param iName
+	 *          Component name
+	 * @return the component if any or null if not found
+	 */
+	public <T> T autoComponent(String iName);
+
+	/**
+	 * The same behaviour of getComponent but if component not exist try to instance and register it.
+	 * 
+	 * @param iClass
+	 *          Interface of component implementation
+	 * @return the component if any or null if not found
+	 */
+	public <T> T autoComponent(Class<?> iClass);
 }
