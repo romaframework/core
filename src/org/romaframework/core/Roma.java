@@ -344,7 +344,9 @@ public class Roma implements ScriptingAspectListener {
 				for (SchemaFeaturesChangeListener listener : listeners) {
 					listener.signalChangeField(iUserObject, elementName, feature, oldValue, value);
 				}
+				break;
 			case EVENT:
+				break;
 			case CLASS:
 				for (SchemaFeaturesChangeListener listener : listeners) {
 					listener.signalChangeClass(iUserObject, feature, oldValue, value);
