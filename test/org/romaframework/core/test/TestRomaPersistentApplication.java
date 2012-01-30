@@ -30,12 +30,9 @@ public abstract class TestRomaPersistentApplication extends TestRomaApplication 
 
 	@Override
 	protected void start() {
-		super.start();
-
-		ObjectContext.getInstance().setContextComponent(PersistenceAspect.class, Roma.component("TxPersistenceAspect"));
+		
 	}
 
-	@Override
 	protected void onTearDown() throws Exception {
 		PersistenceAspect db = Roma.context().persistence();
 		ObjectContext.getInstance().setContextComponent(PersistenceAspect.class, null);

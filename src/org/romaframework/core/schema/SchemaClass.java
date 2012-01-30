@@ -95,13 +95,13 @@ public abstract class SchemaClass extends SchemaClassDefinition implements Compa
 	 * 
 	 * @param iSource
 	 */
-	public void copyDefinition(SchemaClassDefinition iSource) {
+	public void copyDefinition(SchemaClassDefinition iSource, Object iInstance) {
 		if (iSource == null)
 			return;
 		this.features = null;
 		this.parent = iSource;
 		try {
-			cloneFields(iSource, null);
+			cloneFields(iSource, null, iInstance);
 			cloneActions(iSource, null);
 			cloneEvents(iSource, null);
 		} catch (CloneNotSupportedException e) {
@@ -387,7 +387,7 @@ public abstract class SchemaClass extends SchemaClassDefinition implements Compa
 			iClass.addDependentClass(this);
 
 		try {
-			copyDefinition(iClass);
+			copyDefinition(iClass, null);
 
 		} catch (Exception e) {
 			log.error("Error on making dependency between class " + name + " and " + iClass.getName(), e);

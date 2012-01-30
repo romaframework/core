@@ -26,7 +26,7 @@ import org.romaframework.core.config.RomaApplicationContext;
  * @author Luca Garulli (luca.garulli--at--assetdata.it)
  * @see TestRomaPersistentApplication
  */
-public abstract class TestRomaApplication extends org.springframework.test.AbstractDependencyInjectionSpringContextTests {
+public abstract class TestRomaApplication {
 	private boolean	started	= false;
 
 	public TestRomaApplication() {
