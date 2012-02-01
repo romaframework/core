@@ -74,6 +74,8 @@ public abstract class SessionAspectAbstract extends SelfRegistrantConfigurableMo
 
 	@Override
 	public SchemaObject getSchemaObject(Object object) {
+		if (getActiveSessionInfo() == null)
+			return null;
 		synchronized (getActiveSessionInfo()) {
 			if (object == null)
 				return null;

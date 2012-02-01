@@ -109,7 +109,7 @@ public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModul
 	}
 
 	public Object onBeforeFieldWrite(Object content, SchemaField field, Object currentValue) {
-		return currentValue;
+		return IGNORED;
 	}
 
 	public Object onAfterFieldWrite(Object content, SchemaField field, Object currentValue) {

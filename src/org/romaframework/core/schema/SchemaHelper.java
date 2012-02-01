@@ -378,9 +378,11 @@ public class SchemaHelper {
 	public static Object invokeEvent(Object iObject, String eventName) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 
 		SchemaClassDefinition def = Roma.session().getSchemaObject(iObject);
-		SchemaEvent schemaEvent = def.getEvent(eventName);
-		if (schemaEvent != null) {
-			return schemaEvent.invoke(iObject);
+		if (def != null) {
+			SchemaEvent schemaEvent = def.getEvent(eventName);
+			if (schemaEvent != null) {
+				return schemaEvent.invoke(iObject);
+			}
 		}
 		return FAILED_EVENT_INVOKE;
 	}
