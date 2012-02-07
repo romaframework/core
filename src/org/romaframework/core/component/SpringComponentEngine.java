@@ -69,7 +69,8 @@ public class SpringComponentEngine extends AbstractServiceable implements Compon
 			paths[0] = COMPONENT_SRV_FILE_PATTERN;
 			paths[1] = COMPONENT_SRV_FILE_PATTERN_SUBDIR;
 		}
-		System.arraycopy(additionalPaths, 0, paths, 2, additionalPaths.length);
+		if (additionalPaths != null)
+			System.arraycopy(additionalPaths, 0, paths, 2, additionalPaths.length);
 
 		springContext = new ClassPathXmlApplicationContext(paths, false);
 

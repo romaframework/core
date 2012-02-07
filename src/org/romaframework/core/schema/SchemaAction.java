@@ -138,7 +138,7 @@ public abstract class SchemaAction extends SchemaClassElement {
 
 	@Override
 	public String toString() {
-		return super.toString() + getFullName();
+		return getFullName();
 	}
 
 	public Iterator<SchemaParameter> getParameterIterator() {

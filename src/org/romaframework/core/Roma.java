@@ -320,7 +320,7 @@ public class Roma implements ScriptingAspectListener {
 	public static <T> T getFeature(Object iUserObject, Feature<T> feature) {
 		if (!FeatureType.CLASS.equals(feature.getType()))
 			return null;
-		return getFeature(iUserObject, feature);
+		return getFeature(iUserObject, null, feature);
 	}
 
 	public static <T> boolean setFeature(Object iUserObject, String elementName, Feature<T> feature, T value) {
