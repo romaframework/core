@@ -74,13 +74,19 @@ public abstract class SessionAspectAbstract extends SelfRegistrantConfigurableMo
 
 	@Override
 	public SchemaObject getSchemaObject(Object object) {
+		if (getActiveSessionInfo() == null)
+			return null;
 		synchronized (getActiveSessionInfo()) {
+			if (object == null)
+				return null;
 			Map<Object, SchemaObject> so = getSchemaObjectMap();
 			SchemaObject schemaObject = so.get(object);
 			if (schemaObject == null) {
 				if (object instanceof SchemaClassDefinition) {
 					object = ((SchemaClassDefinition) object).getSchemaClass();
 					schemaObject = new SchemaObject(((SchemaClassDefinition) object).getSchemaClass(), null);
+				} else if (object instanceof Class<?>) {
+					schemaObject = new SchemaObject(Roma.schema().getSchemaClass(object), null);
 				} else
 					schemaObject = new SchemaObject(Roma.schema().getSchemaClass(object), object);
 				so.put(object, schemaObject);

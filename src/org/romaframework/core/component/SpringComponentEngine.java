@@ -18,6 +18,8 @@ public class SpringComponentEngine extends AbstractServiceable implements Compon
 	private static final String								COMPONENT_SRV_FILE_PATTERN_SUBDIR	= "META-INF/components/*/applicationContext*.xml";
 
 	protected ClassPathXmlApplicationContext	springContext;
+	protected String													basePath;
+	protected String[]												additionalPaths;
 
 	public boolean existComponent(Class<? extends Object> iComponentClass) {
 		return springContext.containsBean(Utility.getClassName(iComponentClass));
@@ -56,8 +58,21 @@ public class SpringComponentEngine extends AbstractServiceable implements Compon
 	 */
 	public void startup() throws RuntimeException {
 		status = STATUS_STARTING;
+		int size = 2;
+		if (additionalPaths != null)
+			size += additionalPaths.length;
+		String paths[] = new String[size];
+		if (basePath != null) {
+			paths[0] = basePath + COMPONENT_SRV_FILE_PATTERN;
+			paths[1] = basePath + COMPONENT_SRV_FILE_PATTERN_SUBDIR;
+		} else {
+			paths[0] = COMPONENT_SRV_FILE_PATTERN;
+			paths[1] = COMPONENT_SRV_FILE_PATTERN_SUBDIR;
+		}
+		if (additionalPaths != null)
+			System.arraycopy(additionalPaths, 0, paths, 2, additionalPaths.length);
 
-		springContext = new ClassPathXmlApplicationContext(new String[] { COMPONENT_SRV_FILE_PATTERN, COMPONENT_SRV_FILE_PATTERN_SUBDIR }, false);
+		springContext = new ClassPathXmlApplicationContext(paths, false);
 
 		springContext.refresh();
 		status = STATUS_UP;
@@ -97,5 +112,17 @@ public class SpringComponentEngine extends AbstractServiceable implements Compon
 
 	public Object getUnderlyingComponent() {
 		return springContext;
+	}
+
+	public String getBasePath() {
+		return basePath;
+	}
+
+	public void setBasePath(String basePath) {
+		this.basePath = basePath;
+	}
+
+	public void setAdditionalPaths(String[] additionalApplicationContext) {
+		this.additionalPaths = additionalApplicationContext;
 	}
 }

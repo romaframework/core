@@ -16,6 +16,7 @@
 
 package org.romaframework.core.schema;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -32,15 +33,15 @@ import org.romaframework.core.flow.Controller;
  * @author Luca Garulli (luca.garulli--at--assetdata.it)
  */
 public class SchemaObject extends SchemaClassDefinition {
-	private static final long	serialVersionUID	= -228110121477948747L;
-	private SchemaClass				schemaClass;
-	private Object						instance;
-	private static Log				log								= LogFactory.getLog(SchemaObject.class);
+	private static final long			serialVersionUID	= -228110121477948747L;
+	private SchemaClass						schemaClass;
+	private WeakReference<Object>	instance;
+	private static Log						log								= LogFactory.getLog(SchemaObject.class);
 
 	public SchemaObject(SchemaClass iEntityInfo, Object iInstance) {
-		instance = iInstance;
+		instance = new WeakReference<Object>(iInstance);
 		schemaClass = iEntityInfo;
-		copyDefinition(schemaClass);
+		copyDefinition(schemaClass,iInstance);
 		invokeListeners();
 	}
 
@@ -83,11 +84,11 @@ public class SchemaObject extends SchemaClassDefinition {
 	}
 
 	public Object getInstance() {
-		return instance;
+		return instance.get();
 	}
 
 	public void setInstance(Object instance) {
-		this.instance = instance;
+		this.instance = new WeakReference<Object>(instance);
 	}
 
 	@Override
@@ -95,7 +96,7 @@ public class SchemaObject extends SchemaClassDefinition {
 		StringBuilder buffer = new StringBuilder();
 		if (instance != null) {
 			buffer.append("Instance: ");
-			buffer.append(instance);
+			buffer.append(instance.get());
 			buffer.append(" ");
 		}
 		if (schemaClass != null) {
@@ -115,8 +116,9 @@ public class SchemaObject extends SchemaClassDefinition {
 	 * Re-define the base implementation enabling the invocation of listeners.
 	 * 
 	 * @param iSource
+	 * @param iInstance 
 	 */
-	public void copyDefinition(SchemaClassDefinition iSource) {
+	protected void copyDefinition(SchemaClassDefinition iSource, Object iInstance) {
 		if (iSource == null)
 			return;
 
@@ -127,7 +129,7 @@ public class SchemaObject extends SchemaClassDefinition {
 
 			List<UserObjectPermissionListener> listeners = Controller.getInstance().getListeners(UserObjectPermissionListener.class);
 
-			cloneFields(iSource, listeners);
+			cloneFields(iSource, listeners,iInstance);
 			cloneActions(iSource, listeners);
 			cloneEvents(iSource, listeners);
 		} catch (CloneNotSupportedException e) {
@@ -143,5 +145,10 @@ public class SchemaObject extends SchemaClassDefinition {
 		if (listeners != null)
 			for (SchemaObjectListener l : listeners)
 				l.onCreate(this);
+	}
+
+	@Override
+	public <T> boolean isRuntimeSet(Feature<T> feature) {
+		return super.hasFeature(feature);
 	}
 }

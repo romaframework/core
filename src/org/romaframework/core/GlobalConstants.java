@@ -18,7 +18,7 @@ package org.romaframework.core;
 
 public class GlobalConstants {
 	public final static String	ROOT_CLASS	= "Object";
-	public final static String	VERSION			= "2.2.0b";
+	public final static String	VERSION			= "3.0-BETA";
 	public final static String	COPYRIGHT		= "Copyrights (c) 2006-2010 Luca Garulli";
 	public final static String	LICENSE			= "Apache 2.0 license. Free to use!";
 }

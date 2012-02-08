@@ -21,7 +21,7 @@ import org.romaframework.core.schema.Feature;
 public abstract class ViewElementFeatures {
 
 	public static final Feature<String>		DESCRIPTION	= ViewFieldFeatures.DESCRIPTION;
-	public static final Feature<String>		LAYOUT			= ViewFieldFeatures.LAYOUT;
+	public static final Feature<String>		LAYOUT			= ViewFieldFeatures.POSITION;
 	public static final Feature<String>		RENDER			= ViewFieldFeatures.RENDER;
 	public static final Feature<String>		STYLE				= ViewFieldFeatures.STYLE;
 	public static final Feature<String>		LABEL				= ViewFieldFeatures.LABEL;

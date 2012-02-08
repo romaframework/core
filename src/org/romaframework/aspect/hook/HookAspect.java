@@ -207,7 +207,7 @@ public class HookAspect extends SelfRegistrantModule implements Aspect, FieldRef
 			// THERE IS AN "BEFORE" HOOK: CALL IT AND RETURN THE VALUE OF THE HOOKED ACTION
 			return searchForHooks(iContent, HookActionFeatures.HOOK_BEFORE_FIELD_WRITE, iField, true);
 		}
-		return iCurrentValue;
+		return IGNORED;
 	}
 
 	public Object onBeforeFieldRead(Object iContent, SchemaField iField, Object iCurrentValue) {

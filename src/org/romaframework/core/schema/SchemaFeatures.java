@@ -44,6 +44,10 @@ public abstract class SchemaFeatures implements Cloneable, Serializable {
 	}
 
 	public <T> void setFeature(Feature<T> feature, T iFeatureValue) {
+		if (getFeatureType() != feature.getType()) {
+			throw new RuntimeException("Try to set a feature of type:" + feature.getType() + " on a SchemaFeature of type:"
+					+ getFeatureType());
+		}
 		if (features == null) {
 			features = new Object[FeatureRegistry.aspectTotal()][];
 		}
@@ -59,6 +63,10 @@ public abstract class SchemaFeatures implements Cloneable, Serializable {
 
 	@SuppressWarnings("unchecked")
 	public <T> T getFeature(Feature<T> feature) {
+		if (getFeatureType() != feature.getType()) {
+			throw new RuntimeException("Try to get a feature of type:" + feature.getType() + " on a SchemaFeature of type:"
+					+ getFeatureType());
+		}
 		if (features != null) {
 			Object[] aspectFeature = features[feature.getAspectId()];
 			if (aspectFeature != null) {
@@ -74,6 +82,22 @@ public abstract class SchemaFeatures implements Cloneable, Serializable {
 	}
 
 	public <T> boolean isSettedFeature(Feature<T> feature) {
+		if (getFeatureType() != feature.getType()) {
+			throw new RuntimeException("Try to check a feature of type:" + feature.getType() + " on a SchemaFeature of type:"
+					+ getFeatureType());
+		}
+		if (hasFeature(feature))
+			return true;
+		if (parent == null)
+			return false;
+		return parent.isSettedFeature(feature);
+	}
+
+	public FeatureType getFeatureType() {
+		return featureType;
+	}
+
+	protected <T> boolean hasFeature(Feature<T> feature) {
 		if (features != null) {
 			Object[] aspectFeature = features[feature.getAspectId()];
 			if (aspectFeature != null) {
@@ -83,12 +107,10 @@ public abstract class SchemaFeatures implements Cloneable, Serializable {
 				}
 			}
 		}
-		if (parent == null)
-			return false;
-		return parent.isSettedFeature(feature);
+		return false;
 	}
 
-	public FeatureType getFeatureType() {
-		return featureType;
+	public <T> boolean isRuntimeSet(Feature<T> feature) {
+		return false;
 	}
 }

@@ -102,17 +102,6 @@ public interface ViewAspect extends Aspect {
 	public void setScreen(Screen screen, SessionInfo currentSession);
 
 	/**
-	 * Close the current form displayed. It applies only on Pop-up windows.
-	 * 
-	 * @param iUserObject
-	 *          User Object to close
-	 *         
-	 */
-	//TODO: Substitute with a from a correct flow aspect management. 
-	@Deprecated
-	public boolean close(Object iUserObject);
-
-	/**
 	 * Push a command that must be executed by the view aspect
 	 * 
 	 * @param iCommand

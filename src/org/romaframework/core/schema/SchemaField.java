@@ -76,7 +76,8 @@ public abstract class SchemaField extends SchemaClassElement {
 				// CALL ALL LISTENERS BEFORE FIELD WRITE CALLBACKS
 				synchronized (listeners) {
 					for (SchemaFieldListener listener : listeners) {
-						value = listener.onBeforeFieldWrite(iObject, this, value);
+						Object curVal = listener.onBeforeFieldWrite(iObject, this, value);
+						if(curVal != SchemaFieldListener.IGNORED)value=curVal;
 					}
 				}
 

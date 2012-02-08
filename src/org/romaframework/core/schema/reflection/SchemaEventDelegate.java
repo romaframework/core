@@ -20,7 +20,7 @@ public class SchemaEventDelegate extends SchemaEventReflection {
 		this.delegate = delegate;
 		this.parent = delegate;
 		SchemaEvent event = entity.getEvent(name);
-		if (event instanceof SchemaEventReflection) {
+		if (event instanceof SchemaEventReflection && !(event instanceof SchemaEventDelegate)) {
 			SchemaEventReflection refEvent = (SchemaEventReflection) event;
 			this.method = refEvent.method;
 		}

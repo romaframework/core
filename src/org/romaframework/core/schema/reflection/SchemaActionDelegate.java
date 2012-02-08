@@ -21,7 +21,7 @@ public class SchemaActionDelegate extends SchemaActionReflection {
 		this.delegate = delegate;
 		this.parent = delegate;
 		SchemaAction action = entity.getAction(name);
-		if (action instanceof SchemaActionReflection) {
+		if (action instanceof SchemaActionReflection && !(action instanceof SchemaActionDelegate)) {
 			SchemaActionReflection refAction = (SchemaActionReflection) action;
 			this.method = refAction.method;
 		}
@@ -39,7 +39,7 @@ public class SchemaActionDelegate extends SchemaActionReflection {
 	public SchemaField getFieldObject() {
 		return object;
 	}
-	
+
 	@Override
 	public Method getMethod() {
 		if (this.method != null)

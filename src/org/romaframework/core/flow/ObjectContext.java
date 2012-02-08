@@ -56,6 +56,7 @@ public class ObjectContext {
 	 *          Interface of component implementation
 	 * @return the component if any or null if not found
 	 */
+	@Deprecated
 	public <T> T getComponent(Class<T> iClass) throws ContextException {
 		// FOR RETRO-COMPATIBILITY
 		if (Utility.getClassName(iClass).endsWith("Aspect"))
@@ -71,6 +72,7 @@ public class ObjectContext {
 	 *          Component name
 	 * @return the component if any or null if not found
 	 */
+	@Deprecated
 	public <T> T getComponent(String iName) throws ContextException {
 		return (T) RomaApplicationContext.getInstance().getComponentAspect().getComponent(iName);
 	}
@@ -82,6 +84,7 @@ public class ObjectContext {
 	 *          Interface of component implementation
 	 * @return true if was configured, otherwise null
 	 */
+	@Deprecated
 	public boolean existComponent(Class<? extends Object> iClass) {
 		return existComponent(Utility.getClassName(iClass));
 	}
@@ -93,6 +96,7 @@ public class ObjectContext {
 	 *          Name of component to search
 	 * @return true if was configured, otherwise null
 	 */
+	@Deprecated
 	public boolean existComponent(String iComponentName) {
 		return RomaApplicationContext.getInstance().getComponentAspect().existComponent(iComponentName);
 	}
@@ -202,8 +206,8 @@ public class ObjectContext {
 	 * @throws ConfigurationNotFoundException
 	 */
 	@Deprecated
-	public boolean setFieldFeature(Object iUserObject, String iAspectName, String iFieldName, String iFeatureName, Object iFeatureValue) throws ConfigurationNotFoundException {
-		return Roma.setFieldFeature(iUserObject, iAspectName, iFieldName, iFeatureName, iFeatureValue);
+	public boolean setFeature(Object iUserObject, String iAspectName, String iFieldName, String iFeatureName, Object iFeatureValue) throws ConfigurationNotFoundException {
+		return Roma.setFeature(iUserObject, iAspectName, iFieldName, iFeatureName, iFeatureValue);
 	}
 
 	/**
@@ -274,7 +278,7 @@ public class ObjectContext {
 	public <T> T waitForComponent(Class<T> iClass) {
 		while (true) {
 			// REGISTER THE OWN CALENDAR
-			if (ObjectContext.getInstance().existComponent(iClass)) {
+			if (Roma.existComponent(iClass)) {
 				return Roma.component(iClass);
 			}
 			try {

@@ -16,6 +16,8 @@
 
 package org.romaframework.core.flow;
 
+import java.util.Map;
+
 /**
  * Listener interface to handle context access.
  * 
@@ -31,6 +33,21 @@ public interface ContextLifecycleListener {
 	 * Callback called when the context is closed. Usually by the Roma Controller.
 	 */
 	public void onContextDestroy();
+
+	/**
+	 * Callback of an context block push.
+	 * @param current 
+	 * 
+	 *
+	 */
+	public void onContextPush(Map<String, Object> current);
+
+	/**
+	 * Callback of an context block pop.
+	 * @param current 
+	 * 
+	 */
+	public void onContextPop(Map<String, Object> current);
 
 	/**
 	 * Callback called when a component needs to be created in the context.

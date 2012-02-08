@@ -16,12 +16,12 @@
 
 package org.romaframework.aspect.flow;
 
-import java.util.List;
+import java.util.Map;
+import java.util.Stack;
 
 import org.romaframework.aspect.session.SessionInfo;
 import org.romaframework.aspect.view.screen.Screen;
 import org.romaframework.core.aspect.Aspect;
-import org.romaframework.core.domain.type.Pair;
 
 /**
  * Flow Aspect behavior interface.
@@ -33,17 +33,58 @@ public interface FlowAspect extends Aspect {
 	public static final String	ASPECT_NAME	= "flow";
 
 	/**
-	 * Return the current position as form of Pair of POJO/Screen area.
+	 * Return the Map with the screen area and POJO in area.
 	 */
-	public Pair<Object, String> current();
+	public Map<String, Object> current();
 
 	/**
-	 * Return the current position of requested session as form of Pair of POJO/Screen area.
+	 * Return the current Map of area/POJO of requested session.
 	 * 
 	 * @param iSession
 	 *          User session to use (null for the current user session)
 	 */
-	public Pair<Object, String> current(SessionInfo iSession);
+	public Map<String, Object> current(SessionInfo iSession);
+
+	/**
+	 * Return the current POJO in the default screen area.
+	 */
+	public Object currentDefault();
+
+	/**
+	 * Return the POJO in the specified screen area.
+	 */
+	public Object current(String area);
+
+	/**
+	 * Return the POJO in the specified screen area of requested session.
+	 */
+	public Object current(String area, SessionInfo iSession);
+
+	/**
+	 * Follow the application flow moving forward. If the iNextObject is a string, the virtual object will be used.
+	 * 
+	 * @param iNextObject
+	 *          Next object to display
+	 */
+	public void forward(Object iNextObject);
+
+	/**
+	 * Follow the application flow moving forward in the default area.
+	 * 
+	 * @param iNextObject
+	 *          Next object to display
+	 */
+	public void forwardDefault(Object iNextObject);
+
+	/**
+	 * Follow the application flow moving forward.
+	 * 
+	 * @param iNextObject
+	 *          Next object to display
+	 * @param iPosition
+	 *          Position where to display the object
+	 */
+	public void forward(Object iNextObject, String iPosition);
 
 	/**
 	 * Follow the application flow moving forward and specifying screen and user session to use.
@@ -60,30 +101,30 @@ public interface FlowAspect extends Aspect {
 	public void forward(Object iNextObject, String iPosition, Screen iScreen, SessionInfo iSession);
 
 	/**
-	 * Follow the application flow moving forward.
-	 * 
-	 * @param iNextObject
-	 *          Next object to display
-	 * @param iPosition
-	 *          Position where to display the object
-	 */
-	public void forward(Object iNextObject, String iPosition);
-
-	/**
-	 * Follow the application flow moving forward. If the iNextObject is a string, the virtual object will be used.
-	 * 
-	 * @param iNextObject
-	 *          Next object to display
-	 */
-	public void forward(Object iNextObject);
-
-	/**
 	 * Go back, reading the user's history. It displays the previous POJO if any.
 	 * 
 	 * @return previous POJO if any
 	 * 
 	 */
 	public Object back();
+
+	/**
+	 * Go back,reading the user's history in the default screen area.
+	 * 
+	 * @return previous POJO if any
+	 * 
+	 */
+	public Object backDefault();
+
+	/**
+	 * Go back,reading the user's history in the specified screen area.
+	 * 
+	 * @param area
+	 *          where back.
+	 * @return the POJO before the object provided
+	 * 
+	 */
+	public Object back(String area);
 
 	/**
 	 * Go back, reading the user session's history. It displays the previous POJO if any.
@@ -96,19 +137,23 @@ public interface FlowAspect extends Aspect {
 	public Object back(SessionInfo iSession);
 
 	/**
-	 * Go back until the given POJO, reading the user's history. It displays the previous POJO if any.
+	 * Go back, reading the user session's history. It displays the previous POJO if any.
 	 * 
-	 * @return the POJO before the object provided
+	 * @param area
+	 *          where back.
+	 * @param iSession
+	 *          User session to use (null for the current user session)
+	 * @return previous POJO if any
 	 * 
 	 */
-	public Object back(Object iGoBackUntil);
+	public Object back(String area, SessionInfo iSession);
 
 	/**
 	 * Returns the history of current user session. The history is a list of pair as POJO and Position where is displayed.
 	 * 
 	 * @return list of pair as POJO and Position where is displayed.
 	 */
-	public List<Pair<Object, String>> getHistory();
+	public Map<String, Stack<Object>> getHistory();
 
 	/**
 	 * Returns the history of the user session passed as parameter. The history is a list of pair as POJO and Position where is
@@ -118,12 +163,20 @@ public interface FlowAspect extends Aspect {
 	 *          User session to use (null for the current user session)
 	 * @return list of pair as POJO and Position where is displayed.
 	 */
-	public List<Pair<Object, String>> getHistory(SessionInfo iSession);
+	public Map<String, Stack<Object>> getHistory(SessionInfo iSession);
 
 	/**
-	 * Clear the current history closing also all the open popups if any.
+	 * Clear the current history for all areas.
 	 */
 	public void clearHistory();
+
+	/**
+	 * Clear the history for specified area.
+	 * 
+	 * @param area
+	 *          the name of the area to clear the history.
+	 */
+	public void clearHistory(String area);
 
 	/**
 	 * Clear the history of the requested session closing also all the open popups if any.
@@ -132,11 +185,33 @@ public interface FlowAspect extends Aspect {
 	 *          User session to use (null for the current user session)
 	 */
 	public void clearHistory(SessionInfo currentSession);
-	
+
+	/**
+	 * Show an object as modal popup.
+	 * 
+	 * @param popup
+	 *          object to show.
+	 */
+	public void popup(Object popup);
+
+	/**
+	 * Show an object as popup.
+	 * 
+	 * @param popup
+	 *          object to show.
+	 * @param modal
+	 *          true if the popup is modal otherwise false.
+	 */
+	public void popup(Object popup, boolean modal);
+
 	/**
 	 * opens an alert dialog with given title and body
-	 * @param iTitle the alert title 
-	 * @param iBody the alert text
+	 * 
+	 * @param iTitle
+	 *          the alert title
+	 * @param iBody
+	 *          the alert text
 	 */
 	public void alert(String iTitle, String iBody);
+
 }

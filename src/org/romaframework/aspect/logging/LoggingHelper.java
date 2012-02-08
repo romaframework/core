@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.apache.commons.logging.LogFactory;
 import org.romaframework.aspect.core.annotation.AnnotationConstants;
-import org.romaframework.aspect.i18n.I18NHelper;
+import org.romaframework.aspect.i18n.I18NType;
 import org.romaframework.aspect.logging.feature.LoggingActionFeatures;
 import org.romaframework.aspect.logging.feature.LoggingClassFeatures;
 import org.romaframework.aspect.logging.feature.LoggingElementFeatures;
@@ -82,7 +82,7 @@ public class LoggingHelper {
 		if (post == null || post.equals(AnnotationConstants.DEF_VALUE)) {
 			return;
 		} else if (post.equals(I18N)) {
-			post = I18NHelper.getLabel(action, $ + action.getName(), "post");
+			post = Roma.i18n().get(action, "post", content);
 		}
 
 		Integer level = getLevel(action);
@@ -316,7 +316,7 @@ public class LoggingHelper {
 		if (pre == null || pre.equals(AnnotationConstants.DEF_VALUE)) {
 			return;
 		} else if (pre.equals(I18N)) {
-			pre = I18NHelper.getLabel(action, $ + action.getName(), PRE);
+			pre = Roma.i18n().get(action, PRE);
 		}
 
 		Integer level = getLevel(action);
@@ -352,7 +352,7 @@ public class LoggingHelper {
 		if (exception == null || exception.equals(AnnotationConstants.DEF_VALUE)) {
 			return;
 		} else if (exception.equals(I18N)) {
-			exception = I18NHelper.getLabel(action, $ + action.getName(), EXCEPTION);
+			exception = Roma.i18n().get(action, I18NType.EXCEPTION);
 		}
 
 		Integer level = getLevel(action);

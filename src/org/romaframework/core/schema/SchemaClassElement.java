@@ -142,4 +142,11 @@ public abstract class SchemaClassElement extends SchemaElement {
 		return value;
 	}
 
+	@Override
+	public <T> boolean isRuntimeSet(Feature<T> feature) {
+		if (getEntity() instanceof SchemaObject && hasFeature(feature))
+			return true;
+		return false;
+	}
+
 }
