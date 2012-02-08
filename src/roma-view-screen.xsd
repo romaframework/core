@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsd:schema targetNamespace="http://www.romaframework.org/xml/roma/screen" xmlns="http://www.romaframework.org/xml/roma/screen"
-	version="3.0" attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-	<xsd:include schemaLocation="roma-view.xsd" />
+<xsd:schema targetNamespace="http://www.romaframework.org/xml/roma/screen"
+	xmlns="http://www.romaframework.org/xml/roma/screen" version="3.0" attributeFormDefault="unqualified"
+	elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:roma="http://www.romaframework.org/xml/roma" >
+	<xsd:import schemaLocation="http://www.romaframework.org/schema/v3/roma.xsd" namespace="http://www.romaframework.org/xml/roma" />
 	<xsd:element name="screen">
 		<xsd:complexType>
 			<xsd:complexContent>
-				<xsd:extension base="areaLayoutType">
+				<xsd:extension base="roma:areaLayoutType">
 					<xsd:attribute name="defaultArea" use="required" />
 				</xsd:extension>
 			</xsd:complexContent>
