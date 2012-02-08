@@ -188,7 +188,7 @@ public abstract class PersistenceAspectRepository<T> implements GenericRepositor
 	}
 
 	public T load(PersistenceAspect db, T entity, String fullModeLoading, byte strategyDetaching) {
-		return db.loadObject(entity, fullModeLoading, strategyDetaching);
+		return db.refreshObject(entity, fullModeLoading, strategyDetaching);
 	}
 
 	public T loadObjectByOID(Object OID, String iMode, byte iStrategy) {
