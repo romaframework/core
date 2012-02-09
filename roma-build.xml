@@ -158,12 +158,10 @@
 		<ivy:settings file="${ivy.default.ivy.user.dir}/ivysettings.xml" id="pub" />
 		<ivy:deliver deliverpattern="${project.dist}/[artifact].[ext]" />
 		<ivy:makepom ivyfile="${project.dist}/ivy.xml" pomfile="${project.dist}/${ant.project.name}.pom" />
-		<ivy:publish resolver="remote" overwrite="true" settingsref="pub" conf="default,wizard,publish">
+		<ivy:publish resolver="${resolver}" overwrite="true" settingsref="pub" conf="default,wizard,publish">
 			<ivy:artifacts pattern="${project.dist}/[artifact].[ext]" />
 		</ivy:publish>
 	</target>
-
-
 
 	<target name="javadoc">
 		<antcall target="resolve-dependencies" />
