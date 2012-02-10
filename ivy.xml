@@ -11,7 +11,6 @@
 		<artifact name="roma-core" ext="jar" type="jar" conf="default"></artifact>
 		<artifact name="roma-core-test" ext="jar" type="jar" conf="test"></artifact>
 		<artifact name="roma-core-wizard" ext="zip" type="zip" conf="wizard"></artifact>
-		<artifact name="roma-core" ext="pom" type="pom" conf="publish"></artifact>
 	</publications>
 	<dependencies>
 		<dependency org="org.springframework" name="spring-context" rev="latest.integration" conf="*->default" >
