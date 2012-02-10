@@ -43,10 +43,10 @@
 	<target name="clean-all" depends="clean,clean-dist,clean-ivy">
 	</target>
 
-	<target name="clean-local" depends="install-ivy" >
+	<target name="clean-local" depends="install-ivy">
 		<ivy:info />
 		<echo>${ivy.local.default.root}/org.romaframework</echo>
-		<delete dir="${ivy.local.default.root}/org.romaframework"/>
+		<delete dir="${ivy.local.default.root}/org.romaframework" />
 	</target>
 
 	<target name="download-ivy" unless="ivy.download.skip">
@@ -148,18 +148,26 @@
 
 	</target>
 
-	<target name="publish" depends="dist">
+	<target name="publish" depends="dist,javadoc,sources">
+		<ivy:deliver deliverpattern="${project.dist}/[artifact].[ext]" />
+		<ivy:makepom ivyfile="${project.dist}/ivy.xml" pomfile="${project.dist}/${ant.project.name}.pom" />
 		<ivy:publish resolver="local" overwrite="true" conf="default,wizard,test">
-			<ivy:artifacts pattern="${project.dist}/[artifact].[ext]" />
+			<ivy:artifacts pattern="${project.dist}/[artifact](-[classifier]).[ext]" />
+			<artifact name="${ant.project.name}" ext="pom" type="pom" />
+			<artifact name="${ant.project.name}" ext="jar" type="sources" classifier="sources" />
+			<artifact name="${ant.project.name}" ext="jar" type="javadoc" classifier="javadoc" />
 		</ivy:publish>
 	</target>
 
-	<target name="remote-publish" depends="dist">
+	<target name="remote-publish" depends="dist,javadoc,sources">
 		<ivy:settings file="${ivy.default.ivy.user.dir}/ivysettings.xml" id="pub" />
 		<ivy:deliver deliverpattern="${project.dist}/[artifact].[ext]" />
 		<ivy:makepom ivyfile="${project.dist}/ivy.xml" pomfile="${project.dist}/${ant.project.name}.pom" />
 		<ivy:publish resolver="${resolver}" overwrite="true" settingsref="pub" conf="default,wizard,publish">
-			<ivy:artifacts pattern="${project.dist}/[artifact].[ext]" />
+			<ivy:artifacts pattern="${project.dist}/[artifact](-[classifier]).[ext]" />
+			<artifact name="${ant.project.name}" ext="pom" type="pom" />
+			<artifact name="${ant.project.name}" ext="jar" type="sources" classifier="sources" />
+			<artifact name="${ant.project.name}" ext="jar" type="javadoc" classifier="javadoc" />
 		</ivy:publish>
 	</target>
 
@@ -169,15 +177,14 @@
 		<path id="project.classpath">
 			<fileset dir="${project.lib}" includes="**/*.jar" />
 		</path>
-
-		<javadoc access="public" author="true" doctitle="Roma MetaFramework JavaDoc" nodeprecated="false" splitindex="true" use="true" version="true" destdir="${project.dist}/doc" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="1.5" sourcepath="${project.src}" packagenames="org.romaframework.*">
-			<bottom>
-				<![CDATA[<i>Copyright &#169; 2006-2009 Luca Garulli - All Rights Reserved.</i>]]>
-  			</bottom>
-		<classpath>
-			<path refid="project.classpath" />
-		</classpath>
-	</javadoc>
-</target>
-
+		<javadoc access="public" author="true" doctitle="Roma MetaFramework JavaDoc" nodeprecated="false" splitindex="true" use="true" version="true" destdir="${project.build}/doc" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="1.5" sourcepath="${project.src}" packagenames="org.romaframework.*">
+			<classpath>
+				<path refid="project.classpath" />
+			</classpath>
+		</javadoc>
+		<zip destfile="${project.dist}/${ant.project.name}-javadoc.jar" basedir="${project.build}/doc" />
+	</target>
+	<target name="sources">
+		<zip destfile="${project.dist}/${ant.project.name}-sources.jar" basedir="src" />
+	</target>
 </project>
