@@ -211,7 +211,33 @@ public interface FlowAspect extends Aspect {
 	 *          the alert title
 	 * @param iBody
 	 *          the alert text
+	 * 
 	 */
 	public void alert(String iTitle, String iBody);
+
+	/**
+	 * opens an alert dialog with given title and body
+	 * 
+	 * @param iTitle
+	 *          the alert title
+	 * @param iBody
+	 *          the alert text
+	 * @param iListener
+	 *          listener call when user click ok alert.
+	 * 
+	 */
+	public void alert(String iTitle, String iBody, AlertListener iListener);
+
+	/**
+	 * opens a confirm dialog.
+	 * 
+	 * @param iTitle
+	 *          the title of confirm message.
+	 * @param iBody
+	 *          the body of confirm message.
+	 * @param iListener
+	 *          the listener called on user action.
+	 */
+	public void confirm(String iTitle, String iBody, ConfirmListener iListener);
 
 }
