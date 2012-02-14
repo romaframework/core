@@ -3,6 +3,5 @@
 	<property name="ivy.pom.name" value="Roma Core" />
 	<property name="ivy.pom.description" value="Roma Framework core engine for runtime, development and testing" />
 	<property name="ivy.pom.repo-name" value="core" />
-	<property name="skip.pom.template.delete" value="true" />
 	<import file="roma-build.xml" />
 </project>
