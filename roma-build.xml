@@ -148,21 +148,19 @@
 
 	</target>
 
-	<target name="publish" depends="dist,javadoc,sources">
-		<ivy:deliver deliverpattern="${project.dist}/[artifact].[ext]" />
-		<ivy:makepom ivyfile="${project.dist}/ivy.xml" pomfile="${project.dist}/${ant.project.name}.pom" />
+	<target name="publish" depends="dist">
 		<ivy:publish resolver="local" overwrite="true" conf="default,wizard,test">
 			<ivy:artifacts pattern="${project.dist}/[artifact](-[classifier]).[ext]" />
-			<artifact name="${ant.project.name}" ext="pom" type="pom" />
-			<artifact name="${ant.project.name}" ext="jar" type="sources" classifier="sources" />
-			<artifact name="${ant.project.name}" ext="jar" type="javadoc" classifier="javadoc" />
 		</ivy:publish>
 	</target>
 
 	<target name="remote-publish" depends="dist,javadoc,sources">
+		<get src="https://github.com/romaframework/core/raw/master/pom-template.pom" dest="pom-template.pom" skipexisting="true" />
 		<ivy:settings file="${ivy.default.ivy.user.dir}/ivysettings.xml" id="pub" />
 		<ivy:deliver deliverpattern="${project.dist}/[artifact].[ext]" />
-		<ivy:makepom ivyfile="${project.dist}/ivy.xml" pomfile="${project.dist}/${ant.project.name}.pom" />
+		<ivy:makepom ivyfile="${project.dist}/ivy.xml" pomfile="${project.dist}/${ant.project.name}.pom" templatefile="pom-template.pom" printIvyInfo="false">
+			<mapping conf="default" scope="compile"/>
+		</ivy:makepom>
 		<ivy:publish resolver="${resolver}" overwrite="true" settingsref="pub" conf="default,wizard,publish">
 			<ivy:artifacts pattern="${project.dist}/[artifact](-[classifier]).[ext]" />
 			<artifact name="${ant.project.name}" ext="pom" type="pom" />

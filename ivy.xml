@@ -1,6 +1,8 @@
 <ivy-module version="2.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
-	<info organisation="org.romaframework" module="roma-core" revision="3.0.0-SNAPSHOT" />
+	<info organisation="org.romaframework" module="roma-core" revision="3.0.0-SNAPSHOT" >
+		<license name="Apache 2" url="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
+	</info>
 	<configurations defaultconfmapping="*->*,!sources,!javadoc,!optional">
 		<conf name="default" visibility="public" />
 		<conf name="test" visibility="public" />
@@ -13,10 +15,9 @@
 		<artifact name="roma-core-wizard" ext="zip" type="zip" conf="wizard"></artifact>
 	</publications>
 	<dependencies>
-		<dependency org="org.springframework" name="spring-context" rev="latest.integration" conf="*->default" >
-			<exclude module="spring-aop" />
-		</dependency>
+		<dependency org="org.springframework" name="spring-context" rev="latest.integration" conf="*->default"/>
 		<dependency org="commons-jxpath" name="commons-jxpath" rev="latest.integration" conf="*->default" />
 		<dependency org="junit" name="junit" rev="latest.integration" conf="test->default" />
+		<exclude org="org.springframework" module="spring-aop" />
 	</dependencies>
 </ivy-module>
