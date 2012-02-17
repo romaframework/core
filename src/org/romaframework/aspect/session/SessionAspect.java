@@ -159,4 +159,9 @@ public interface SessionAspect extends Aspect, SchemaObjectHandler {
 	 * @return the session timeout in minutes
 	 */
 	public int getTimeout();
+	
+	/**
+	 * 
+	 */
+	public void logout();
 }
