@@ -76,8 +76,30 @@ public class QueryByFilter extends Query {
 		addItem(new QueryByFilterItemPredicate(iName, iOperator, iValue));
 	}
 
+	public void addReverseItem(QueryByFilter byFilter, String field) {
+		addReverseItem(byFilter, field, QueryOperator.EQUALS);
+	}
+
+	public void addReverseItem(QueryByFilter byFilter, String field, QueryOperator operator) {
+		addItem(new QueryByFilterItemReverse(byFilter, field, operator));
+	}
+
 	public void addItem(String iCondition) {
 		addItem(new QueryByFilterItemText(iCondition));
+	}
+
+	public void addProjection(String field) {
+		projections.add(new QueryByFilterProjection(field));
+	}
+
+	public void addProjection(String field, ProjectionOperator operator) {
+		projections.add(new QueryByFilterProjection(field, operator));
+	}
+
+	public QueryByFilterItemGroup addGroup(String predicate) {
+		QueryByFilterItemGroup item = new QueryByFilterItemGroup(predicate);
+		addItem(item);
+		return item;
 	}
 
 	public void addItem(QueryByFilterItem item) {
@@ -140,14 +162,6 @@ public class QueryByFilter extends Query {
 		}
 		this.orders.addAll(source.orders);
 		this.projections.addAll(source.projections);
-	}
-
-	public void addProjection(String field) {
-		projections.add(new QueryByFilterProjection(field));
-	}
-
-	public void addProjection(String field, ProjectionOperator operator) {
-		projections.add(new QueryByFilterProjection(field, operator));
 	}
 
 	public List<QueryByFilterProjection> getProjections() {
