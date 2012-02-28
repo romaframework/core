@@ -29,7 +29,7 @@ public class SchemaEventDelegate extends SchemaEventReflection {
 	@Override
 	public Object invokeFinal(Object iContent, Object[] params) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		if (method != null) {
-			super.invoke(iContent, params);
+			return super.invokeFinal(iContent, params);
 		}
 		iContent = object.getValue(iContent);
 		return delegate.invoke(iContent, params);
