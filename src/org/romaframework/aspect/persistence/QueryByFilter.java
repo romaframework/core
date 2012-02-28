@@ -20,40 +20,43 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.romaframework.aspect.persistence.QueryByFilterProjection.ProjectionOperator;
+
 public class QueryByFilter extends Query {
-	private Class<?>									candidateClass;
+	private Class<?>											candidateClass;
 
-	private List<QueryByFilterItem>		items;
-	private List<QueryByFilterOrder>	orders;
-	private String										predicateOperator;
+	private List<QueryByFilterItem>				items;
+	private List<QueryByFilterOrder>			orders;
+	private List<QueryByFilterProjection>	projections;
+	private String												predicateOperator;
 
-	public static final QueryOperator	FIELD_LIKE					= QueryOperator.LIKE;
-	public static final QueryOperator	FIELD_NOT_EQUALS		= QueryOperator.NOT_EQUALS;
-	public static final QueryOperator	FIELD_MAJOR_EQUALS	= QueryOperator.MAJOR_EQUALS;
-	public static final QueryOperator	FIELD_MINOR_EQUALS	= QueryOperator.MINOR_EQUALS;
-	public static final QueryOperator	FIELD_MAJOR					= QueryOperator.MAJOR;
-	public static final QueryOperator	FIELD_MINOR					= QueryOperator.MINOR;
-	public static final QueryOperator	FIELD_EQUALS				= QueryOperator.EQUALS;
-	public static final QueryOperator	FIELD_CONTAINS			= QueryOperator.CONTAINS;
-	public static final QueryOperator	FIELD_IN						= QueryOperator.IN;
-	public static final QueryOperator	FIELD_NOT_IN				= QueryOperator.NOT_IN;
+	public static final QueryOperator			FIELD_LIKE					= QueryOperator.LIKE;
+	public static final QueryOperator			FIELD_NOT_EQUALS		= QueryOperator.NOT_EQUALS;
+	public static final QueryOperator			FIELD_MAJOR_EQUALS	= QueryOperator.MAJOR_EQUALS;
+	public static final QueryOperator			FIELD_MINOR_EQUALS	= QueryOperator.MINOR_EQUALS;
+	public static final QueryOperator			FIELD_MAJOR					= QueryOperator.MAJOR;
+	public static final QueryOperator			FIELD_MINOR					= QueryOperator.MINOR;
+	public static final QueryOperator			FIELD_EQUALS				= QueryOperator.EQUALS;
+	public static final QueryOperator			FIELD_CONTAINS			= QueryOperator.CONTAINS;
+	public static final QueryOperator			FIELD_IN						= QueryOperator.IN;
+	public static final QueryOperator			FIELD_NOT_IN				= QueryOperator.NOT_IN;
 
-	public static final String				PREDICATE_AND				= "and";
-	public static final String				PREDICATE_OR				= "or";
-	public static final String				PREDICATE_NOT				= "not";
+	public static final String						PREDICATE_AND				= "and";
+	public static final String						PREDICATE_OR				= "or";
+	public static final String						PREDICATE_NOT				= "not";
 
-	public static final String				ORDER_ASC						= "ASC";
-	public static final String				ORDER_DESC					= "DESC";
+	public static final String						ORDER_ASC						= "ASC";
+	public static final String						ORDER_DESC					= "DESC";
 
 	public QueryByFilter(Class<?> iCandidateClass) {
 		this(iCandidateClass, PREDICATE_AND);
 	}
 
-	// @SpringConstructor(constructorParamsGetters = { "getCandidateClass", "getPredicateOperator" })
 	public QueryByFilter(Class<?> iCandidateClass, String iPredicateOperator) {
 		candidateClass = iCandidateClass;
 		items = new ArrayList<QueryByFilterItem>();
 		orders = new ArrayList<QueryByFilterOrder>();
+		projections = new ArrayList<QueryByFilterProjection>();
 		predicateOperator = iPredicateOperator;
 		rangeFrom = -1;
 		rangeTo = -1;
@@ -114,7 +117,6 @@ public class QueryByFilter extends Query {
 		orders.clear();
 	}
 
-	// @SpringDescribe(nested = true)
 	public List<QueryByFilterItem> getItems() {
 		return items;
 	}
@@ -137,6 +139,19 @@ public class QueryByFilter extends Query {
 			this.items.addAll(source.getItems());
 		}
 		this.orders.addAll(source.orders);
+		this.projections.addAll(source.projections);
+	}
+
+	public void addProjection(String field) {
+		projections.add(new QueryByFilterProjection(field));
+	}
+
+	public void addProjection(String field, ProjectionOperator operator) {
+		projections.add(new QueryByFilterProjection(field, operator));
+	}
+
+	public List<QueryByFilterProjection> getProjections() {
+		return projections;
 	}
 
 }
