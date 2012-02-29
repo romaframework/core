@@ -16,6 +16,11 @@ public class QueryByFilterItemReverse implements QueryByFilterItem {
 	private QueryOperator operator;
 
 	public QueryByFilterItemReverse(QueryByFilter queryByFilter, String field, QueryOperator operator) {
+		if(field == null || field.isEmpty())
+			throw new NullPointerException("Cannot add a reverse item with reverse field empty");
+		if(queryByFilter == null )
+			throw new NullPointerException("Cannot add a reverse item with reverse QueryByFilter empty");
+
 		this.setQueryByFilter(queryByFilter);
 		this.setField(field);
 		this.setOperator(operator);

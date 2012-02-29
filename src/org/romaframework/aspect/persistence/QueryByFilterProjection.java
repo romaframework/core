@@ -3,7 +3,7 @@ package org.romaframework.aspect.persistence;
 public class QueryByFilterProjection {
 
 	public enum ProjectionOperator {
-		PLAIN, COUNT, MIN, MAX, AVG
+		PLAIN, COUNT, MIN, MAX, SUM, AVG
 	}
 
 	private String							field;
