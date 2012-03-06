@@ -531,7 +531,7 @@ public class Roma implements ScriptingAspectListener {
 	 * @param entityClass
 	 * @return
 	 */
-	public static <T extends GenericFactory<Z>, Z> T factory(Class<Z> entityClass) {
+	public static <T extends GenericFactory<Z>,Z> T factory(Class<Z> entityClass) {
 		return (T) factory(Roma.schema().getSchemaClass(entityClass));
 	}
 
@@ -582,7 +582,7 @@ public class Roma implements ScriptingAspectListener {
 	 *          the {@link Class<Z>} of domain class.
 	 * @return the repository instance.
 	 */
-	public static <T extends GenericRepository<Z>, Z> T repository(Class<Z> entityClass) {
+	public static <Z, T extends GenericRepository<Z>> T repository(Class<Z> entityClass) {
 		return entityClass != null ? (T) repository(Roma.schema().getSchemaClass(entityClass)) : null;
 	}
 

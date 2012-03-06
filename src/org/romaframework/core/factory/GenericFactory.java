@@ -50,7 +50,7 @@ public interface GenericFactory<T> {
 	 * 
 	 * @return the {@link Class} of the objects that are instantiated by this factory
 	 */
-	public Class<? extends T> getEntityClass();
+	public <Z extends T> Class<Z> getEntityClass();
 
 	/**
 	 * returns the {@link SchemaClass} of the objects that are instantiated by this factory

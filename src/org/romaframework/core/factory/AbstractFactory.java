@@ -33,7 +33,7 @@ public abstract class AbstractFactory<T> implements GenericFactory<T> {
 
 	public T create() {
 		T instance = null;
-		Class<?> cl = getEntityClass();
+		Class<T> cl = getEntityClass();
 		if (cl != null) {
 			try {
 				instance = (T) cl.newInstance();
@@ -44,8 +44,8 @@ public abstract class AbstractFactory<T> implements GenericFactory<T> {
 		return instance;
 	}
 
-	public Class<? extends T> getEntityClass() {
-		return (Class<? extends T>) SchemaHelper.getGenericClass(getClass().getGenericSuperclass());
+	public <Z extends T> Class<Z> getEntityClass(){
+		return (Class<Z>) SchemaHelper.getGenericClass(getClass().getGenericSuperclass());
 	}
 
 	public SchemaClass getEntitySchemaClass() {
