@@ -16,7 +16,7 @@
 
 package org.romaframework.aspect.persistence;
 
-public class Query {
+public abstract class Query {
 	protected int			totalItems			= -1;
 	protected int			rangeFrom				= -1;
 	protected int			rangeTo					= -1;
@@ -69,4 +69,7 @@ public class Query {
 	public void setMode(String mode) {
 		this.mode = mode;
 	}
+
+	public abstract boolean hasProjection();
+	
 }

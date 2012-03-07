@@ -185,8 +185,8 @@ public class CoreAspect extends SelfRegistrantModule implements Aspect, RomaAppl
 					toRemoveEvents.add(sf);
 			}
 		}
-		for (SchemaEvent schemaField : toRemoveEvents) {
-			cl.getEvents().remove(schemaField.getName());
+		for (SchemaEvent schemaEvent : toRemoveEvents) {
+			cl.removeEvent(schemaEvent);
 		}
 
 	}

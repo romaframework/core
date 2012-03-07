@@ -17,36 +17,39 @@
 package org.romaframework.aspect.persistence;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.romaframework.aspect.persistence.QueryByFilterProjection.ProjectionOperator;
 
 public class QueryByFilter extends Query {
-	private Class<?>											candidateClass;
+	private Class<?>															candidateClass;
 
-	private List<QueryByFilterItem>				items;
-	private List<QueryByFilterOrder>			orders;
-	private List<QueryByFilterProjection>	projections;
-	private String												predicateOperator;
+	private List<QueryByFilterItem>								items;
+	private List<QueryByFilterOrder>							orders;
+	private List<QueryByFilterProjection>					projections;
+	private String																predicateOperator;
+	private Map<String, QueryByFilterItemReverse>	reverse							= new HashMap<String, QueryByFilterItemReverse>();
 
-	public static final QueryOperator			FIELD_LIKE					= QueryOperator.LIKE;
-	public static final QueryOperator			FIELD_NOT_EQUALS		= QueryOperator.NOT_EQUALS;
-	public static final QueryOperator			FIELD_MAJOR_EQUALS	= QueryOperator.MAJOR_EQUALS;
-	public static final QueryOperator			FIELD_MINOR_EQUALS	= QueryOperator.MINOR_EQUALS;
-	public static final QueryOperator			FIELD_MAJOR					= QueryOperator.MAJOR;
-	public static final QueryOperator			FIELD_MINOR					= QueryOperator.MINOR;
-	public static final QueryOperator			FIELD_EQUALS				= QueryOperator.EQUALS;
-	public static final QueryOperator			FIELD_CONTAINS			= QueryOperator.CONTAINS;
-	public static final QueryOperator			FIELD_IN						= QueryOperator.IN;
-	public static final QueryOperator			FIELD_NOT_IN				= QueryOperator.NOT_IN;
+	public static final QueryOperator							FIELD_LIKE					= QueryOperator.LIKE;
+	public static final QueryOperator							FIELD_NOT_EQUALS		= QueryOperator.NOT_EQUALS;
+	public static final QueryOperator							FIELD_MAJOR_EQUALS	= QueryOperator.MAJOR_EQUALS;
+	public static final QueryOperator							FIELD_MINOR_EQUALS	= QueryOperator.MINOR_EQUALS;
+	public static final QueryOperator							FIELD_MAJOR					= QueryOperator.MAJOR;
+	public static final QueryOperator							FIELD_MINOR					= QueryOperator.MINOR;
+	public static final QueryOperator							FIELD_EQUALS				= QueryOperator.EQUALS;
+	public static final QueryOperator							FIELD_CONTAINS			= QueryOperator.CONTAINS;
+	public static final QueryOperator							FIELD_IN						= QueryOperator.IN;
+	public static final QueryOperator							FIELD_NOT_IN				= QueryOperator.NOT_IN;
 
-	public static final String						PREDICATE_AND				= "and";
-	public static final String						PREDICATE_OR				= "or";
-	public static final String						PREDICATE_NOT				= "not";
+	public static final String										PREDICATE_AND				= "and";
+	public static final String										PREDICATE_OR				= "or";
+	public static final String										PREDICATE_NOT				= "not";
 
-	public static final String						ORDER_ASC						= "ASC";
-	public static final String						ORDER_DESC					= "DESC";
+	public static final String										ORDER_ASC						= "ASC";
+	public static final String										ORDER_DESC					= "DESC";
 
 	public QueryByFilter(Class<?> iCandidateClass) {
 		this(iCandidateClass, PREDICATE_AND);
@@ -103,7 +106,54 @@ public class QueryByFilter extends Query {
 	}
 
 	public void addItem(QueryByFilterItem item) {
-		items.add(item);
+		if (checkReverse(item))
+			items.add(item);
+	}
+
+	protected boolean checkReverse(QueryByFilterItem item) {
+		if (item instanceof QueryByFilterItemReverse) {
+			QueryByFilterItemReverse curRev = (QueryByFilterItemReverse) item;
+			QueryByFilterItemReverse rev = reverse.get(curRev.getField());
+			if (rev == null) {
+				reverse.put(curRev.getField(), curRev);
+			} else {
+				QueryByFilter qbf = rev.getQueryByFilter();
+				QueryByFilter qbfNew = curRev.getQueryByFilter();
+				qbf.orders.addAll(qbfNew.orders);
+				qbf.projections.addAll(qbfNew.projections);
+				if (!qbf.getPredicateOperator().equals(getPredicateOperator())) {
+					QueryByFilterItemGroup group = new QueryByFilterItemGroup(qbf.getPredicateOperator());
+					group.getItems().addAll(qbf.items);
+					QueryByFilterItemGroup group2 = new QueryByFilterItemGroup(qbfNew.getPredicateOperator());
+					group2.getItems().addAll(qbfNew.items);
+					qbf.items.clear();
+					qbf.addItem(group);
+					qbf.addItem(group2);
+					qbf.predicateOperator = getPredicateOperator();
+				} else {
+					if (qbf.getPredicateOperator().equals(qbfNew.getPredicateOperator())) {
+						for (QueryByFilterItem curItem : qbfNew.items) {
+							qbf.addItem(curItem);
+						}
+					} else {
+						QueryByFilterItemGroup group = new QueryByFilterItemGroup(qbfNew.getPredicateOperator());
+						group.getItems().addAll(qbfNew.items);
+						qbf.addItem(item);
+					}
+				}
+				return false;
+			}
+		} else if (item instanceof QueryByFilterItemGroup) {
+			List<QueryByFilterItem> toRemove = new ArrayList<QueryByFilterItem>();
+			for (QueryByFilterItem child : ((QueryByFilterItemGroup) item).getItems()) {
+				if (!checkReverse(child)) {
+					toRemove.add(child);
+				}
+			}
+			((QueryByFilterItemGroup) item).getItems().removeAll(toRemove);
+			return !((QueryByFilterItemGroup) item).getItems().isEmpty();
+		}
+		return true;
 	}
 
 	public QueryByFilterItem getItem(int iPosition) {
@@ -166,6 +216,14 @@ public class QueryByFilter extends Query {
 
 	public List<QueryByFilterProjection> getProjections() {
 		return projections;
+	}
+
+	public List<QueryByFilterOrder> getOrders() {
+		return orders;
+	}
+
+	public boolean hasProjection() {
+		return !projections.isEmpty();
 	}
 
 }

@@ -403,7 +403,7 @@ public class SchemaClassReflection extends SchemaClass {
 			} else
 				superClass = new SchemaClassReflection(javaSuperClass);
 
-			if (javaSuperClass.equals(this))
+			if (javaSuperClass.equals(this.javaClass))
 				// EXTENSION BY CONVENTION NAME: REMOVE PARENT TO AVOID RECURSION
 				javaSuperClass = null;
 		}

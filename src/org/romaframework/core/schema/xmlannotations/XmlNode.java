@@ -1,6 +1,11 @@
 package org.romaframework.core.schema.xmlannotations;
 
-public class XmlNode {
+import java.io.Serializable;
+
+public class XmlNode implements Serializable {
+
+	private static final long	serialVersionUID	= 248531074995678342L;
+	
 	protected String	text;
 
 	@Override
@@ -19,7 +24,7 @@ public class XmlNode {
 		if (value != null)
 			value = value.trim();
 
-		if (value.length() == 0)
+		if (value != null && value.length() == 0)
 			value = null;
 
 		this.text = value;

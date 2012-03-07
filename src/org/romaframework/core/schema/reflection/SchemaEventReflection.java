@@ -99,7 +99,6 @@ public class SchemaEventReflection extends SchemaEvent {
 			paramAnn = parentDescriptor.getParameters();
 		for (SchemaParameter parameter : getParameters().values()) {
 			XmlParameterAnnotation xmlParam = null;
-			paramAnn.get(i++);
 			if (paramAnn != null)
 				xmlParam = paramAnn.get(i++);
 			parameter.configure(method, xmlParam);

@@ -422,4 +422,8 @@ public abstract class SchemaClass extends SchemaClassDefinition implements Compa
 
 		makeDependency(schemaIfc);
 	}
+
+	public void removeEvent(SchemaEvent schemaEvent) {
+		events.remove(schemaEvent.getName());
+	}
 }

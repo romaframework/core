@@ -94,13 +94,13 @@ public class FileUtils {
 
 			tempImage.delete();
 			copyStream(in, new FileOutputStream(tempImage));
+			tempImage.deleteOnExit();
 		} catch (IOException ioe) {
 			log.error(ioe);
 			tempImage = null;
 		} catch (NullPointerException npe) {
 			tempImage = null;
 		}
-		tempImage.deleteOnExit();
 		return tempImage;
 	}
 

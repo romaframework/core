@@ -61,14 +61,12 @@ public abstract class PersistenceAspectAbstract implements PersistenceAspect {
 		if (iElement instanceof SchemaActionReflection) {
 			annotation = (Persistence) ((SchemaActionReflection) iElement).getMethod().getAnnotation(Persistence.class);
 		}
-		if (annotation != null) {
 			// PROCESS ANNOTATIONS
 			// ANNOTATION ATTRIBUTES (IF DEFINED) OVERWRITE DEFAULT VALUES
 			if (annotation != null) {
 				if (!annotation.mode().equals(PersistenceConstants.MODE_NOTHING))
 					iElement.setFeature(PersistenceFeatures.MODE, annotation.mode());
 			}
-		}
 
 	}
 
