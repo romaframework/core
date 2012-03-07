@@ -25,6 +25,12 @@ public @interface ValidationField {
 	String match() default AnnotationConstants.DEF_VALUE;
 
 	/**
+	 * Validation rule to check against it, on the user interface
+	 * @since 3.0
+	 */
+	String uiValidation() default AnnotationConstants.DEF_VALUE;
+
+	/**
 	 * Minimum value for numeric fields and minimum length for strings
 	 */
 	int min() default DEF_MIN;

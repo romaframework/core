@@ -36,8 +36,8 @@
 
 	<target name="clean-ivy-cache" depends="install-ivy">
 		<ivy:info />
-		<echo>${ivy.cache.dir}/org.romaframework</echo>
-		<delete dir="${ivy.cache.dir}/org.romaframework" />
+		<echo>${ivy.cache.dir}/org.romaframework/${ant.project.name}</echo>
+		<delete dir="${ivy.cache.dir}/org.romaframework/${ant.project.name}" />
 	</target>
 
 	<target name="clean-all" depends="clean,clean-dist,clean-ivy">
@@ -152,6 +152,7 @@
 		<ivy:publish resolver="local" overwrite="true" conf="default,wizard,test">
 			<ivy:artifacts pattern="${project.dist}/[artifact](-[classifier]).[ext]" />
 		</ivy:publish>
+		<antcall target="clean-ivy-cache" />
 	</target>
 
 	<target name="remote-publish" depends="dist,javadoc,sources">
