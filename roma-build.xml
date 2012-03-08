@@ -21,7 +21,6 @@
 
 	<property name="ivy.install.version" value="2.2.0" />
 	<property name="ivy.jar.file" value="${project.lib}/ivy.jar" />
-	<available resource="org/apache/ivy/ant/antlib.xml" property="ivy.in.classpath" />
 
 	<target name="clean">
 		<delete dir="${project.build}" />
@@ -55,8 +54,8 @@
 		<echo message="installing ivy..." />
 		<get src="http://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar" dest="${ivy.jar.file}" usetimestamp="true" />
 	</target>
-	
-	<target name="install-ivy" unless="ivy.in.classpath">
+
+	<target name="install-ivy">
 		<available file="${ivy.jar.file}" property="ivy.download.skip" />
 		<antcall target="download-ivy" />
 		<path id="ivy.lib.path">
@@ -65,14 +64,20 @@
 		<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path" />
 	</target>
 
-	<target name="resolve-dependencies" depends="install-ivy">
+	<target name="resolve-dependencies" depends="install-ivy" unless="ivy.resolve.skip">
 		<echo>Retrieving libs</echo>
 		<ivy:retrieve pattern="${project.lib}/[artifact].[ext]" />
 	</target>
 
-	<target name="compile" depends="install-ivy">
+	<target name="compile">
 
-		<ivy:cachepath pathid="project.classpath" conf="default" />
+		<available file="${project.lib}" property="ivy.resolve.skip" />
+
+		<antcall target="resolve-dependencies" />
+
+		<path id="project.classpath">
+			<fileset dir="${project.lib}" includes="**/*.jar" />
+		</path>
 
 		<echo message="------------------------------------------------------------------------" />
 		<echo message="${ant.project.name} - debug=${project.is-debug} - compiler=${project.targetComp}" />
@@ -155,7 +160,7 @@
 		<ivy:settings file="${ivy.default.ivy.user.dir}/ivysettings.xml" id="pub" />
 		<ivy:deliver deliverpattern="${project.dist}/[artifact].[ext]" />
 		<ivy:makepom ivyfile="${project.dist}/ivy.xml" pomfile="${project.dist}/${ant.project.name}.pom" templatefile="pom-template.pom" printIvyInfo="false">
-			<mapping conf="default" scope="compile" />
+			<mapping conf="default" scope="compile"/>
 		</ivy:makepom>
 		<ivy:publish resolver="${resolver}" overwrite="true" settingsref="pub" conf="default,wizard,publish">
 			<ivy:artifacts pattern="${project.dist}/[artifact](-[classifier]).[ext]" />
@@ -166,7 +171,11 @@
 	</target>
 
 	<target name="javadoc">
-		<ivy:cachepath pathid="project.classpath" conf="default" />
+		<antcall target="resolve-dependencies" />
+
+		<path id="project.classpath">
+			<fileset dir="${project.lib}" includes="**/*.jar" />
+		</path>
 		<javadoc access="public" author="true" doctitle="Roma MetaFramework JavaDoc" nodeprecated="false" splitindex="true" use="true" version="true" destdir="${project.build}/doc" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="1.5" sourcepath="${project.src}" packagenames="org.romaframework.*">
 			<classpath>
 				<path refid="project.classpath" />
