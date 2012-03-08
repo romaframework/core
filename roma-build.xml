@@ -72,7 +72,7 @@
 
 	<target name="compile" depends="install-ivy">
 
-		<ivy:cachepath pathid="project.classpath" conf="default" />
+		<ivy:cachepath pathid="project.classpath"/>
 
 		<echo message="------------------------------------------------------------------------" />
 		<echo message="${ant.project.name} - debug=${project.is-debug} - compiler=${project.targetComp}" />
@@ -166,7 +166,7 @@
 	</target>
 
 	<target name="javadoc">
-		<ivy:cachepath pathid="project.classpath" conf="default" />
+		<ivy:cachepath pathid="project.classpath"/>
 		<javadoc access="public" author="true" doctitle="Roma MetaFramework JavaDoc" nodeprecated="false" splitindex="true" use="true" version="true" destdir="${project.build}/doc" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="1.5" sourcepath="${project.src}" packagenames="org.romaframework.*">
 			<classpath>
 				<path refid="project.classpath" />
