@@ -113,9 +113,10 @@ public class QueryByFilter extends Query {
 	protected boolean checkReverse(QueryByFilterItem item) {
 		if (item instanceof QueryByFilterItemReverse) {
 			QueryByFilterItemReverse curRev = (QueryByFilterItemReverse) item;
-			QueryByFilterItemReverse rev = reverse.get(curRev.getField());
+			String key = curRev.getQueryByFilter().getCandidateClass().getSimpleName() + "." + curRev.getField();
+			QueryByFilterItemReverse rev = reverse.get(key);
 			if (rev == null) {
-				reverse.put(curRev.getField(), curRev);
+				reverse.put(key, curRev);
 			} else {
 				QueryByFilter qbf = rev.getQueryByFilter();
 				QueryByFilter qbfNew = curRev.getQueryByFilter();
