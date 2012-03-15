@@ -80,15 +80,11 @@ public class QueryByFilter extends Query {
 	}
 
 	public void addReverseItem(QueryByFilter byFilter, String field) {
-		addReverseItem(byFilter, field, false, QueryOperator.EQUALS);
+		addReverseItem(byFilter, field, QueryOperator.EQUALS);
 	}
 
-	public void addReverseItem(QueryByFilter byFilter, String field, boolean outer) {
-		addReverseItem(byFilter, field, outer, QueryOperator.EQUALS);
-	}
-
-	public void addReverseItem(QueryByFilter byFilter, String field, boolean outer, QueryOperator operator) {
-		addItem(new QueryByFilterItemReverse(byFilter, field, outer, operator));
+	public void addReverseItem(QueryByFilter byFilter, String field, QueryOperator operator) {
+		addItem(new QueryByFilterItemReverse(byFilter, field, operator));
 	}
 
 	public void addItem(String iCondition) {
@@ -117,7 +113,7 @@ public class QueryByFilter extends Query {
 	protected boolean checkReverse(QueryByFilterItem item) {
 		if (item instanceof QueryByFilterItemReverse) {
 			QueryByFilterItemReverse curRev = (QueryByFilterItemReverse) item;
-			String key = ((QueryByFilterItemReverse) item).isOuter() + "." + curRev.getQueryByFilter().getCandidateClass().getSimpleName() + "." + curRev.getField();
+			String key = curRev.getQueryByFilter().getCandidateClass().getSimpleName() + "." + curRev.getField();
 			QueryByFilterItemReverse rev = reverse.get(key);
 			if (rev == null) {
 				reverse.put(key, curRev);
