@@ -9,7 +9,7 @@ import org.romaframework.core.schema.SchemaClassDefinition;
 import org.romaframework.core.schema.SchemaField;
 import org.romaframework.core.schema.SchemaParameter;
 
-public class SchemaActionDelegate extends SchemaActionReflection {
+public class SchemaActionDelegate extends SchemaActionReflection implements SchemaElementDelegate {
 
 	private static final long	serialVersionUID	= 8218389759537742464L;
 	private SchemaField				object;
@@ -48,5 +48,9 @@ public class SchemaActionDelegate extends SchemaActionReflection {
 			return ((SchemaActionReflection) this.delegate).getMethod();
 		}
 		return null;
+	}
+
+	public SchemaAction getDelegate() {
+		return delegate;
 	}
 }

@@ -8,7 +8,7 @@ import org.romaframework.core.schema.SchemaEvent;
 import org.romaframework.core.schema.SchemaField;
 import org.romaframework.core.schema.SchemaParameter;
 
-public class SchemaEventDelegate extends SchemaEventReflection {
+public class SchemaEventDelegate extends SchemaEventReflection implements SchemaElementDelegate{
 
 	private static final long	serialVersionUID	= 8218389759537742464L;
 	private SchemaField				object;
@@ -39,4 +39,7 @@ public class SchemaEventDelegate extends SchemaEventReflection {
 		return object;
 	}
 
+	public SchemaEvent getDelegate() {
+		return delegate;
+	}
 }

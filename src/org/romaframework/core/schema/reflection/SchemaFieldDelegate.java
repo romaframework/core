@@ -9,7 +9,7 @@ import org.romaframework.core.exception.ConfigurationException;
 import org.romaframework.core.schema.SchemaClassDefinition;
 import org.romaframework.core.schema.SchemaField;
 
-public class SchemaFieldDelegate extends SchemaFieldReflection {
+public class SchemaFieldDelegate extends SchemaFieldReflection implements SchemaElementDelegate {
 
 	private static Log				log								= LogFactory.getLog(SchemaFieldDelegate.class);
 	private static final long	serialVersionUID	= 2722942571708547502L;
