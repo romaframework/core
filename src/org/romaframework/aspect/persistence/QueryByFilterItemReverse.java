@@ -13,9 +13,10 @@ import org.romaframework.aspect.persistence.QueryOperator;
 public class QueryByFilterItemReverse implements QueryByFilterItem {
 	private QueryByFilter	queryByFilter;
 	private String				field;
+	private String				fieldReverse;
 	private QueryOperator	operator;
 
-	public QueryByFilterItemReverse(QueryByFilter queryByFilter, String field, QueryOperator operator) {
+	public QueryByFilterItemReverse(QueryByFilter queryByFilter, String field, String fieldReverse, QueryOperator operator) {
 		if (field == null || field.isEmpty())
 			throw new NullPointerException("Cannot add a reverse item with reverse field empty");
 		if (queryByFilter == null)
@@ -24,6 +25,7 @@ public class QueryByFilterItemReverse implements QueryByFilterItem {
 		this.setQueryByFilter(queryByFilter);
 		this.setField(field);
 		this.setOperator(operator);
+		this.fieldReverse = fieldReverse;
 	}
 
 	public void setQueryByFilter(QueryByFilter queryByFilter) {
@@ -48,6 +50,10 @@ public class QueryByFilterItemReverse implements QueryByFilterItem {
 
 	public QueryOperator getOperator() {
 		return this.operator;
+	}
+
+	public String getFieldReverse() {
+		return fieldReverse;
 	}
 
 }

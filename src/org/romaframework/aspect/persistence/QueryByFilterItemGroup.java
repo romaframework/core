@@ -43,11 +43,15 @@ public class QueryByFilterItemGroup implements QueryByFilterItem {
 	}
 
 	public void addReverseItem(QueryByFilter byFilter, String field) {
-		addReverseItem(byFilter, field, QueryOperator.EQUALS);
+		addReverseItem(byFilter, field, null, QueryOperator.EQUALS);
 	}
 
-	public void addReverseItem(QueryByFilter byFilter, String field, QueryOperator operator) {
-		addItem(new QueryByFilterItemReverse(byFilter, field, operator));
+	public void addReverseItem(QueryByFilter byFilter, String field, String fieldReverse) {
+		addReverseItem(byFilter, field, null, QueryOperator.EQUALS);
+	}
+
+	public void addReverseItem(QueryByFilter byFilter, String field, String fieldReverse, QueryOperator operator) {
+		addItem(new QueryByFilterItemReverse(byFilter, field, fieldReverse, operator));
 	}
 
 	@Override
