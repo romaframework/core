@@ -19,6 +19,7 @@ package org.romaframework.aspect.core;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -38,20 +39,24 @@ import org.romaframework.core.domain.entity.ComposedEntity;
 import org.romaframework.core.flow.Controller;
 import org.romaframework.core.module.SelfRegistrantModule;
 import org.romaframework.core.resource.AutoReloadManager;
+import org.romaframework.core.schema.Feature;
 import org.romaframework.core.schema.FeatureType;
 import org.romaframework.core.schema.SchemaAction;
 import org.romaframework.core.schema.SchemaClass;
 import org.romaframework.core.schema.SchemaClassDefinition;
 import org.romaframework.core.schema.SchemaClassResolver;
+import org.romaframework.core.schema.SchemaElement;
 import org.romaframework.core.schema.SchemaEvent;
+import org.romaframework.core.schema.SchemaFeaturesChangeListener;
 import org.romaframework.core.schema.SchemaField;
 import org.romaframework.core.schema.SchemaHelper;
+import org.romaframework.core.schema.SchemaObject;
 import org.romaframework.core.schema.reflection.SchemaActionDelegate;
 import org.romaframework.core.schema.reflection.SchemaEventDelegate;
 import org.romaframework.core.schema.reflection.SchemaFieldDelegate;
 import org.romaframework.core.schema.reflection.SchemaFieldReflection;
 
-public class CoreAspect extends SelfRegistrantModule implements Aspect, RomaApplicationListener, ClassLoaderListener {
+public class CoreAspect extends SelfRegistrantModule implements Aspect, RomaApplicationListener, ClassLoaderListener, SchemaFeaturesChangeListener {
 
 	public static final String	ASPECT_NAME							= "core";
 
@@ -62,6 +67,7 @@ public class CoreAspect extends SelfRegistrantModule implements Aspect, RomaAppl
 	public CoreAspect() {
 		Controller.getInstance().registerListener(RomaApplicationListener.class, this);
 		Controller.getInstance().registerListener(ClassLoaderListener.class, this);
+		Controller.getInstance().registerListener(SchemaFeaturesChangeListener.class, this);
 	}
 
 	public void startup() {
@@ -297,4 +303,48 @@ public class CoreAspect extends SelfRegistrantModule implements Aspect, RomaAppl
 		if (ann != null && ann.loading() == CoreClass.LOADING_MODE.EARLY)
 			classesToBeLoadedEarly.add(iClass);
 	}
+
+	public <T> void signalChangeAction(Object iUserObject, String iActionName, Feature<T> iFeature, T iOldValue, T iFeatureValue) {
+	};
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public <T> void signalChangeClass(Object iUserObject, Feature<T> iFeature, T iOldValue, T iFeatureValue) {
+		if (Roma.session().getActiveSessionInfo() != null) {
+			if (iFeature == CoreClassFeatures.ORDER_FIELDS) {
+				SchemaObject obje = Roma.session().getSchemaObject(iUserObject);
+				obje.setOrderFields((List) orderElements((Collection) obje.getFields().values(), (String[]) iFeatureValue));
+			} else if (iFeature == CoreClassFeatures.ORDER_ACTIONS) {
+				SchemaObject obje = Roma.session().getSchemaObject(iUserObject);
+				obje.setOrderActions((List) orderElements((Collection) obje.getActions().values(), (String[]) iFeatureValue));
+			}
+		}
+	}
+
+	private List<SchemaElement> orderElements(Collection<SchemaElement> elements, String[] orderedValues) {
+		List<SchemaElement> ls = new ArrayList<SchemaElement>(elements);
+		SchemaElement newOrdered[] = new SchemaElement[ls.size()];
+		for (SchemaElement sf : ls) {
+			for (int fieldNum = 0; fieldNum < orderedValues.length; ++fieldNum) {
+				if (orderedValues[fieldNum].equals(sf.getName())) {
+					newOrdered[fieldNum] = sf;
+					sf.setOrder(fieldNum);
+				}
+			}
+		}
+		List<SchemaElement> newOrderedFields = new ArrayList<SchemaElement>();
+		for (SchemaElement field : newOrdered) {
+			if (field != null)
+				newOrderedFields.add(field);
+		}
+		ls.removeAll(newOrderedFields);
+		for (SchemaElement field : ls) {
+			newOrderedFields.add(field);
+			field.setOrder(newOrderedFields.size() - 1);
+		}
+		return newOrderedFields;
+	}
+
+	public <T> void signalChangeField(Object iUserObject, String iFieldName, Feature<T> iFeature, T iOldValue, T iFeatureValue) {
+	};
+
 }
