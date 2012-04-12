@@ -208,50 +208,37 @@ public class CoreAspect extends SelfRegistrantModule implements Aspect, RomaAppl
 
 			SchemaFieldReflection ref = (SchemaFieldReflection) iField;
 			SchemaClass[] embeddedTypeGenerics = null;
-			Type embType = null;
+			Type fieldType = null;
 			if (ref.getGetterMethod() != null) {
-				if ((embType = assignEmbeddedType(ref, ref.getGetterMethod().getGenericReturnType())) == null)
-					embType = assignEmbeddedType(ref, ref.getGetterMethod().getReturnType());
+				if ((fieldType = ref.getGetterMethod().getGenericReturnType()) == null) {
+					fieldType = ref.getGetterMethod().getReturnType();
+				}
 			}
 
-			if (embType == null && ref.getField() != null)
-				embType = assignEmbeddedType(ref, ref.getField().getGenericType());
+			if (fieldType == null && ref.getField() != null) {
+				if ((fieldType = ref.getField().getGenericType()) == null) {
+					fieldType = ref.getField().getType();
+				}
+			}
 
-			if (embType != null && embType instanceof ParameterizedType) {
-				ParameterizedType pt = (ParameterizedType) embType;
+			if (fieldType != null && fieldType instanceof ParameterizedType) {
+				ParameterizedType ownerType = SchemaHelper.resolveParameterizedType((Type) ref.getEntity().getSchemaClass().getLanguageType());
+				ParameterizedType pt = (ParameterizedType) fieldType;
 				if (pt.getActualTypeArguments() != null) {
 					embeddedTypeGenerics = new SchemaClass[pt.getActualTypeArguments().length];
 					int i = 0;
 					for (Type argType : pt.getActualTypeArguments())
-						if (argType instanceof Class<?>)
-							embeddedTypeGenerics[i++] = Roma.schema().getSchemaClassIfExist((Class<?>) argType);
+						embeddedTypeGenerics[i++] = Roma.schema().getSchemaClassIfExist(SchemaHelper.resolveClassFromType(argType, ownerType));
 				}
 				ref.setEmbeddedTypeGenerics(embeddedTypeGenerics);
+				if (embeddedTypeGenerics.length > 0)
+					ref.setEmbeddedType(embeddedTypeGenerics[0]);
+			} else if (fieldType instanceof Class<?>) {
+				Class<?> cls = (Class<?>) fieldType;
+				if (cls.isArray())
+					ref.setEmbeddedLanguageType(cls.getComponentType());
 			}
 		}
-	}
-
-	/**
-	 * Get embedded type using Generics Reflection.
-	 * 
-	 * @param iType
-	 *          Type to check
-	 * @return true if an embedded type was found, otherwise false
-	 */
-	private Type assignEmbeddedType(SchemaFieldReflection ref, Type iType) {
-		// CHECK FOR ARRAY
-		if (iType instanceof Class<?>) {
-			Class<?> cls = (Class<?>) iType;
-			if (cls.isArray())
-				ref.setEmbeddedLanguageType(cls.getComponentType());
-		}
-
-		Class<?> embClass = SchemaHelper.getGenericClass(iType);
-		if (embClass != null) {
-			ref.setEmbeddedLanguageType(embClass);
-		}
-
-		return embClass != null ? iType : null;
 	}
 
 	public void configAction(SchemaAction iAction) {
