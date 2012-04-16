@@ -51,11 +51,11 @@ public class SchemaEventReflection extends SchemaEvent {
 	public static final String		COLLECTION_REMOVE_EVENT	= "Remove";
 
 	public SchemaEventReflection(SchemaField field, String iName, List<SchemaParameter> iOrderedParameters) {
-		super(field, iName, null);
+		super(field, iName, iOrderedParameters);
 	}
 
 	public SchemaEventReflection(SchemaClassDefinition iEntity, String iName, List<SchemaParameter> iOrderedParameters) {
-		super(iEntity, iName, null);
+		super(iEntity, iName, iOrderedParameters);
 	}
 
 	@Override

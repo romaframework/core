@@ -17,6 +17,7 @@
 package org.romaframework.core.schema;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -112,7 +113,19 @@ public abstract class SchemaEvent extends SchemaAction {
 			Object value = null;
 			try {
 
-				value = invokeFinal(iContent, params);
+				if (params != null) {
+					Iterator<SchemaParameter> param = getParameterIterator();
+					Object newValues[] = new Object[params.length];
+					int i = 0;
+					while (param.hasNext()) {
+						SchemaParameter par = param.next();
+						newValues[i] = convertValue(params[i], par.getType());
+						i++;
+					}
+					value = invokeFinal(iContent, newValues);
+				} else {
+					value = invokeFinal(iContent, params);
+				}
 				for (SchemaEventListener listener : listeners) {
 					try {
 						listener.onAfterEvent(iContent, this, value);
