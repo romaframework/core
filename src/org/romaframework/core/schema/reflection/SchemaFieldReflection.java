@@ -3,6 +3,7 @@ package org.romaframework.core.schema.reflection;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -17,6 +18,7 @@ import org.romaframework.core.schema.FeatureLoader;
 import org.romaframework.core.schema.SchemaClass;
 import org.romaframework.core.schema.SchemaClassDefinition;
 import org.romaframework.core.schema.SchemaField;
+import org.romaframework.core.schema.SchemaParameter;
 import org.romaframework.core.schema.config.SchemaConfiguration;
 import org.romaframework.core.schema.xmlannotations.XmlEventAnnotation;
 import org.romaframework.core.schema.xmlannotations.XmlFieldAnnotation;
@@ -66,7 +68,7 @@ public class SchemaFieldReflection extends SchemaField {
 
 				if (eventInfo == null) {
 					// EVENT NOT EXISTENT: CREATE IT AND INSERT IN THE COLLECTION
-					eventInfo = new SchemaEventReflection(this, xmlConfigEventType.getName(), null);
+					eventInfo = new SchemaEventReflection(this, xmlConfigEventType.getName(), new ArrayList<SchemaParameter>());
 					setEvent(xmlConfigEventType.getName(), eventInfo);
 				}
 				eventInfo.configure();
