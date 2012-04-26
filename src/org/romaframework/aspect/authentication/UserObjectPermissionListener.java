@@ -27,11 +27,40 @@ import org.romaframework.core.schema.SchemaField;
  * @author Luca Garulli (luca.garulli--at--assetdata.it)
  */
 public interface UserObjectPermissionListener {
+
+	/**
+	 * Check if an user is allowed to access to specified class
+	 * 
+	 * @param iClass
+	 *          to check.
+	 * @return true if allowed else false.
+	 */
 	public boolean allowClass(SchemaClass iClass);
 
+	/**
+	 * Check if an user is allowed to access to specified field
+	 * 
+	 * @param iField
+	 *          to check.
+	 * @return true if allowed else false.
+	 */
 	public boolean allowField(SchemaField iField);
 
+	/**
+	 * Check if an user is allowed to access to specified action
+	 * 
+	 * @param iAction
+	 *          to check.
+	 * @return true if allowed else false.
+	 */
 	public boolean allowAction(SchemaAction iAction);
 
+	/**
+	 * Check if an user is allowed to access to specified event
+	 * 
+	 * @param iEvent
+	 *          to check.
+	 * @return true if allowed else false.
+	 */
 	public boolean allowEvent(SchemaEvent iEvent);
 }
