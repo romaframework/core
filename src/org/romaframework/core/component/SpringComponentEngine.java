@@ -9,6 +9,7 @@ import org.romaframework.core.Roma;
 import org.romaframework.core.Utility;
 import org.romaframework.core.config.AbstractServiceable;
 import org.romaframework.core.config.ContextException;
+import org.romaframework.core.exception.ConfigurationNotFoundException;
 import org.romaframework.core.schema.SchemaAction;
 import org.romaframework.core.schema.SchemaClass;
 import org.romaframework.core.schema.SchemaClassDefinition;
@@ -93,7 +94,9 @@ public class SpringComponentEngine extends AbstractServiceable implements Compon
 	public <T> T autoComponent(Class<?> iClass) {
 		try {
 			String iComponentName = Utility.getClassName(iClass);
-			T val = (T) springContext.getBean(iComponentName, iClass);
+			T val = null;
+			if (springContext.containsBean(iComponentName))
+				val = (T) springContext.getBean(iComponentName);
 			if (val == null) {
 				Object comp;
 				synchronized (components) {
@@ -103,7 +106,7 @@ public class SpringComponentEngine extends AbstractServiceable implements Compon
 							comp = iClass.newInstance();
 							components.put(iComponentName, comp);
 						} catch (Exception e) {
-							log.warn("Error create new instance of component:'" + Utility.getClassName(iClass) + "'", e);
+							log.warn("Error create new instance of component:'" + iComponentName + "'", e);
 						}
 					}
 				}
@@ -118,14 +121,23 @@ public class SpringComponentEngine extends AbstractServiceable implements Compon
 
 	public <T> T autoComponent(String iName) {
 		try {
-			T val = (T) springContext.getBean(iName);
+			T val = null;
+			if (springContext.containsBean(iName))
+				val = (T) springContext.getBean(iName);
 			if (val == null) {
 				synchronized (components) {
 					val = (T) components.get(iName);
 					if (val == null) {
 						try {
-							SchemaClass clazz = Roma.schema().getSchemaClass(iName);
-							if (!clazz.isInterface()) {
+							SchemaClass clazz = null;
+							try {
+								clazz = Roma.schema().getSchemaClass(iName);
+							} catch (ConfigurationNotFoundException e) {
+								log.info("Not Found a class with name:'" + iName + "'");
+								if (log.isDebugEnabled())
+									log.debug("Not Found a class with name:'" + iName + "'", e);
+							}
+							if (clazz != null && !clazz.isInterface()) {
 								val = (T) clazz.newInstance();
 								components.put(iName, val);
 							}

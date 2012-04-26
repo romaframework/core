@@ -35,7 +35,7 @@ public interface ComponentAspect extends Aspect, Serviceable {
 	 * 
 	 * @param iClass
 	 *          Interface of component implementation
-	 * @return the component if any or null if not found
+	 * @return the component if any or throw ContextEception if not found.
 	 */
 	public <T> T getComponent(Class<T> iClass) throws ContextException;
 
@@ -53,7 +53,7 @@ public interface ComponentAspect extends Aspect, Serviceable {
 	 * 
 	 * @param iName
 	 *          Component name
-	 * @return the component if any or null if not found
+	 * @return the component if any or throw ContextEception if not found.
 	 */
 	public <T> T getComponent(String iName) throws ContextException;
 
@@ -62,7 +62,7 @@ public interface ComponentAspect extends Aspect, Serviceable {
 	 * 
 	 * @param iClass
 	 *          Interface of component implementation
-	 * @return true if was configured, otherwise null
+	 * @return true if was configured, otherwise false
 	 */
 	public boolean existComponent(Class<? extends Object> iClass);
 
@@ -71,7 +71,7 @@ public interface ComponentAspect extends Aspect, Serviceable {
 	 * 
 	 * @param iComponentName
 	 *          Name of component to search
-	 * @return true if was configured, otherwise null
+	 * @return true if was configured, otherwise false
 	 */
 	public boolean existComponent(String iComponentName);
 
