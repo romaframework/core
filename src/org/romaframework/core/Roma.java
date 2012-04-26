@@ -325,7 +325,7 @@ public class Roma {
 	public static <T> T getFeature(Object iUserObject, Feature<T> feature) {
 		if (!FeatureType.CLASS.equals(feature.getType()))
 			return null;
-		return getFeature(iUserObject, feature);
+		return getFeature(iUserObject, null, feature);
 	}
 
 	public static <T> boolean setFeature(Object iUserObject, String elementName, Feature<T> feature, T value) {
@@ -349,7 +349,9 @@ public class Roma {
 				for (SchemaFeaturesChangeListener listener : listeners) {
 					listener.signalChangeField(iUserObject, elementName, feature, oldValue, value);
 				}
+				break;
 			case EVENT:
+				break;
 			case CLASS:
 				for (SchemaFeaturesChangeListener listener : listeners) {
 					listener.signalChangeClass(iUserObject, feature, oldValue, value);
@@ -522,7 +524,7 @@ public class Roma {
 	 * @param entityClass
 	 * @return
 	 */
-	public static <T extends GenericFactory<Z>, Z> T factory(Class<Z> entityClass) {
+	public static <T extends GenericFactory<Z>,Z> T factory(Class<Z> entityClass) {
 		return (T) factory(Roma.schema().getSchemaClass(entityClass));
 	}
 
@@ -571,7 +573,7 @@ public class Roma {
 	 *          the {@link Class<Z>} of domain class.
 	 * @return the repository instance.
 	 */
-	public static <T extends GenericRepository<Z>, Z> T repository(Class<Z> entityClass) {
+	public static <Z, T extends GenericRepository<Z>> T repository(Class<Z> entityClass) {
 		return entityClass != null ? (T) repository(Roma.schema().getSchemaClass(entityClass)) : null;
 	}
 

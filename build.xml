@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project basedir="." default="compile" name="roma-core">
+	<property name="ivy.pom.name" value="Roma Core" />
+	<property name="ivy.pom.description" value="Roma Framework core engine for runtime, development and testing" />
+	<property name="ivy.pom.repo-name" value="core" />
 	<import file="roma-build.xml" />
 </project>

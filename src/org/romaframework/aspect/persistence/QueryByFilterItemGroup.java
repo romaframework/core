@@ -36,6 +36,24 @@ public class QueryByFilterItemGroup implements QueryByFilterItem {
 		addItem(new QueryByFilterItemText(iCondition));
 	}
 
+	public QueryByFilterItemGroup addGroup(String predicate) {
+		QueryByFilterItemGroup item = new QueryByFilterItemGroup(predicate);
+		addItem(item);
+		return item;
+	}
+
+	public void addReverseItem(QueryByFilter byFilter, String field) {
+		addReverseItem(byFilter, field, null, QueryOperator.EQUALS);
+	}
+
+	public void addReverseItem(QueryByFilter byFilter, String field, String fieldReverse) {
+		addReverseItem(byFilter, field, null, QueryOperator.EQUALS);
+	}
+
+	public void addReverseItem(QueryByFilter byFilter, String field, String fieldReverse, QueryOperator operator) {
+		addItem(new QueryByFilterItemReverse(byFilter, field, fieldReverse, operator));
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder buffer = new StringBuilder();

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.romaframework.core.Roma;
+import org.romaframework.core.config.ApplicationConfiguration;
 import org.romaframework.core.flow.Controller;
 import org.romaframework.core.module.SelfRegistrantConfigurableModule;
 import org.romaframework.core.schema.SchemaAction;
@@ -33,7 +34,8 @@ import org.romaframework.core.schema.SchemaField;
 import org.romaframework.core.schema.SchemaObject;
 import org.romaframework.core.schema.SchemaReloadListener;
 
-public abstract class SessionAspectAbstract extends SelfRegistrantConfigurableModule<String> implements SessionAspect, SchemaReloadListener {
+public abstract class SessionAspectAbstract extends SelfRegistrantConfigurableModule<String> implements SessionAspect,
+		SchemaReloadListener {
 
 	public SessionAspectAbstract() {
 		Controller.getInstance().registerListener(SchemaReloadListener.class, this);
@@ -74,6 +76,8 @@ public abstract class SessionAspectAbstract extends SelfRegistrantConfigurableMo
 
 	@Override
 	public SchemaObject getSchemaObject(Object object) {
+		if (getActiveSessionInfo() == null)
+			return null;
 		synchronized (getActiveSessionInfo()) {
 			if (object == null)
 				return null;
@@ -83,6 +87,8 @@ public abstract class SessionAspectAbstract extends SelfRegistrantConfigurableMo
 				if (object instanceof SchemaClassDefinition) {
 					object = ((SchemaClassDefinition) object).getSchemaClass();
 					schemaObject = new SchemaObject(((SchemaClassDefinition) object).getSchemaClass(), null);
+				} else if (object instanceof Class<?>) {
+					schemaObject = new SchemaObject(Roma.schema().getSchemaClass(object), null);
 				} else
 					schemaObject = new SchemaObject(Roma.schema().getSchemaClass(object), object);
 				so.put(object, schemaObject);
@@ -178,6 +184,10 @@ public abstract class SessionAspectAbstract extends SelfRegistrantConfigurableMo
 	}
 
 	public void endConfigClass(SchemaClassDefinition iClass) {
+	}
+
+	public void logout() {
+		Roma.component(ApplicationConfiguration.class).destroyUserSession();
 	}
 
 }

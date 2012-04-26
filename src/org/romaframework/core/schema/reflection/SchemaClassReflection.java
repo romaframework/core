@@ -287,7 +287,7 @@ public class SchemaClassReflection extends SchemaClass {
 				fieldInfo.getterMethod = method;
 			} else {
 				fieldInfo.getterMethod = method;
-				if (!((SchemaFieldReflection) fieldInfo).getLanguageType().isAssignableFrom(javaFieldClass)){
+				if (!((SchemaFieldReflection) fieldInfo).getLanguageType().isAssignableFrom(javaFieldClass)) {
 					fieldInfo.setterMethod = null;
 				}
 			}
@@ -403,7 +403,7 @@ public class SchemaClassReflection extends SchemaClass {
 			} else
 				superClass = new SchemaClassReflection(javaSuperClass);
 
-			if (javaSuperClass.equals(this))
+			if (javaSuperClass.equals(this.javaClass))
 				// EXTENSION BY CONVENTION NAME: REMOVE PARENT TO AVOID RECURSION
 				javaSuperClass = null;
 		}
@@ -444,8 +444,10 @@ public class SchemaClassReflection extends SchemaClass {
 				} else if (schemaFieldReflection.field != null) {
 					javaFieldClass = SchemaHelper.resolveClassFromType(schemaFieldReflection.field.getGenericType(), type);
 				}
-				if (javaFieldClass != null)
+				if (javaFieldClass != null) {
 					schemaFieldReflection.setType(Roma.schema().getSchemaClass(javaFieldClass));
+					schemaFieldReflection.setLanguageType(((SchemaClassReflection) schemaFieldReflection.getType()).getLanguageType());
+				}
 			}
 
 		}

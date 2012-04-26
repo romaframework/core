@@ -25,7 +25,7 @@ public abstract class SchemaElement extends SchemaFeatures implements Comparable
 	private static final long	serialVersionUID	= -4789886810661429988L;
 
 	protected String					name;
-	protected int							order							= -1;
+	protected int							order							= Integer.MAX_VALUE;
 
 	public SchemaElement(String iName, FeatureType featureType) {
 		super(featureType);

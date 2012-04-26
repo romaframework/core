@@ -4,6 +4,8 @@ import org.romaframework.core.domain.type.TreeNode;
 
 public interface AreaComponent extends TreeNode {
 
+	public static final String	DEF_AREAMODE_NAME	= "placeholder";
+
 	/**
 	 * Returns the name of the area.
 	 */
@@ -20,6 +22,6 @@ public interface AreaComponent extends TreeNode {
 	public String getAreaAlign();
 
 	public String getStyle();
-	
+
 	public void clear();
 }

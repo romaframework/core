@@ -83,4 +83,8 @@ public class QueryByText extends Query {
 		this.parameters = parameters;
 	}
 
+	public boolean hasProjection() {
+		return false;
+	}
+
 }

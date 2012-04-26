@@ -41,7 +41,7 @@ public class SchemaObject extends SchemaClassDefinition {
 	public SchemaObject(SchemaClass iEntityInfo, Object iInstance) {
 		instance = new WeakReference<Object>(iInstance);
 		schemaClass = iEntityInfo;
-		copyDefinition(schemaClass);
+		copyDefinition(schemaClass,iInstance);
 		invokeListeners();
 	}
 
@@ -116,8 +116,9 @@ public class SchemaObject extends SchemaClassDefinition {
 	 * Re-define the base implementation enabling the invocation of listeners.
 	 * 
 	 * @param iSource
+	 * @param iInstance 
 	 */
-	public void copyDefinition(SchemaClassDefinition iSource) {
+	protected void copyDefinition(SchemaClassDefinition iSource, Object iInstance) {
 		if (iSource == null)
 			return;
 
@@ -128,7 +129,7 @@ public class SchemaObject extends SchemaClassDefinition {
 
 			List<UserObjectPermissionListener> listeners = Controller.getInstance().getListeners(UserObjectPermissionListener.class);
 
-			cloneFields(iSource, listeners);
+			cloneFields(iSource, listeners,iInstance);
 			cloneActions(iSource, listeners);
 			cloneEvents(iSource, listeners);
 		} catch (CloneNotSupportedException e) {

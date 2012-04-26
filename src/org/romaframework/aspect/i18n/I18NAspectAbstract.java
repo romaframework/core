@@ -39,6 +39,7 @@ import org.romaframework.core.schema.SchemaEvent;
 import org.romaframework.core.schema.SchemaFeatures;
 import org.romaframework.core.schema.SchemaField;
 import org.romaframework.core.schema.SchemaObject;
+import org.romaframework.core.schema.reflection.SchemaElementDelegate;
 import org.romaframework.core.util.parser.ObjectVariableResolver;
 
 /**
@@ -47,8 +48,7 @@ import org.romaframework.core.util.parser.ObjectVariableResolver;
  * 
  * @author Luca Garulli (luca.garulli--at--assetdata.it)
  */
-public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModule<String> implements I18NAspect,
-		SchemaFieldListener {
+public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModule<String> implements I18NAspect, SchemaFieldListener {
 
 	private static final String	DATE_TIME_FORMAT_VAR	= "Application.DateTimeFormat";
 	private static final String	TIME_FORMAT_VAR				= "Application.TimeFormat";
@@ -109,7 +109,7 @@ public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModul
 	}
 
 	public Object onBeforeFieldWrite(Object content, SchemaField field, Object currentValue) {
-		return currentValue;
+		return IGNORED;
 	}
 
 	public Object onAfterFieldWrite(Object content, SchemaField field, Object currentValue) {
@@ -270,8 +270,17 @@ public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModul
 	private String findWithSchemaElement(SchemaElement element, String type) {
 		if (!(element instanceof SchemaClassElement))
 			return null;
-		SchemaClassElement classElement = (SchemaClassElement) element;
-		return findWithSchemaClass(classElement.getEntity(), CONTEXT_SEPARATOR + classElement.getName() + type);
+		SchemaClassElement classElement;
+		do {
+			classElement = (SchemaClassElement) element;
+			String res = findWithSchemaClass(classElement.getEntity(), CONTEXT_SEPARATOR + classElement.getName() + type);
+			if (res != null) {
+				return res;
+			} else if (classElement instanceof SchemaElementDelegate) {
+				element = ((SchemaElementDelegate) classElement).getDelegate();
+			}
+		} while (classElement instanceof SchemaElementDelegate);
+		return null;
 	}
 
 	private String findWithSchemaClass(SchemaClassDefinition clazz, String type) {

@@ -10,6 +10,7 @@ import org.romaframework.core.Utility;
 import org.romaframework.core.config.AbstractServiceable;
 import org.romaframework.core.config.ContextException;
 import org.romaframework.core.schema.SchemaAction;
+import org.romaframework.core.schema.SchemaClass;
 import org.romaframework.core.schema.SchemaClassDefinition;
 import org.romaframework.core.schema.SchemaEvent;
 import org.romaframework.core.schema.SchemaField;
@@ -23,7 +24,9 @@ public class SpringComponentEngine extends AbstractServiceable implements Compon
 	private static final String								COMPONENT_SRV_FILE_PATTERN_SUBDIR	= "META-INF/components/*/applicationContext*.xml";
 
 	protected ClassPathXmlApplicationContext	springContext;
-	protected Map<String, Object>							components													= new HashMap<String, Object>();
+	protected Map<String, Object>							components												= new HashMap<String, Object>();
+	protected String													basePath;
+	protected String[]												additionalPaths;
 
 	public boolean existComponent(Class<? extends Object> iComponentClass) {
 		return existComponent(Utility.getClassName(iComponentClass));
@@ -95,7 +98,7 @@ public class SpringComponentEngine extends AbstractServiceable implements Compon
 				Object comp;
 				synchronized (components) {
 					comp = components.get(iComponentName);
-					if (comp == null) {
+					if (comp == null && !iClass.isInterface()) {
 						try {
 							comp = iClass.newInstance();
 							components.put(iComponentName, comp);
@@ -121,8 +124,11 @@ public class SpringComponentEngine extends AbstractServiceable implements Compon
 					val = (T) components.get(iName);
 					if (val == null) {
 						try {
-							val = (T) Roma.schema().getSchemaClass(iName).newInstance();
-							components.put(iName, val);
+							SchemaClass clazz = Roma.schema().getSchemaClass(iName);
+							if (!clazz.isInterface()) {
+								val = (T) clazz.newInstance();
+								components.put(iName, val);
+							}
 						} catch (Exception e) {
 							log.warn("Error create new instance of component:'" + iName + "'", e);
 						}
@@ -140,8 +146,21 @@ public class SpringComponentEngine extends AbstractServiceable implements Compon
 	 */
 	public void startup() throws RuntimeException {
 		status = STATUS_STARTING;
+		int size = 2;
+		if (additionalPaths != null)
+			size += additionalPaths.length;
+		String paths[] = new String[size];
+		if (basePath != null) {
+			paths[0] = basePath + COMPONENT_SRV_FILE_PATTERN;
+			paths[1] = basePath + COMPONENT_SRV_FILE_PATTERN_SUBDIR;
+		} else {
+			paths[0] = COMPONENT_SRV_FILE_PATTERN;
+			paths[1] = COMPONENT_SRV_FILE_PATTERN_SUBDIR;
+		}
+		if (additionalPaths != null)
+			System.arraycopy(additionalPaths, 0, paths, 2, additionalPaths.length);
 
-		springContext = new ClassPathXmlApplicationContext(new String[] { COMPONENT_SRV_FILE_PATTERN, COMPONENT_SRV_FILE_PATTERN_SUBDIR }, false);
+		springContext = new ClassPathXmlApplicationContext(paths, false);
 
 		springContext.refresh();
 		status = STATUS_UP;
@@ -181,5 +200,17 @@ public class SpringComponentEngine extends AbstractServiceable implements Compon
 
 	public Object getUnderlyingComponent() {
 		return springContext;
+	}
+
+	public String getBasePath() {
+		return basePath;
+	}
+
+	public void setBasePath(String basePath) {
+		this.basePath = basePath;
+	}
+
+	public void setAdditionalPaths(String[] additionalApplicationContext) {
+		this.additionalPaths = additionalApplicationContext;
 	}
 }

@@ -9,7 +9,7 @@ import org.romaframework.core.schema.SchemaClassDefinition;
 import org.romaframework.core.schema.SchemaField;
 import org.romaframework.core.schema.SchemaParameter;
 
-public class SchemaActionDelegate extends SchemaActionReflection {
+public class SchemaActionDelegate extends SchemaActionReflection implements SchemaElementDelegate {
 
 	private static final long	serialVersionUID	= 8218389759537742464L;
 	private SchemaField				object;
@@ -21,7 +21,7 @@ public class SchemaActionDelegate extends SchemaActionReflection {
 		this.delegate = delegate;
 		this.parent = delegate;
 		SchemaAction action = entity.getAction(name);
-		if (action instanceof SchemaActionReflection) {
+		if (action instanceof SchemaActionReflection && !(action instanceof SchemaActionDelegate)) {
 			SchemaActionReflection refAction = (SchemaActionReflection) action;
 			this.method = refAction.method;
 		}
@@ -30,7 +30,7 @@ public class SchemaActionDelegate extends SchemaActionReflection {
 	@Override
 	public Object invokeFinal(Object iContent, Object[] params) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		if (method != null) {
-			super.invoke(iContent, params);
+			return super.invokeFinal(iContent, params);
 		}
 		iContent = object.getValue(iContent);
 		return delegate.invoke(iContent, params);
@@ -39,7 +39,7 @@ public class SchemaActionDelegate extends SchemaActionReflection {
 	public SchemaField getFieldObject() {
 		return object;
 	}
-	
+
 	@Override
 	public Method getMethod() {
 		if (this.method != null)
@@ -48,5 +48,9 @@ public class SchemaActionDelegate extends SchemaActionReflection {
 			return ((SchemaActionReflection) this.delegate).getMethod();
 		}
 		return null;
+	}
+
+	public SchemaAction getDelegate() {
+		return delegate;
 	}
 }

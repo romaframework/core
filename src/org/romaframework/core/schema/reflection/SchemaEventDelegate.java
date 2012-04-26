@@ -8,7 +8,7 @@ import org.romaframework.core.schema.SchemaEvent;
 import org.romaframework.core.schema.SchemaField;
 import org.romaframework.core.schema.SchemaParameter;
 
-public class SchemaEventDelegate extends SchemaEventReflection {
+public class SchemaEventDelegate extends SchemaEventReflection implements SchemaElementDelegate{
 
 	private static final long	serialVersionUID	= 8218389759537742464L;
 	private SchemaField				object;
@@ -20,7 +20,7 @@ public class SchemaEventDelegate extends SchemaEventReflection {
 		this.delegate = delegate;
 		this.parent = delegate;
 		SchemaEvent event = entity.getEvent(name);
-		if (event instanceof SchemaEventReflection) {
+		if (event instanceof SchemaEventReflection && !(event instanceof SchemaEventDelegate)) {
 			SchemaEventReflection refEvent = (SchemaEventReflection) event;
 			this.method = refEvent.method;
 		}
@@ -29,7 +29,7 @@ public class SchemaEventDelegate extends SchemaEventReflection {
 	@Override
 	public Object invokeFinal(Object iContent, Object[] params) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		if (method != null) {
-			super.invoke(iContent, params);
+			return super.invokeFinal(iContent, params);
 		}
 		iContent = object.getValue(iContent);
 		return delegate.invoke(iContent, params);
@@ -39,4 +39,7 @@ public class SchemaEventDelegate extends SchemaEventReflection {
 		return object;
 	}
 
+	public SchemaEvent getDelegate() {
+		return delegate;
+	}
 }

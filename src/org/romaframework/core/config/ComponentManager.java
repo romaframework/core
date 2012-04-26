@@ -68,8 +68,8 @@ public class ComponentManager<C> {
 			if (componentName == null || componentName.length() == 0)
 				continue;
 
-			componentName.replace('\t', ' ');
-			componentName.replace('\n', ' ');
+			componentName = componentName.replace('\t', ' ');
+			componentName = componentName.replace('\n', ' ');
 			componentName = componentName.trim();
 			componentName = StringUtils.trimLeadingWhitespace(componentName);
 

@@ -91,7 +91,7 @@ public class LoggingCommonAspect extends LoggingAspectAbstract implements Schema
 	 * org.romaframework.core.schema.SchemaField, java.lang.Object)
 	 */
 	public Object onBeforeFieldWrite(Object content, SchemaField field, Object currentValue) {
-		return currentValue;
+		return IGNORED;
 	}
 
 	@Override

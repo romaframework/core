@@ -66,7 +66,7 @@ public interface PersistenceAspect extends Aspect {
 	 * @return The object reloaded
 	 * @throws PersistenceException
 	 */
-	public <T> T loadObject(T iObject, String iMode) throws PersistenceException;
+	public <T> T refreshObject(T iObject, String iMode) throws PersistenceException;
 
 	/**
 	 * Load an object from repository using a strategy different by the PersistenceAspect's default.
@@ -80,7 +80,47 @@ public interface PersistenceAspect extends Aspect {
 	 * @return The object reloaded
 	 * @throws PersistenceException
 	 */
-	public <T> T loadObject(T iObject, String iMode, byte iStrategy) throws PersistenceException;
+	public <T> T refreshObject(T iObject, String iMode, byte iStrategy) throws PersistenceException;
+
+	/**
+	 * Load an object from repository by its class and id.
+	 * 
+	 * @param clazz
+	 *          the class to where search.
+	 * @param id
+	 *          the id of instance to search.
+	 * @return the object loaded or null if no object was found.
+	 * @throws PersistenceException
+	 */
+	public <T> T loadObjectByOID(Class<T> clazz, Object id) throws PersistenceException;
+
+	/**
+	 * Load an object from repository by its class and id.
+	 * 
+	 * @param clazz
+	 *          the class to where search.
+	 * @param id
+	 *          the id of instance to search.
+	 * @param iMode
+	 *          FULL_MODE_LOADING or custom modes.
+	 * @return the object loaded or null if no object was found.
+	 * @throws PersistenceException
+	 */
+	public <T> T loadObjectByOID(Class<T> clazz, Object id, String iMode) throws PersistenceException;
+
+	/**
+	 * Load an object from repository by its class and id.
+	 * 
+	 * @param clazz
+	 *          the class to where search.
+	 * @param id
+	 *          the id of instance to search.
+	 * @param iMode
+	 *          FULL_MODE_LOADING or custom modes.
+	 * @return the object loaded or null if no object was found.
+	 * @throws PersistenceException
+	 */
+	public <T> T loadObjectByOID(Class<T> clazz, Object id, String iMode, byte iStrategy) throws PersistenceException;
 
 	/**
 	 * Load an object from repository by its OID using the mode passed as argument.
@@ -89,6 +129,8 @@ public interface PersistenceAspect extends Aspect {
 	 *          The object OID
 	 * @param iMode
 	 *          FULL_MODE_LOADING or custom modes.
+	 * @param iStrategy
+	 *          STRATEGY_DEFAULT, STRATEGY_STANDARD, STRATEGY_DETACHING or STRATEGY_TRANSIENT
 	 * @return The object loaded
 	 * @throws PersistenceException
 	 */
@@ -116,7 +158,7 @@ public interface PersistenceAspect extends Aspect {
 	 * @return The persistent object (or the same one passed in some implementations)
 	 * @throws PersistenceException
 	 */
-	public <T> T createObject(Object iObject) throws PersistenceException;
+	public <T> T createObject(T iObject) throws PersistenceException;
 
 	/**
 	 * Create an object in the repository. Prior of this call the object exists as transient. It use a strategy different by the
@@ -129,7 +171,7 @@ public interface PersistenceAspect extends Aspect {
 	 * @return The persistent object (or the same one passed in some implementations)
 	 * @throws PersistenceException
 	 */
-	public <T> T createObject(Object iObject, byte iStrategy) throws PersistenceException;
+	public <T> T createObject(T iObject, byte iStrategy) throws PersistenceException;
 
 	/**
 	 * Update a persistent object in the repository.
@@ -139,7 +181,7 @@ public interface PersistenceAspect extends Aspect {
 	 * @return The persistent object (or the same one passed in some implementations)
 	 * @throws PersistenceException
 	 */
-	public <T> T updateObject(Object iObject) throws PersistenceException;
+	public <T> T updateObject(T iObject) throws PersistenceException;
 
 	/**
 	 * Update a persistent object in the repository using a strategy different by the PersistenceAspect's default.
@@ -151,7 +193,7 @@ public interface PersistenceAspect extends Aspect {
 	 * @return The persistent object (or the same one passed in some implementations)
 	 * @throws PersistenceException
 	 */
-	public <T> T updateObject(Object iObject, byte iStrategy) throws PersistenceException;
+	public <T> T updateObject(T iObject, byte iStrategy) throws PersistenceException;
 
 	/**
 	 * Update more persistent objects in one shot.

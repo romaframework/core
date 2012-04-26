@@ -58,7 +58,9 @@ public class RomaApplicationContext implements Serviceable {
 
 	public void startup() throws RuntimeException {
 		// TODO REMOVE WIRED SPRING IOC
-		componentAspect = new SpringComponentEngine();
+		if (componentAspect == null) {
+			componentAspect = new SpringComponentEngine();
+		}
 		componentAspect.startup();
 
 		List<RomaApplicationListener> listeners = Controller.getInstance().getListeners(RomaApplicationListener.class);

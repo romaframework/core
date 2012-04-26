@@ -51,11 +51,11 @@ public class SchemaEventReflection extends SchemaEvent {
 	public static final String		COLLECTION_REMOVE_EVENT	= "Remove";
 
 	public SchemaEventReflection(SchemaField field, String iName, List<SchemaParameter> iOrderedParameters) {
-		super(field, iName, null);
+		super(field, iName, iOrderedParameters);
 	}
 
 	public SchemaEventReflection(SchemaClassDefinition iEntity, String iName, List<SchemaParameter> iOrderedParameters) {
-		super(iEntity, iName, null);
+		super(iEntity, iName, iOrderedParameters);
 	}
 
 	@Override
@@ -99,7 +99,6 @@ public class SchemaEventReflection extends SchemaEvent {
 			paramAnn = parentDescriptor.getParameters();
 		for (SchemaParameter parameter : getParameters().values()) {
 			XmlParameterAnnotation xmlParam = null;
-			paramAnn.get(i++);
 			if (paramAnn != null)
 				xmlParam = paramAnn.get(i++);
 			parameter.configure(method, xmlParam);

@@ -152,10 +152,11 @@ public abstract class PersistenceAspectRepository<T> implements GenericRepositor
 		return db.query(query);
 	}
 
-	protected Class<? extends T> getEntityClass(Class<? extends T> iClass) {
-		GenericFactory<T> factory = (GenericFactory<T>) Roma.factory(iClass);
+	protected <Z extends T> Class<Z> getEntityClass(Class<Z> iClass) {
+		@SuppressWarnings("rawtypes")
+		GenericFactory factory = Roma.factory(iClass);
 		if (factory != null) {
-			Class<? extends T> newClass = factory.getEntityClass();
+			Class<Z> newClass = (Class<Z>)factory.getEntityClass();
 			if (newClass != null) {
 				iClass = newClass;
 			}
@@ -188,7 +189,7 @@ public abstract class PersistenceAspectRepository<T> implements GenericRepositor
 	}
 
 	public T load(PersistenceAspect db, T entity, String fullModeLoading, byte strategyDetaching) {
-		return db.loadObject(entity, fullModeLoading, strategyDetaching);
+		return db.refreshObject(entity, fullModeLoading, strategyDetaching);
 	}
 
 	public T loadObjectByOID(Object OID, String iMode, byte iStrategy) {

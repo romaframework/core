@@ -338,6 +338,10 @@ public class ObjectContext {
 	/*
 	 * Logout current user session.
 	 */
+	/**
+	 * Use Roma.session().logout() instead
+	 */
+	@Deprecated
 	public void logout() {
 		// CALL CUSTOM APPLICATION CALLBACK
 		Roma.component(ApplicationConfiguration.class).destroyUserSession();

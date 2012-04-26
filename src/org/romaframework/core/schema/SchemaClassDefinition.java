@@ -23,6 +23,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.romaframework.aspect.authentication.UserObjectPermissionListener;
+import org.romaframework.aspect.core.CoreAspect;
+import org.romaframework.aspect.core.feature.CoreFieldFeatures;
+import org.romaframework.core.Roma;
 import org.romaframework.core.Utility;
 
 public abstract class SchemaClassDefinition extends SchemaFeatures {
@@ -122,7 +125,7 @@ public abstract class SchemaClassDefinition extends SchemaFeatures {
 		cloned.orderedFields = new ArrayList<SchemaField>();
 		cloned.orderedActions = new ArrayList<SchemaAction>();
 
-		cloned.copyDefinition(this);
+		cloned.copyDefinition(this, null);
 		return cloned;
 	}
 
@@ -131,7 +134,7 @@ public abstract class SchemaClassDefinition extends SchemaFeatures {
 	 * 
 	 * @param iSource
 	 */
-	public abstract void copyDefinition(SchemaClassDefinition iSource);
+	protected abstract void copyDefinition(SchemaClassDefinition iSource, Object iInstance);
 
 	public void setField(String iFieldName, SchemaField iField) {
 		if (fields.containsKey(iFieldName)) {
@@ -264,13 +267,15 @@ public abstract class SchemaClassDefinition extends SchemaFeatures {
 	 * 
 	 * @param iSource
 	 * @param listeners
+	 * @param iInstance
 	 * @throws CloneNotSupportedException
 	 */
-	protected void cloneFields(SchemaClassDefinition iSource, List<UserObjectPermissionListener> listeners) throws CloneNotSupportedException {
+	protected void cloneFields(SchemaClassDefinition iSource, List<UserObjectPermissionListener> listeners, Object iInstance) throws CloneNotSupportedException {
 
 		boolean allowed;
 		SchemaField field;
 		SchemaField sourceSchemaField;
+		List<SchemaField> toExpand = new ArrayList<SchemaField>();
 		for (Iterator<SchemaField> it = iSource.getFieldIterator(); it.hasNext();) {
 			sourceSchemaField = it.next();
 
@@ -290,10 +295,14 @@ public abstract class SchemaClassDefinition extends SchemaFeatures {
 				if (!allowed)
 					continue;
 			}
-
 			field = (SchemaField) sourceSchemaField.clone();
 			field.setEntity(this);
 			setField(field.getName(), field);
+			if (Boolean.TRUE.equals(field.getFeature(CoreFieldFeatures.EXPAND)) && Boolean.TRUE.equals(field.getFeature(CoreFieldFeatures.USE_RUNTIME_TYPE)))
+				toExpand.add(field);
+		}
+		for (SchemaField schemaField : toExpand) {
+			Roma.component(CoreAspect.class).expandField(schemaField, this);
 		}
 	}
 

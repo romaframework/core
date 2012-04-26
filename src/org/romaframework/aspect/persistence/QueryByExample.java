@@ -54,4 +54,8 @@ public class QueryByExample extends Query {
 	private Class<?>			candidateClass;
 	private Object				filter;
 	private QueryByFilter	additionalFilter;
+
+	public boolean hasProjection() {
+		return false;
+	}
 }
