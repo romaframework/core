@@ -47,7 +47,7 @@ public class QueryByFilterItemGroup implements QueryByFilterItem {
 	}
 
 	public void addReverseItem(QueryByFilter byFilter, String field, String fieldReverse) {
-		addReverseItem(byFilter, field, null, QueryOperator.EQUALS);
+		addReverseItem(byFilter, field, fieldReverse, QueryOperator.EQUALS);
 	}
 
 	public void addReverseItem(QueryByFilter byFilter, String field, String fieldReverse, QueryOperator operator) {
