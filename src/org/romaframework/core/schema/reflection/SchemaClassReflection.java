@@ -152,12 +152,14 @@ public class SchemaClassReflection extends SchemaClass {
 
 	@Override
 	public void config() {
-		beginConfig();
-		inspectInheritance();
-		readAllAnnotations();
+		if (Roma.component(SchemaClassResolver.class).isRegisteredEntity(javaClass)) {
+			beginConfig();
+			inspectInheritance();
+			readAllAnnotations();
 
-		readClass();
-		endConfig();
+			readClass();
+			endConfig();
+		}
 	}
 
 	private void readClass() {

@@ -102,6 +102,7 @@ public class CoreAspect extends SelfRegistrantModule implements Aspect, RomaAppl
 		classResolver.addDomainPackage(Roma.component(ApplicationConfiguration.class).getApplicationPackage());
 		classResolver.addDomainPackage(Utility.ROMA_PACKAGE + Utility.PACKAGE_SEPARATOR + "core");
 		classResolver.addPackage("java.lang");
+		classResolver.addResourceClass(Object.class);
 
 		status = STATUS_UP;
 	}

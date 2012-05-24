@@ -120,6 +120,28 @@ public class SchemaClassResolver implements ResourceResolverListener, Serviceabl
 	}
 
 	/**
+	 * Checks if the class is part of registered packages.
+	 * 
+	 * @param iClassName
+	 *          Class name to check
+	 * @return true if found, false otherwise
+	 */
+	public boolean isRegisteredEntity(Class<?> iClass) {
+		return isRegisteredEntity(iClass.getSimpleName());
+	}
+
+	/**
+	 * Checks if the class is part of registered packages.
+	 * 
+	 * @param iClassName
+	 *          Class name to check
+	 * @return true if found, false otherwise
+	 */
+	public boolean isRegisteredEntity(String iClassName) {
+		return classLocations.containsKey(iClassName);
+	}
+
+	/**
 	 * Get the Class instance for a requested entity.
 	 * 
 	 * @param iEntityName
@@ -195,6 +217,38 @@ public class SchemaClassResolver implements ResourceResolverListener, Serviceabl
 		 */
 
 		return null;// cls;
+	}
+
+	public void addResourceClass(Class<?> iClass) {
+		// ADD A NEW CLASS
+		String name = iClass.getSimpleName();
+		String currentPath = classLocations.get(name);
+		String iPackagePrefix = iClass.getPackage().getName() + ".";
+		if (currentPath != null) {
+			// ALREADY EXISTS
+			if (currentPath.equals(iPackagePrefix))
+				// SAME PATH: PROBABLY THE JAR WAS SETTED MULTIPLE TIMES
+				log.warn("[SchemaClassResolver.addResourceClass] Warning: found the class " + name + " defined twice in the classpath and they point to the same package " + iPackagePrefix
+						+ " Assure you have only one class to avoid alignment problems.");
+			else
+				// ALREADY EXISTS
+				log.warn("[SchemaClassResolver.addResourceClass] Found the class " + name + " defined twice. Ignore current package " + iPackagePrefix + " Use the first one found: "
+						+ currentPath);
+		} else {
+			if (log.isDebugEnabled())
+				log.debug("[SchemaClassResolver.addResourceClass] > Loading class: " + name + " using the package: " + iPackagePrefix);
+
+			classLocations.put(name, iPackagePrefix);
+
+			// WAKE UP LISTENERS ON THE NEW CLASS FOUND
+			List<ClassLoaderListener> listeners = Controller.getInstance().getListeners(ClassLoaderListener.class);
+			if (listeners != null) {
+				for (ClassLoaderListener listener : listeners) {
+					// INVOKE THE LISTENER
+					listener.onClassLoading(iClass);
+				}
+			}
+		}
 	}
 
 	private void addResourceClass(File iFile, String iName, String iPackagePrefix) {
