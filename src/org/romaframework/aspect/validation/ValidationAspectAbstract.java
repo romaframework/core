@@ -41,8 +41,8 @@ public abstract class ValidationAspectAbstract extends SelfRegistrantConfigurabl
 
 	public void configField(SchemaField iField) {
 
-		if (checkFeature(iField, ValidationFieldFeatures.MATCH) && checkFeature(iField, ValidationFieldFeatures.ENABLED) && checkFeature(iField, ValidationFieldFeatures.MAX)
-				&& checkFeature(iField, ValidationFieldFeatures.MIN) && checkFeature(iField, ValidationFieldFeatures.REQUIRED))
+		if (checkFeature(iField, ValidationFieldFeatures.ENABLED) || checkFeature(iField, ValidationFieldFeatures.REQUIRED) || checkFeature(iField, ValidationFieldFeatures.MAX)
+				|| checkFeature(iField, ValidationFieldFeatures.MIN) || checkFeature(iField, ValidationFieldFeatures.MATCH))
 			iField.setFeature(ValidationFieldFeatures.ENABLED, true);
 		else
 			iField.setFeature(ValidationFieldFeatures.ENABLED, false);
