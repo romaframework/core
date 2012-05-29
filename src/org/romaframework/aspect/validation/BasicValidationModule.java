@@ -178,7 +178,7 @@ public class BasicValidationModule extends ValidationAspectAbstract implements S
 		if (required && (stringValue == null || stringValue.length() == 0))
 			handleValidationException(pojo, iMultiException, name, "$validation.required", null);
 
-		if (annotationMin != null && (stringValue == null || stringValue.length() < annotationMin))
+		if (annotationMin != null && stringValue != null && stringValue.length() < annotationMin)
 			handleValidationException(pojo, iMultiException, name, "$validation.minLength", String.valueOf(annotationMin));
 
 		if (annotationMax != null && stringValue != null && stringValue.length() > annotationMax)
