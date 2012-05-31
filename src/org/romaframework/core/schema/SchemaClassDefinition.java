@@ -137,32 +137,42 @@ public abstract class SchemaClassDefinition extends SchemaFeatures {
 	protected abstract void copyDefinition(SchemaClassDefinition iSource, Object iInstance);
 
 	public void setField(String iFieldName, SchemaField iField) {
+		int pos = -1;
 		if (fields.containsKey(iFieldName)) {
 			// REPLACE IT
 			for (int i = 0; i < orderedFields.size(); ++i) {
 				if (orderedFields.get(i).getName() != null && orderedFields.get(i).getName().equals(iFieldName)) {
 					orderedFields.remove(i);
+					pos = i;
 					break;
 				}
 			}
 		}
-
-		orderedFields.add(iField);
+		if (pos > -1 && pos < orderedFields.size()) {
+			orderedFields.add(pos, iField);
+		} else {
+			orderedFields.add(iField);
+		}
 		fields.put(iFieldName, iField);
 	}
 
 	public void setAction(String iActionName, SchemaAction iAction) {
+		int pos = -1;
 		if (actions.containsKey(iActionName)) {
 			// REPLACE IT
 			for (int i = 0; i < orderedActions.size(); ++i) {
 				if (orderedActions.get(i).getName() != null && orderedActions.get(i).getName().equals(iActionName)) {
 					orderedActions.remove(i);
+					pos = i;
 					break;
 				}
 			}
 		}
-
-		orderedActions.add(iAction);
+		if (pos > -1 && pos < orderedActions.size()) {
+			orderedActions.add(pos, iAction);
+		} else {
+			orderedActions.add(iAction);
+		}
 		actions.put(iActionName, iAction);
 	}
 
