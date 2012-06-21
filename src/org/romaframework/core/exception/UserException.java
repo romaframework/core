@@ -45,8 +45,12 @@ public class UserException extends RuntimeException {
 		obj = iObject;
 		if (iText == null)
 			return;
-
-		String i18NMessage = Roma.component(I18NAspect.class).resolve(obj, iText,I18NType.EXCEPTION);
+		String i18NMessage;
+		if (obj == null) {
+			i18NMessage = Roma.component(I18NAspect.class).resolve(iText);
+		} else {
+			i18NMessage = Roma.component(I18NAspect.class).resolve(obj, iText, I18NType.EXCEPTION);
+		}
 
 		if (i18NMessage != null)
 			message.append(i18NMessage);
