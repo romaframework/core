@@ -113,4 +113,8 @@ public abstract class SchemaFeatures implements Cloneable, Serializable {
 	public <T> boolean isRuntimeSet(Feature<T> feature) {
 		return false;
 	}
+	
+	public SchemaFeatures getParent() {
+		return parent;
+	}
 }

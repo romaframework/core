@@ -43,6 +43,7 @@ import org.romaframework.core.schema.SchemaEvent;
 import org.romaframework.core.schema.SchemaFeatures;
 import org.romaframework.core.schema.SchemaField;
 import org.romaframework.core.schema.SchemaHelper;
+import org.romaframework.core.schema.SchemaParameter;
 
 /**
  * 
@@ -408,6 +409,9 @@ public class SchemaSerializationInspectionStrategy extends AbstractSerialization
 			features = FeatureRegistry.getFeatures(FeatureType.EVENT);
 		else if (source instanceof SchemaAction)
 			features = FeatureRegistry.getFeatures(FeatureType.ACTION);
+		else if (source instanceof SchemaParameter)
+			features = FeatureRegistry.getFeatures(FeatureType.PARAMETER);
+		
 		for (Feature feature : features) {
 			dest.setFeature(feature, source.getFeature(feature));
 		}

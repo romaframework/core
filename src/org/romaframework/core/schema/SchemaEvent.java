@@ -167,4 +167,9 @@ public abstract class SchemaEvent extends SchemaAction {
 			}
 		}
 	}
+
+	@Override
+	public SchemaEvent getParent() {
+		return (SchemaEvent) super.getParent();
+	}
 }

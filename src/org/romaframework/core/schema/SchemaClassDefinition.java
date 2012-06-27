@@ -267,7 +267,7 @@ public abstract class SchemaClassDefinition extends SchemaFeatures {
 			}
 
 			action = (SchemaAction) sourceSchemaAction.clone();
-			action.entity = this;
+			action.setEntity(this);
 			setAction(action.getName(), action);
 		}
 	}

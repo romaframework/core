@@ -233,7 +233,7 @@ public class CoreAspect extends SelfRegistrantModule implements Aspect, RomaAppl
 						embeddedTypeGenerics[i++] = Roma.schema().getSchemaClassIfExist(SchemaHelper.resolveClassFromType(argType, ownerType));
 				}
 				ref.setEmbeddedTypeGenerics(embeddedTypeGenerics);
-				if (embeddedTypeGenerics.length > 0)
+				if (embeddedTypeGenerics != null && embeddedTypeGenerics.length > 0)
 					ref.setEmbeddedType(embeddedTypeGenerics[0]);
 			} else if (fieldType instanceof Class<?>) {
 				Class<?> cls = (Class<?>) fieldType;

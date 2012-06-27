@@ -191,4 +191,8 @@ public abstract class SchemaAction extends SchemaClassElement {
 	public Map<String, SchemaParameter> getParameters() {
 		return parameters;
 	}
+
+	public SchemaAction getParent() {
+		return (SchemaAction) super.getParent();
+	}
 }
