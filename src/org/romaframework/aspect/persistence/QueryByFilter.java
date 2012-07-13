@@ -202,18 +202,45 @@ public class QueryByFilter extends Query {
 		this.items = items;
 	}
 
+	public List<QueryByFilterItem> cloneItems(List<QueryByFilterItem> items) {
+		List<QueryByFilterItem> result = new ArrayList<QueryByFilterItem>();
+		for (QueryByFilterItem sourceItem : items) {
+			QueryByFilterItem toAdd = sourceItem;
+			
+			if (sourceItem instanceof QueryByFilterItemReverse) {
+				QueryByFilter org = ((QueryByFilterItemReverse) sourceItem).getQueryByFilter();
+				QueryByFilter qbf = new QueryByFilter(org.getCandidateClass(), org.getPredicateOperator());
+				qbf.merge(org);
+				toAdd = new QueryByFilterItemReverse(qbf, ((QueryByFilterItemReverse) sourceItem).getField(), ((QueryByFilterItemReverse) sourceItem).getFieldReverse(),
+						((QueryByFilterItemReverse) sourceItem).getOperator());
+				
+			} else if (sourceItem instanceof QueryByFilterItemGroup) {
+				toAdd = new QueryByFilterItemGroup(((QueryByFilterItemGroup) sourceItem).getPredicate());
+				List<QueryByFilterItem> newItems = cloneItems(((QueryByFilterItemGroup) sourceItem).getItems());
+				for (QueryByFilterItem atm : newItems) {
+					((QueryByFilterItemGroup) toAdd).addItem(atm);
+				}
+			}
+			result.add(toAdd);
+		}
+		return result;
+	}
+
 	public void merge(QueryByFilter source) {
 		if (!candidateClass.equals(source.candidateClass)) {
 			throw new RuntimeException("Cannot merge queries: expected candidate class " + candidateClass + ", found " + source.getCandidateClass());
 		}
+		List<QueryByFilterItem> sourceItms = cloneItems(source.getItems());
 		if (!predicateOperator.equals(source.predicateOperator)) {
 			QueryByFilterItemGroup group = new QueryByFilterItemGroup(source.predicateOperator);
-			for (QueryByFilterItem item : source.getItems()) {
+			for (QueryByFilterItem item : sourceItms) {
 				group.addItem(item);
 			}
 			addItem(group);
 		} else {
-			this.items.addAll(source.getItems());
+			for (QueryByFilterItem item : sourceItms) {
+				this.addItem(item);
+			}
 		}
 		this.orders.addAll(source.orders);
 		this.projections.addAll(source.projections);
