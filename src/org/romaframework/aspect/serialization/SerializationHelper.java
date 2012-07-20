@@ -22,7 +22,6 @@ import org.romaframework.aspect.core.feature.CoreFieldFeatures;
 import org.romaframework.aspect.serialization.exception.SerializationException;
 import org.romaframework.core.schema.SchemaClass;
 import org.romaframework.core.schema.SchemaFeatures;
-import org.romaframework.core.util.DynaBean;
 
 /**
  * @author Emanuele Tagliaferri (emanuele.tagliaferri--at--assetdata.it)
@@ -49,23 +48,6 @@ public class SerializationHelper {
 	public static void reallineFeature(SchemaFeatures features) {
 	}
 
-	/**
-	 * Brief check if a dynaBean have a attribute with the specifed value.
-	 * 
-	 * @param bean
-	 *          where find attribute.
-	 * @param name
-	 *          name of attribute.
-	 * @param value
-	 *          to confront.
-	 * @return true if dynaBean have an attribute with param value, otherwise false.
-	 */
-	public static boolean checkAttributeValue(DynaBean bean, String name, Object value) {
-		if (bean != null && bean.existAttribute(name)) {
-			return value == null ? bean.getAttribute(name) == null : value.equals(bean.getAttribute(name));
-		}
-		return false;
-	}
 
 	/**
 	 * Transform an input stream to a string.

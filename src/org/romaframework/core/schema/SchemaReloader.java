@@ -36,7 +36,7 @@ import org.romaframework.core.resource.AutoReloadManager;
  */
 public class SchemaReloader implements AutoReloadListener {
 
-	public final static String						reloading_mutex				= "reloading_mutex";
+	public final static Object						reloading_mutex				= new Object();
 	private final Map<File, List<String>>	fileReloadingMapping	= new HashMap<File, List<String>>();
 	private static Log										log										= LogFactory.getLog(SchemaReloader.class);
 

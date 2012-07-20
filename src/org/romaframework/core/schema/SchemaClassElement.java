@@ -50,7 +50,7 @@ public abstract class SchemaClassElement extends SchemaElement {
 
 	public String getFullName() {
 		if (fullName == null) {
-			fullName = getEntity().getName() + "." + getName();
+			fullName = getEntity().getSchemaClass().getName() + "." + getName();
 		}
 		return fullName;
 	}

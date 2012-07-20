@@ -426,4 +426,10 @@ public abstract class SchemaClass extends SchemaClassDefinition implements Compa
 	public void removeEvent(SchemaEvent schemaEvent) {
 		events.remove(schemaEvent.getName());
 	}
+	
+	@Override
+	public SchemaClass getParent() {
+		return (SchemaClass)super.getParent();
+	}
+	
 }

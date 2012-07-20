@@ -77,7 +77,8 @@ public abstract class SchemaField extends SchemaClassElement {
 				synchronized (listeners) {
 					for (SchemaFieldListener listener : listeners) {
 						Object curVal = listener.onBeforeFieldWrite(iObject, this, value);
-						if(curVal != SchemaFieldListener.IGNORED)value=curVal;
+						if (curVal != SchemaFieldListener.IGNORED)
+							value = curVal;
 					}
 				}
 
@@ -295,6 +296,11 @@ public abstract class SchemaField extends SchemaClassElement {
 
 	public void setEmbeddedTypeGenerics(SchemaClass[] embeddedTypeGenerics) {
 		this.embeddedTypeGenerics = embeddedTypeGenerics;
+	}
+
+	@Override
+	public SchemaField getParent() {
+		return (SchemaField) super.getParent();
 	}
 
 }
