@@ -32,6 +32,7 @@ public class QueryByFilter extends Query {
 	private List<QueryByFilterProjection>					projections;
 	private String																predicateOperator;
 	private Map<String, QueryByFilterItemReverse>	reverse							= new HashMap<String, QueryByFilterItemReverse>();
+	private boolean																distinct						= false;
 
 	public static final QueryOperator							FIELD_LIKE					= QueryOperator.LIKE;
 	public static final QueryOperator							FIELD_NOT_EQUALS		= QueryOperator.NOT_EQUALS;
@@ -229,6 +230,14 @@ public class QueryByFilter extends Query {
 
 	public boolean hasProjection() {
 		return !projections.isEmpty();
+	}
+
+	public boolean isDistinct() {
+		return distinct;
+	}
+
+	public void setDistinct(boolean distinct) {
+		this.distinct = distinct;
 	}
 
 }
