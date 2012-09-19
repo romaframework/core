@@ -179,7 +179,7 @@ public class SpringComponentEngine extends AbstractServiceable implements Compon
 	}
 
 	public void shutdown() throws RuntimeException {
-		status = STATUS_SHUTDOWNING;
+		status = STATUS_SHUTTING_DOWN;
 
 		if (springContext != null) {
 			springContext.destroy();

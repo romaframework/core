@@ -57,10 +57,10 @@ public class ModuleManager extends Configurable<Module> implements Serviceable {
 
 	public void shutdown() {
 		for (Module module : configuration.values()) {
-			log.warn("Shutdowning module " + module.moduleName() + "...");
+			log.warn("Shutting down module " + module.moduleName() + "...");
 			module.shutdown();
 		}
-		log.warn("All modules shutdowned.");
+		log.warn("All modules shut down.");
 
 		configuration.clear();
 	}

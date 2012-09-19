@@ -67,11 +67,11 @@ public abstract class SchemaField extends SchemaClassElement {
 	}
 
 	public void setValue(Object iObject, Object iFieldValue) {
+		Roma.context().create();
 		try {
 			Object value = convertValue(iFieldValue);
 			List<SchemaFieldListener> listeners = Controller.getInstance().getListeners(SchemaFieldListener.class);
 			try {
-				Roma.context().create();
 
 				// CALL ALL LISTENERS BEFORE FIELD WRITE CALLBACKS
 				synchronized (listeners) {

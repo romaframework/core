@@ -33,5 +33,5 @@ public interface Serviceable {
 	public static final String	STATUS_DOWN					= "down";
 	public static final String	STATUS_STARTING			= "starting";
 	public static final String	STATUS_UP						= "up";
-	public static final String	STATUS_SHUTDOWNING	= "shutdowning";
+	public static final String	STATUS_SHUTTING_DOWN	= "shutting down";
 }
