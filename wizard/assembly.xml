@@ -19,7 +19,7 @@
 				<include>bin/*</include>
 			</includes>
 			<excludes>
-				<exclude>wizard/assembly.xml</exclude>
+				<exclude>wizard/assembly.xmlg</exclude>
 			</excludes>
 			<useDefaultExcludes>true</useDefaultExcludes>
 		</fileSet>
