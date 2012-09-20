@@ -58,7 +58,6 @@ public class PersistenceContextInjector implements ContextLifecycleListener, Sch
 		return null;
 	}
 
-	@Override
 	public void onContextPop(Map<String, Object> current) {
 		PersistenceAspect pa = (PersistenceAspect) current.get(PersistenceAspect.class.getSimpleName());
 		if (pa != null) {
@@ -66,7 +65,6 @@ public class PersistenceContextInjector implements ContextLifecycleListener, Sch
 		}
 	}
 
-	@Override
 	public void onContextPush(Map<String, Object> current) {
 		if (!ObjectContext.getInstance().existContextComponent(PersistenceAspect.class)) {
 			PersistenceAspect pa = ObjectContext.getInstance().getContextComponent(PersistenceAspect.class);

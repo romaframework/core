@@ -182,7 +182,6 @@ public class HookAspect extends SelfRegistrantModule implements Aspect, FieldRef
 		searchForHooks(iContent, HookActionFeatures.HOOK_AFTER_ACTION, iAction, true);
 	}
 
-	@Override
 	public boolean onBeforeAction(Object iContent, SchemaAction iAction) {
 		if (isHookDefined(HookActionFeatures.HOOK_AROUND_ACTION, iAction)) {
 			// THERE IS AN "AROUND" HOOK: CALL IT AND RETURN FALSE TO AVOID THE CALL CHAIN
@@ -195,7 +194,6 @@ public class HookAspect extends SelfRegistrantModule implements Aspect, FieldRef
 		return true;
 	}
 
-	@Override
 	public void onExceptionAction(Object iContent, SchemaAction iAction, Exception exception) {
 	}
 

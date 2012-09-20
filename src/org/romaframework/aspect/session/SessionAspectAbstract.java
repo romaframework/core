@@ -34,8 +34,7 @@ import org.romaframework.core.schema.SchemaField;
 import org.romaframework.core.schema.SchemaObject;
 import org.romaframework.core.schema.SchemaReloadListener;
 
-public abstract class SessionAspectAbstract extends SelfRegistrantConfigurableModule<String> implements SessionAspect,
-		SchemaReloadListener {
+public abstract class SessionAspectAbstract extends SelfRegistrantConfigurableModule<String> implements SessionAspect, SchemaReloadListener {
 
 	public SessionAspectAbstract() {
 		Controller.getInstance().registerListener(SchemaReloadListener.class, this);
@@ -74,7 +73,6 @@ public abstract class SessionAspectAbstract extends SelfRegistrantConfigurableMo
 		return objectMap;
 	}
 
-	@Override
 	public SchemaObject getSchemaObject(Object object) {
 		if (getActiveSessionInfo() == null)
 			return null;
@@ -97,7 +95,6 @@ public abstract class SessionAspectAbstract extends SelfRegistrantConfigurableMo
 		}
 	}
 
-	@Override
 	public List<SchemaObject> getSchemaObjects(SchemaClass schemaClass) {
 		synchronized (getActiveSessionInfo()) {
 			Map<Object, SchemaObject> so = getSchemaObjectMap();
@@ -131,7 +128,6 @@ public abstract class SessionAspectAbstract extends SelfRegistrantConfigurableMo
 	 * When update an SchemaClass remove all instances of this from all caches.
 	 * 
 	 */
-	@Override
 	public void signalUpdatedClass(SchemaClass iClass, File iFile) {
 		for (SessionInfo info : getSessionInfos()) {
 			synchronized (info) {
@@ -163,7 +159,6 @@ public abstract class SessionAspectAbstract extends SelfRegistrantConfigurableMo
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
 	public <T extends SessionAccount> T getAccount() {
 		return (T) getActiveSessionInfo().getAccount();
 	}

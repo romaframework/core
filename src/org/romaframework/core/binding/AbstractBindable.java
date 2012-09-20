@@ -29,7 +29,6 @@ public abstract class AbstractBindable implements Bindable {
 	protected Object			sourceObject;
 	protected SchemaField	sourceField;
 
-	@Override
 	public void setSource(Object iSourceObject, String iSourceFieldName) {
 		this.sourceObject = iSourceObject;
 		SchemaClass cls = Roma.schema().getSchemaClass(this.sourceObject.getClass());
@@ -44,12 +43,10 @@ public abstract class AbstractBindable implements Bindable {
 		sourceField.setValue(sourceObject, value);
 	}
 
-	@Override
 	public Object getSourceObject() {
 		return sourceObject;
 	}
 
-	@Override
 	public SchemaField getSourceField() {
 		return sourceField;
 	}

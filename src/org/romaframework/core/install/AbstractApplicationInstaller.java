@@ -8,14 +8,12 @@ public abstract class AbstractApplicationInstaller extends SelfRegistrantModule 
 		return MODULE_NAME;
 	}
 
-	@Override
 	public void startup() throws RuntimeException {
 		if (!alreadyInstalled()) {
 			install();
 		}
 	}
 
-	@Override
 	public void shutdown() throws RuntimeException {
 	}
 }

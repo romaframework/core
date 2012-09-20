@@ -103,12 +103,10 @@ public class AppSessionManager extends SessionAspectAbstract {
 		return null;
 	}
 
-	@Override
 	public void setTimeout(int mins) {
 		
 	}
 
-	@Override
 	public int getTimeout() {
 		return -1;
 	}

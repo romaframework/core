@@ -6,7 +6,6 @@ public class CompositeApplicationInstaller extends AbstractApplicationInstaller 
 
 	private List<ApplicationInstaller>	installers;
 
-	@Override
 	public void install() {
 		for (ApplicationInstaller applicationInstaller : installers) {
 			if (applicationInstaller.alreadyInstalled()) {
@@ -18,7 +17,6 @@ public class CompositeApplicationInstaller extends AbstractApplicationInstaller 
 		}
 	}
 
-	@Override
 	public boolean alreadyInstalled() {
 		return false;
 	}

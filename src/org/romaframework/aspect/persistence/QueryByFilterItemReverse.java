@@ -1,8 +1,5 @@
 package org.romaframework.aspect.persistence;
 
-import org.romaframework.aspect.persistence.QueryByFilter;
-import org.romaframework.aspect.persistence.QueryByFilterItem;
-import org.romaframework.aspect.persistence.QueryOperator;
 
 /**
  * An item that allow to manage inverse connection as direct connection. It contains a subQuery for rebuild the original query.

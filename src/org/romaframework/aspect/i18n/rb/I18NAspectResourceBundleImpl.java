@@ -33,12 +33,10 @@ public class I18NAspectResourceBundleImpl extends I18NAspectAbstract implements 
 		this.autoReloadManager = iAutoReloadManager;
 	}
 
-	@Override
 	public Set<Locale> getAvailableLanguages() {
 		return fileManager.getAvailableLanguages();
 	}
 
-	@Override
 	public void addResource(File iFile, String iName, String iPackagePrefix, String iStartingPackage) {
 		if (packages == null)
 			return;
@@ -75,7 +73,6 @@ public class I18NAspectResourceBundleImpl extends I18NAspectAbstract implements 
 		lreload.add(fileName);
 	}
 
-	@Override
 	public void signalUpdatedFile(File iFile) {
 		try {
 			List<String> lreload = reloadMap.get(iFile.getName());
