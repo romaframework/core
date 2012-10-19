@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project basedir="." default="install" name="core-install">
-	<target name="install" >
-		<echo>Module Core 2.0.2 install</echo>
-	</target>
-</project>
