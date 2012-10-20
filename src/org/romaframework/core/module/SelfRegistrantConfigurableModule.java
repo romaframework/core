@@ -27,6 +27,7 @@ import org.romaframework.core.config.Configurable;
  * 
  */
 public abstract class SelfRegistrantConfigurableModule<T> extends Configurable<T> implements Module {
+	
 	protected String	status;
 
 	protected SelfRegistrantConfigurableModule() {

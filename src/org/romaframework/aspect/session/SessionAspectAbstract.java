@@ -34,6 +34,7 @@ import org.romaframework.core.schema.SchemaField;
 import org.romaframework.core.schema.SchemaObject;
 import org.romaframework.core.schema.SchemaReloadListener;
 
+
 public abstract class SessionAspectAbstract extends SelfRegistrantConfigurableModule<String> implements SessionAspect, SchemaReloadListener {
 
 	public SessionAspectAbstract() {
@@ -72,6 +73,7 @@ public abstract class SessionAspectAbstract extends SelfRegistrantConfigurableMo
 		}
 		return objectMap;
 	}
+
 
 	public SchemaObject getSchemaObject(Object object) {
 		if (getActiveSessionInfo() == null)

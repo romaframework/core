@@ -26,20 +26,58 @@ import org.romaframework.core.schema.SchemaObject;
 import org.romaframework.core.schema.SchemaObjectHandler;
 
 public interface SessionAspect extends Aspect, SchemaObjectHandler {
+	
 	public static final String	ASPECT_NAME	= "session";
 
+	/**
+	 * 
+	 * 
+	 * @return SessionInfo
+	 */
 	public SessionInfo getActiveSessionInfo();
 
+	/**
+	 * 
+	 * @return Object
+	 */
 	public Object getActiveSystemSession();
 
+	/**
+	 * checks if the object passed is in session, otherwise returns <code>null</code>
+	 * 
+	 * @param iSystemSession
+	 * @return SessionInfo
+	 */
 	public SessionInfo getSession(Object iSystemSession);
 
+	/**
+	 * adds a new object in the session
+	 * 
+	 * @param iSession
+	 * @return SessionInfo : the new object, added in session
+	 */
 	public SessionInfo addSession(Object iSession);
 
+	/**
+	 * removes an object from the session, and returns the object removed
+	 * 
+	 * @param iSession
+	 * @return
+	 */
 	public SessionInfo removeSession(Object iSession);
 
+	/**
+	 * returns the list of session objects, which are present
+	 * 
+	 * @return Collection
+	 */
 	public Collection<SessionInfo> getSessionInfos();
 
+	/**
+	 * invalidates the session passed as param
+	 * 
+	 * @param iSystemSession
+	 */
 	public void invalidateSession(Object iSystemSession);
 
 	/**

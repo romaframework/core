@@ -16,8 +16,21 @@
 
 package org.romaframework.aspect.session;
 
+/**
+ * 
+ *
+ */
 public interface SessionListener {
+	
+	/**
+	 * 
+	 * @param iSession
+	 */
 	public void onSessionCreating(SessionInfo iSession);
 
+	/**
+	 * 
+	 * @param iSession
+	 */
 	public void onSessionDestroying(SessionInfo iSession);
 }
