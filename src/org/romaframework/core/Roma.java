@@ -91,6 +91,7 @@ public class Roma {
 		return context;
 	}
 
+	
 	public static boolean existComponent(String iName) {
 		return RomaApplicationContext.getInstance().getComponentAspect().existComponent(iName);
 	}
@@ -98,11 +99,22 @@ public class Roma {
 	public static <T> boolean existComponent(Class<T> iClass) {
 		return RomaApplicationContext.getInstance().getComponentAspect().existComponent(iClass);
 	}
-
+	
+	/**
+	 * Retrieves and returns a Roma component, which is a generic object injected from outside and that "lives" in the Roma
+	 * context. 
+	 * This is particularly useful for singletons, factories...
+	 * @param iName the name describing the component.
+	 * @return the component itself.
+	 */
 	public static <T> T component(String iName) {
 		return (T) RomaApplicationContext.getInstance().getComponentAspect().getComponent(iName);
 	}
 
+	/**
+	 * Retrieves a component from Roma, but by class and not by name.
+	 * @see component(String iName)
+	 */
 	public static <T> T component(Class<T> iClass) {
 		if (Utility.getClassName(iClass).endsWith("Aspect"))
 			return aspect(iClass);
@@ -117,6 +129,9 @@ public class Roma {
 		return RomaApplicationContext.getInstance().getComponentAspect().autoComponent(iName);
 	}
 
+	/**
+	 * Returns an implementation for a given aspect (specified with a class) 
+	 */
 	public static <T> T aspect(Class<? extends T> iClass) {
 		String aspectName = Utility.getClassName(iClass);
 		int pos = aspectName.indexOf("Aspect");
@@ -309,6 +324,14 @@ public class Roma {
 		return features;
 	}
 
+	/**
+	 * Returns the value of the feature related to a field or action in a given object.
+	 * 
+	 * @param iUserObject the object containing the field or action
+	 * @param elementName the <i>name</i> of the field or action contained by the object
+	 * @param feature the Feature whose value must be retrieved
+	 * @return the value of the specified feature.
+	 */
 	public static <T> T getFeature(Object iUserObject, String elementName, Feature<T> feature) {
 		SchemaFeatures features = getSchemaFeature(iUserObject, elementName, feature);
 		if (features == null)
@@ -316,18 +339,40 @@ public class Roma {
 		return features.getFeature(feature);
 	}
 
+	/**
+	 * Sets the value of a given feature in the given object. 
+	 * 
+	 * @param iUserObject the object whose Feature must be set
+	 * @param feature the Feature that must be changed
+	 * @param value the value that must be set!
+	 */
 	public static <T> boolean setFeature(Object iUserObject, Feature<T> feature, T value) {
 		if (!FeatureType.CLASS.equals(feature.getType()))
 			return false;
 		return setFeature(iUserObject, null, feature, value);
 	}
-
+	/**
+	 * Returns the value of the feature in a given object.
+	 * 
+	 * @param iUserObject the object on which the feature has been set
+	 * @param feature the Feature whose value must be retrieved
+	 * @return the value of the specified feature.
+	 */
 	public static <T> T getFeature(Object iUserObject, Feature<T> feature) {
 		if (!FeatureType.CLASS.equals(feature.getType()))
 			return null;
 		return getFeature(iUserObject, null, feature);
 	}
 
+ /**
+ * Sets a feature of a action or field, specified by name, in a given object.
+ * 
+ * @param iUserObject the object containing the field or action
+ * @param elementName the name of the field or action 
+ * @param feature the feature that must be set
+ * @param value the value that must be set 
+ * @return false if no features were set on the object, true otherwise.
+ */
 	public static <T> boolean setFeature(Object iUserObject, String elementName, Feature<T> feature, T value) {
 		SchemaFeatures features = getSchemaFeature(iUserObject, elementName, feature);
 
