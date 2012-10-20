@@ -22,23 +22,57 @@ import org.romaframework.core.schema.Feature;
 import org.romaframework.core.schema.FeatureType;
 import org.romaframework.core.schema.SchemaClass;
 
+/**
+ * This class defines the features for the "fields" regarding the view aspect, defining their appearence, look and feel.    
+ *
+ */
 public class ViewFieldFeatures {
 	
 	public static final Feature<String>					DESCRIPTION						= new Feature<String>(ViewAspect.ASPECT_NAME, "description", FeatureType.FIELD, String.class);
+	/**
+	 * Contains the string identifying the area where this field must be rendered in. Due to partial evolution of the framework, the area must be specified with a 'form://' 
+	 * string at the beginning. Note that while it resembles a XPath path, it is not and the destination area must be declared with just its name, without the whole path.
+	 * Example: if the area is called "someFieldssArea", the position must be "form://someFieldsArea", even if this area is contained in other areas, as usually happens.
+	 */
 	public static final Feature<String>					POSITION								= new Feature<String>(ViewAspect.ASPECT_NAME, "position", FeatureType.FIELD, String.class);
+	/**
+	 * Contains the string identifying the renderer used for the action.
+	 */
 	public static final Feature<String>					RENDER								= new Feature<String>(ViewAspect.ASPECT_NAME, "render", FeatureType.FIELD, String.class);
+	/**
+	 * Contains a specific style: this will be matched with a CSS item with the same name. 
+	 */
 	public static final Feature<String>					STYLE									= new Feature<String>(ViewAspect.ASPECT_NAME, "style", FeatureType.FIELD, String.class);
+	/**
+	 * Contains the string that will appear aside the field. If not specified, it is assigned to the field name.
+	 */
 	public static final Feature<String>					LABEL									= new Feature<String>(ViewAspect.ASPECT_NAME, "label", FeatureType.FIELD, String.class);
+	/**
+	 * If not enabled, the field wont be editable.
+	 */
 	public static final Feature<Boolean>				ENABLED								= new Feature<Boolean>(ViewAspect.ASPECT_NAME, "enabled", FeatureType.FIELD, Boolean.class, Boolean.TRUE);
+	/**
+	 * Sets the visibility of the field. 
+	 */
 	public static final Feature<Boolean>				VISIBLE								= new Feature<Boolean>(ViewAspect.ASPECT_NAME, "visible", FeatureType.FIELD, Boolean.class, Boolean.TRUE);
 
 	public static final Feature<String[]>				DEPENDS_ON						= new Feature<String[]>(ViewAspect.ASPECT_NAME, "dependsOn", FeatureType.FIELD, String[].class);
 	public static final Feature<String[]>				DEPENDS								= new Feature<String[]>(ViewAspect.ASPECT_NAME, "depends", FeatureType.FIELD, String[].class);
+	
+	/**
+	 * Contains a string with the name of a field used as 'selection field'. 
+	 * This has sense ONLY on a collection where an item can be selected; the selection_field of a collection is the name of the field that will
+	 * be automatically set to the selected item. 
+	 */
 	public static final Feature<String>					SELECTION_FIELD				= new Feature<String>(ViewAspect.ASPECT_NAME, "selectionField", FeatureType.FIELD, String.class);
+	
 	public static final Feature<SelectionMode>	SELECTION_MODE				= new Feature<SelectionMode>(ViewAspect.ASPECT_NAME, "selectionMode", FeatureType.FIELD, SelectionMode.class,
 																																				SelectionMode.SELECTION_MODE_VALUE);
 	public static final Feature<String>					FORMAT								= new Feature<String>(ViewAspect.ASPECT_NAME, "format", FeatureType.FIELD, String.class);
 
+	/**
+	 * Wraps the field with a specific "display_with" class. This is useful for giving very customized behaviour on the field.	
+	 */
 	public static final Feature<SchemaClass>		DISPLAY_WITH					= new Feature<SchemaClass>(ViewAspect.ASPECT_NAME, "displayWith", FeatureType.FIELD, SchemaClass.class);
 
 }
