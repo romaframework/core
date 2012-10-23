@@ -34,6 +34,7 @@ import org.romaframework.core.schema.SchemaField;
 import org.romaframework.core.schema.SchemaObject;
 import org.romaframework.core.schema.SchemaReloadListener;
 
+
 public abstract class SessionAspectAbstract extends SelfRegistrantConfigurableModule<String> implements SessionAspect, SchemaReloadListener {
 
 	public SessionAspectAbstract() {
@@ -73,6 +74,9 @@ public abstract class SessionAspectAbstract extends SelfRegistrantConfigurableMo
 		return objectMap;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public SchemaObject getSchemaObject(Object object) {
 		if (getActiveSessionInfo() == null)
 			return null;
@@ -95,6 +99,9 @@ public abstract class SessionAspectAbstract extends SelfRegistrantConfigurableMo
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public List<SchemaObject> getSchemaObjects(SchemaClass schemaClass) {
 		synchronized (getActiveSessionInfo()) {
 			Map<Object, SchemaObject> so = getSchemaObjectMap();
@@ -108,6 +115,9 @@ public abstract class SessionAspectAbstract extends SelfRegistrantConfigurableMo
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@SuppressWarnings("unchecked")
 	public <T> T getObject(SchemaClass clazz) {
 		synchronized (getActiveSessionInfo()) {
@@ -146,41 +156,64 @@ public abstract class SessionAspectAbstract extends SelfRegistrantConfigurableMo
 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public <T> T getObject(Class<T> clazz) {
 		return getObject(Roma.schema().getSchemaClass(clazz));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public <T> T getObject(String name) {
 		return getObject(Roma.schema().getSchemaClass(name));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public String aspectName() {
 		return ASPECT_NAME;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@SuppressWarnings("unchecked")
 	public <T extends SessionAccount> T getAccount() {
 		return (T) getActiveSessionInfo().getAccount();
 	}
 
+	//TODO
 	public void beginConfigClass(SchemaClassDefinition iClass) {
 	}
 
+	//TODO
 	public void configAction(SchemaAction action) {
 	}
 
+	//TODO
 	public void configClass(SchemaClassDefinition class1) {
 	}
 
+	//TODO
 	public void configEvent(SchemaEvent event) {
 	}
 
+	//TODO
 	public void configField(SchemaField field) {
 	}
 
+	//TODO
 	public void endConfigClass(SchemaClassDefinition iClass) {
 	}
 
+	/**
+	 * 
+	 * logout and destroy the user session
+	 * 
+	 */
 	public void logout() {
 		Roma.component(ApplicationConfiguration.class).destroyUserSession();
 	}

@@ -19,6 +19,7 @@ package org.romaframework.core.schema;
 import java.io.Serializable;
 
 public abstract class SchemaFeatures implements Cloneable, Serializable {
+	
 	private static final long		serialVersionUID	= -4789886810661429988L;
 
 	private static final Object	UNSETTED_VALUE		= new Object() {
@@ -113,7 +114,7 @@ public abstract class SchemaFeatures implements Cloneable, Serializable {
 	public <T> boolean isRuntimeSet(Feature<T> feature) {
 		return false;
 	}
-	
+
 	public SchemaFeatures getParent() {
 		return parent;
 	}

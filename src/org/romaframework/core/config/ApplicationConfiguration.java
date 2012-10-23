@@ -25,24 +25,55 @@ import org.romaframework.aspect.authentication.LoginListener;
  * 
  */
 public interface ApplicationConfiguration extends Serviceable {
+	
+	/**
+	 * Create a new user session.
+	 */
 	public void createUserSession();
 
+	/**
+	 * Destroy a user session.
+	 */
 	public void destroyUserSession();
 
 	public void startUserSession();
 
 	public void endUserSession();
 
+	/**
+	 * @return String : the application name
+	 */
 	public String getApplicationName();
 
+	/**
+	 * 
+	 * @return String 
+	 */
 	public String getApplicationVersion();
 
+	/**
+	 * 
+	 * @return String
+	 */
 	public String getApplicationPackage();
 
+	/**
+	 * 
+	 * @return boolean
+	 */
 	public boolean isApplicationDevelopment();
 
+	/**
+	 * 
+	 * @param applicationDevelopment
+	 */
 	public void setApplicationDevelopment(boolean applicationDevelopment);
 
+	/**
+	 * 
+	 * @param iKey
+	 * @return String
+	 */
 	public String getConfiguration(String iKey);
 
 	public void login(LoginListener iListener);
