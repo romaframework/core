@@ -19,6 +19,9 @@ package org.romaframework.core.module;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.romaframework.aspect.core.CoreAspect;
+import org.romaframework.core.Roma;
+import org.romaframework.core.aspect.Aspect;
+import org.romaframework.core.aspect.AspectManager;
 import org.romaframework.core.config.Configurable;
 import org.romaframework.core.config.Serviceable;
 
@@ -33,6 +36,8 @@ public class ModuleManager extends Configurable<Module> implements Serviceable {
 	protected static Log						log				= LogFactory.getLog(ModuleManager.class);
 
 	protected ModuleManager() {
+		instance=this;
+		register(new CoreAspect());
 	}
 
 	/**
@@ -42,6 +47,9 @@ public class ModuleManager extends Configurable<Module> implements Serviceable {
 	 *          Module to register
 	 */
 	protected void register(Module iModule) {
+		if (iModule instanceof Aspect) {
+			Roma.component(AspectManager.class).registerAspectIfNotExist(((Aspect) iModule));
+		}
 		addConfiguration(iModule.moduleName(), iModule);
 	}
 

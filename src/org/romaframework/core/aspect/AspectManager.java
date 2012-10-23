@@ -21,8 +21,6 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.romaframework.aspect.core.CoreAspect;
-
 /**
  * Manage Aspect implementations.
  * 
@@ -34,8 +32,6 @@ public class AspectManager {
 	protected Map<String, Aspect>	defaults	= new LinkedHashMap<String, Aspect>();
 
 	protected AspectManager() {
-		// ADD DEFAULT CORE ASPECT AS FIRST
-		registerAspect(new CoreAspect());
 	}
 
 	/**
@@ -47,18 +43,6 @@ public class AspectManager {
 	private void registerAspect(Aspect iAspect) {
 		defaults.put(iAspect.aspectName(), iAspect);
 		updateAspectCollection();
-	}
-
-	/**
-	 * Unregister the aspect.
-	 * 
-	 * @param iName
-	 *          Aspect's name to unregister
-	 */
-	protected Aspect unregisterAspect(String iName) {
-		Aspect aspect = defaults.remove(iName);
-		updateAspectCollection();
-		return aspect;
 	}
 
 	private void updateAspectCollection() {
@@ -88,5 +72,11 @@ public class AspectManager {
 
 	public String getStatus() {
 		return null;
+	}
+
+	public void registerAspectIfNotExist(Aspect aspect) {
+		if(getAspect(aspect.aspectName())==null){
+			registerAspect(aspect);
+		}
 	}
 }
