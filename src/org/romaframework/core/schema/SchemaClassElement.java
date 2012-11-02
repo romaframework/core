@@ -30,6 +30,7 @@ import org.romaframework.core.schema.virtual.VirtualObject;
  * @author Luca Garulli (luca.garulli--at--assetdata.it)
  */
 public abstract class SchemaClassElement extends SchemaElement {
+
 	private static final long				serialVersionUID	= 7431417848849742385L;
 	private static final Log				log								= LogFactory.getLog(SchemaClassElement.class);
 	protected SchemaClassDefinition	entity;
@@ -121,8 +122,9 @@ public abstract class SchemaClassElement extends SchemaElement {
 			// TODO is this the right place to do this...?
 			Class<?> valueClass = value.getClass();
 			// SUCH A MONSTER!!! MOVE THIS LOGIC IN SchemaClass.isAssignableFrom...
-			if (value instanceof VirtualObject && !(typeClass.getLanguageType() instanceof Class<?> && ((Class<?>) typeClass.getLanguageType()).isAssignableFrom(VirtualObject.class))
-					&& ((VirtualObject) value).getSuperClassObject() != null) {
+			if (value instanceof VirtualObject
+					&& !(typeClass.getLanguageType() instanceof Class<?> && ((Class<?>) typeClass.getLanguageType())
+							.isAssignableFrom(VirtualObject.class)) && ((VirtualObject) value).getSuperClassObject() != null) {
 				if (ComposedEntity.class.isAssignableFrom(((VirtualObject) value).getSuperClassObject().getClass())) {
 					value = ((VirtualObject) value).getSuperClassObject();
 					valueClass = value.getClass();
@@ -135,7 +137,8 @@ public abstract class SchemaClassElement extends SchemaElement {
 		}
 
 		if (value == null && typeClass.isPrimitive()) {
-			log.warn("Cannot set the field value to null for primitive types! Field: " + getEntity() + "." + name + " of class " + expectedType.getName() + ". Setting value to 0.");
+			log.warn("Cannot set the field value to null for primitive types! Field: " + getEntity() + "." + name + " of class "
+					+ expectedType.getName() + ". Setting value to 0.");
 			// SET THE VALUE TO 0
 			value = SchemaHelper.assignDefaultValueToLiteral(typeClass);
 		}
