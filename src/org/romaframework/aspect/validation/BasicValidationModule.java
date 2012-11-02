@@ -185,6 +185,19 @@ public class BasicValidationModule extends ValidationAspectAbstract implements S
 			handleValidationException(pojo, iMultiException, name, "$validation.maxLength", String.valueOf(annotationMax));
 	}
 
+	public void validateObject(Object pojo, MultiValidationException iMultiException, SchemaField fieldInfo, Object fieldValue, String name, boolean required, Integer annotationMin,
+			Integer annotationMax) {
+		String stringValue = (String) fieldValue;
+		if (required && (stringValue == null || stringValue.length() == 0))
+			handleValidationException(pojo, iMultiException, name, "$validation.required", null);
+
+		if (annotationMin != null && stringValue != null && stringValue.length() < annotationMin)
+			handleValidationException(pojo, iMultiException, name, "$validation.minLength", String.valueOf(annotationMin));
+
+		if (annotationMax != null && stringValue != null && stringValue.length() > annotationMax)
+			handleValidationException(pojo, iMultiException, name, "$validation.maxLength", String.valueOf(annotationMax));
+	}
+
 	protected void handleValidationException(Object pojo, MultiValidationException multiException, String iFieldName, String iRule, String iRefValue) throws ValidationException {
 		ValidationException e = new ValidationException(pojo, iFieldName, iRule, iRefValue);
 		multiException.addException(e);
