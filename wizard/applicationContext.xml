@@ -15,9 +15,9 @@
 		<property name="applicationDevelopment">
 			<value>true</value>
 		</property>
-        <property name="configuration">
-            <map></map>
-        </property>
+		<property name="configuration">
+			<map></map>
+		</property>
 	</bean>
 
 	<bean id="AspectManager" class="org.romaframework.core.aspect.AspectManager" singleton="true">

@@ -19,6 +19,7 @@ package org.romaframework.core.module;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.romaframework.aspect.core.CoreAspect;
+import org.romaframework.core.Roma;
 import org.romaframework.core.config.Configurable;
 import org.romaframework.core.config.Serviceable;
 
@@ -29,10 +30,10 @@ import org.romaframework.core.config.Serviceable;
  * 
  */
 public class ModuleManager extends Configurable<Module> implements Serviceable {
-	protected static ModuleManager	instance	= new ModuleManager();
-	protected static Log						log				= LogFactory.getLog(ModuleManager.class);
+	// protected static ModuleManager instance = new ModuleManager();
+	protected static Log	log	= LogFactory.getLog(ModuleManager.class);
 
-	protected ModuleManager() {
+	public ModuleManager() {
 	}
 
 	/**
@@ -70,6 +71,6 @@ public class ModuleManager extends Configurable<Module> implements Serviceable {
 	}
 
 	public static ModuleManager getInstance() {
-		return instance;
+		return Roma.autoComponent(ModuleManager.class);
 	}
 }
