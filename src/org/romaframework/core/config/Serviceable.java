@@ -23,10 +23,24 @@ package org.romaframework.core.config;
  * 
  */
 public interface Serviceable {
+	
+	/**
+	 * manages the startup phase
+	 * @throws RuntimeException
+	 */
 	public void startup() throws RuntimeException;
 
+	/**
+	 * manages the shutdown phase
+	 * @throws RuntimeException
+	 */
 	public void shutdown() throws RuntimeException;
 
+	/**
+	 * Returns the status of the application
+	 * 
+	 * @return String
+	 */
 	public String getStatus();
 
 	public static final String	STATUS_UNKNOWN			= "unknown";

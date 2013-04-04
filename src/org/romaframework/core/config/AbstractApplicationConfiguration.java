@@ -27,6 +27,7 @@ import org.romaframework.core.exception.ConfigurationException;
  * 
  */
 public abstract class AbstractApplicationConfiguration extends Configurable<String> implements ApplicationConfiguration {
+	
 	protected String	applicationName;
 	protected String	applicationVersion	= "1.0";
 	protected String	applicationPackage;
@@ -36,40 +37,68 @@ public abstract class AbstractApplicationConfiguration extends Configurable<Stri
 		throw new ConfigurationException("No login configured. If you want to enable the auto-login feature please define CustomApplicationConfiguration.login(listener)");
 	}
 
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public String getApplicationName() {
 		return applicationName;
 	}
 
+	/**
+	 * 
+	 * @param applicationName
+	 */
 	public void setApplicationName(String applicationName) {
 		this.applicationName = applicationName;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public String getApplicationVersion() {
 		return applicationVersion;
 	}
 
+	/**
+	 * 
+	 * @param applicationVersion
+	 */
 	public void setApplicationVersion(String applicationVersion) {
 		this.applicationVersion = applicationVersion;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public String getApplicationPackage() {
 		return applicationPackage;
 	}
 
+	/**
+	 * 
+	 * @param applicationPackage
+	 */
 	public void setApplicationPackage(String applicationPackage) {
 		this.applicationPackage = applicationPackage;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isApplicationDevelopment() {
 		return applicationDevelopment;
 	}
 
+	/**
+	 * @param applicationDevelopment
+	 */
 	public void setApplicationDevelopment(boolean applicationDevelopment) {
 		this.applicationDevelopment = applicationDevelopment;
 	}
 
 	/**
-	 * Create a new user session.
+	 * {@inheritDoc}
 	 */
 	public final void createUserSession() {
 		try {
@@ -79,9 +108,9 @@ public abstract class AbstractApplicationConfiguration extends Configurable<Stri
 			Roma.context().destroy();
 		}
 	}
-
+	
 	/**
-	 * Destroy a user session.
+	 * {@inheritDoc}
 	 */
 	public final void destroyUserSession() {
 		try {
@@ -92,6 +121,9 @@ public abstract class AbstractApplicationConfiguration extends Configurable<Stri
 		}
 	}
 
+	/**
+	 * @return String : {@link Serviceable#STATUS_UNKNOWN}
+	 */
 	public String getStatus() {
 		return STATUS_UNKNOWN;
 	}

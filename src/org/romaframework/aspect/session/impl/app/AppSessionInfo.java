@@ -29,17 +29,37 @@ import org.romaframework.aspect.session.SessionInfo;
  * 
  */
 public class AppSessionInfo extends SessionInfo {
+	
 	protected HashMap<String, Object>	properties;
 	protected Locale									locale;
 
+	/**
+	 * 
+	 * @param id
+	 */
 	public AppSessionInfo(Object id) {
 		super(id);
 	}
 
+	/**
+	 * Retrieves a property from the object. <code>null</code> if does not exist
+	 * <br><b>The operation is synchronized</b>
+	 * 
+	 * @param key
+	 * @return Object
+	 */
 	public synchronized Object getProperty(String key) {
 		return properties == null ? null : properties.get(key);
 	}
 
+	/**
+	 * Adds a new property within the session object.
+	 * <br><b>The operation is synchronized</b>
+	 * 
+	 * 
+	 * @param key
+	 * @param value
+	 */
 	public synchronized void setProperty(String key, Object value) {
 		if (properties == null)
 			properties = new HashMap<String, Object>();
@@ -47,10 +67,18 @@ public class AppSessionInfo extends SessionInfo {
 		properties.put(key, value);
 	}
 
+	/**
+	 * 
+	 * @return Locale
+	 */
 	public Locale getLocale() {
 		return locale;
 	}
 
+	/**
+	 * 
+	 * @param locale
+	 */
 	public void setLocale(Locale locale) {
 		this.locale = locale;
 	}

@@ -1,5 +1,10 @@
 package org.romaframework.core.schema;
 
+/**
+ * Describes a 'feature' of a generic entity in Roma.
+ * A feature has a name and a value and it belongs to a specific aspect.
+ * 
+ */
 public class Feature<T> {
 
 	private FeatureType	type;

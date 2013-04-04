@@ -23,8 +23,19 @@ package org.romaframework.aspect.session;
  * 
  */
 public interface SessionAccount {
+	
+	/**
+	 * returns the user profile
+	 * 
+	 * @return Object
+	 */
 	public Object getProfile();
 
+	/**
+	 * Set the user profile
+	 * 
+	 * @param iProfile
+	 */
 	public void setProfile(Object iProfile);
 
 }

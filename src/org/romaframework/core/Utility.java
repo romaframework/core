@@ -238,7 +238,15 @@ public class Utility {
 		return iPattern;
 	}
 
+	/**
+	 * returns the name of the class passed as Clazz <br>
+	 * also takes into consideration the anonymous classes, or nested
+	 * 
+	 * @param iClass
+	 * @return String
+	 */
 	public static String getClassName(Class<?> iClass) {
+
 		if (iClass.getName().indexOf('$') == -1)
 			return iClass.getSimpleName();
 
@@ -251,10 +259,18 @@ public class Utility {
 		return name.substring(begin + 1);
 	}
 
+	
+	/**
+	 * check if the class is associated to a primitive type
+	 * 
+	 * @param clazz
+	 * @return boolean
+	 */
 	public static boolean isPrimitiveType(Class<?> clazz) {
-		return clazz.isPrimitive() || clazz.isAssignableFrom(Byte.class) || clazz.isAssignableFrom(Short.class) || clazz.isAssignableFrom(Integer.class)
-				|| clazz.isAssignableFrom(Long.class) || clazz.isAssignableFrom(Float.class) || clazz.isAssignableFrom(Double.class) || clazz.isAssignableFrom(Character.class)
-				|| clazz.isAssignableFrom(String.class) || clazz.isAssignableFrom(Boolean.class);
+		return clazz.isPrimitive() || clazz.isAssignableFrom(Byte.class) || clazz.isAssignableFrom(Short.class)
+				|| clazz.isAssignableFrom(Integer.class) || clazz.isAssignableFrom(Long.class) || clazz.isAssignableFrom(Float.class)
+				|| clazz.isAssignableFrom(Double.class) || clazz.isAssignableFrom(Character.class) || clazz.isAssignableFrom(String.class)
+				|| clazz.isAssignableFrom(Boolean.class);
 	}
 
 	public static String cutString(String summary, int maxLength) {

@@ -16,6 +16,12 @@
 
 package org.romaframework.aspect.core.annotation;
 
+/**
+ * Stores the common constants for annotations. They actually match with boolean values.
+ * These annotations are strictly needed in Roma annotations.* 
+ *
+ */
+
 public enum AnnotationConstants {
 
 	UNSETTED(null), TRUE(Boolean.TRUE), FALSE(Boolean.FALSE);

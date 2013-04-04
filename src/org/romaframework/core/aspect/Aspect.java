@@ -27,18 +27,49 @@ import org.romaframework.core.schema.SchemaField;
  * @author Luca Garulli (luca.garulli--at--assetdata.it)
  */
 public interface Aspect {
+	
+	/**
+	 * returns the name of the aspect
+	 * 
+	 * @return
+	 */
 	public String aspectName();
 
+	/**
+	 * 
+	 * @param iClass
+	 */
 	public void beginConfigClass(SchemaClassDefinition iClass);
 
+	/**
+	 * 
+	 * @param iClass
+	 */
 	public void configClass(SchemaClassDefinition iClass);
 
+	/**
+	 * 
+	 * @param iField
+	 */
 	public void configField(SchemaField iField);
 
+	/**
+	 * 
+	 * @param iAction
+	 */
 	public void configAction(SchemaAction iAction);
 
+	/**
+	 * 
+	 * @param iEvent
+	 */
 	public void configEvent(SchemaEvent iEvent);
 
+	
+	/**
+	 * 
+	 * @param iClass
+	 */
 	public void endConfigClass(SchemaClassDefinition iClass);
 
 	/**

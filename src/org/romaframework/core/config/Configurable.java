@@ -29,10 +29,22 @@ public class Configurable<T> {
 
 	public static final String	DEFAULT_CONFIG	= GlobalConstants.ROOT_CLASS;
 
+	/**
+	 * Initializes the configuration
+	 * 
+	 * choosing how to structure a sort {@link LinkedHashMap}
+	 *  
+	 */
 	public Configurable() {
 		this(false);
 	}
 
+	/**
+	 * Choose the sort strategy to be used in the configuration map
+	 * 
+	 * 
+	 * @param iSorted : <code>true</code> choose {@link TreeMap}, <code>false</code> choose a {@link LinkedHashMap}
+	 */
 	public Configurable(boolean iSorted) {
 		if (iSorted)
 			configuration = new TreeMap<String, T>();
@@ -40,10 +52,21 @@ public class Configurable<T> {
 			configuration = new LinkedHashMap<String, T>();
 	}
 
+	/**
+	 * Get all values of configuration
+	 * 
+	 * @return Collection<T>
+	 */
 	public Collection<T> getConfigurationValues() {
 		return configuration.values();
 	}
 
+	/**
+	 * Returns the value to which the specified key is mapped, or null if this map contains no mapping for the key. 
+	 * 
+	 * @param iObjectName
+	 * @return T
+	 */
 	public T getConfiguration(String iObjectName) {
 		return configuration.get(iObjectName);
 	}

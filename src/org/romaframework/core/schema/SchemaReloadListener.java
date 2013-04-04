@@ -25,5 +25,13 @@ import java.io.File;
  * 
  */
 public interface SchemaReloadListener {
+	
+
+	/**
+	 * When update an SchemaClass remove all instances of this from all caches.
+	 * 
+	 * @param iClass
+	 * @param iFile
+	 */
 	public void signalUpdatedClass(SchemaClass iClass, File iFile);
 }

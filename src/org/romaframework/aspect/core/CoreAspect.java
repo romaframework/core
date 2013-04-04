@@ -70,6 +70,9 @@ public class CoreAspect extends SelfRegistrantModule implements Aspect, RomaAppl
 		Controller.getInstance().registerListener(SchemaFeaturesChangeListener.class, this);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void startup() {
 		if (status == STATUS_STARTING || status == STATUS_UP)
 			return;
@@ -107,6 +110,9 @@ public class CoreAspect extends SelfRegistrantModule implements Aspect, RomaAppl
 		status = STATUS_UP;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void shutdown() {
 		Roma.component(AutoReloadManager.class).shutdown();
 		Roma.component(SchemaClassResolver.class).shutdown();
