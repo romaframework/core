@@ -32,7 +32,7 @@ import org.romaframework.core.config.Serviceable;
  * 
  */
 public class ModuleManager extends Configurable<Module> implements Serviceable {
-	// protected static ModuleManager instance = new ModuleManager();
+	protected static ModuleManager instance = new ModuleManager();
 	protected static Log	log	= LogFactory.getLog(ModuleManager.class);
 
 	protected ModuleManager() {
@@ -78,6 +78,6 @@ public class ModuleManager extends Configurable<Module> implements Serviceable {
 	}
 
 	public static ModuleManager getInstance() {
-		return Roma.autoComponent(ModuleManager.class);
+		return instance;//Roma.autoComponent(ModuleManager.class);
 	}
 }

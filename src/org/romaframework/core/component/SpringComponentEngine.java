@@ -23,6 +23,7 @@ public class SpringComponentEngine extends AbstractServiceable implements Compon
 	private Log																log																= LogFactory.getLog(SpringComponentEngine.class);
 	private static final String								COMPONENT_SRV_FILE_PATTERN				= "META-INF/components/applicationContext*.xml";
 	private static final String								COMPONENT_SRV_FILE_PATTERN_SUBDIR	= "META-INF/components/*/applicationContext*.xml";
+	private static final String								COMPONENT_MODULE_FILE_PATTERN_SUBDIR	= "classpath*:/module/applicationContext*.xml";
 
 	protected ClassPathXmlApplicationContext	springContext;
 	protected Map<String, Object>							components												= new HashMap<String, Object>();
@@ -158,19 +159,20 @@ public class SpringComponentEngine extends AbstractServiceable implements Compon
 	 */
 	public void startup() throws RuntimeException {
 		status = STATUS_STARTING;
-		int size = 2;
+		int size = 3;
 		if (additionalPaths != null)
 			size += additionalPaths.length;
 		String paths[] = new String[size];
+		paths[0]=COMPONENT_MODULE_FILE_PATTERN_SUBDIR;
 		if (basePath != null) {
-			paths[0] = basePath + COMPONENT_SRV_FILE_PATTERN;
-			paths[1] = basePath + COMPONENT_SRV_FILE_PATTERN_SUBDIR;
+			paths[1] = basePath + COMPONENT_SRV_FILE_PATTERN;
+			paths[2] = basePath + COMPONENT_SRV_FILE_PATTERN_SUBDIR;
 		} else {
-			paths[0] = COMPONENT_SRV_FILE_PATTERN;
-			paths[1] = COMPONENT_SRV_FILE_PATTERN_SUBDIR;
+			paths[1] = COMPONENT_SRV_FILE_PATTERN;
+			paths[2] = COMPONENT_SRV_FILE_PATTERN_SUBDIR;
 		}
 		if (additionalPaths != null)
-			System.arraycopy(additionalPaths, 0, paths, 2, additionalPaths.length);
+			System.arraycopy(additionalPaths, 0, paths, 3, additionalPaths.length);
 
 		springContext = new ClassPathXmlApplicationContext(paths, false);
 
