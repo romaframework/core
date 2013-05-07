@@ -10,7 +10,8 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.romaframework.core.Roma;
-import org.romaframework.core.aspect.Aspect;
+import org.romaframework.core.aspect.AspectConfigurator;
+import org.romaframework.core.aspect.AspectManager;
 import org.romaframework.core.binding.BindingException;
 import org.romaframework.core.flow.Controller;
 import org.romaframework.core.flow.SchemaFieldListener;
@@ -56,7 +57,7 @@ public class SchemaFieldReflection extends SchemaField {
 		FeatureLoader.loadFieldFeatures(this, parentDescriptor);
 
 		// BROWSE ALL ASPECTS
-		for (Aspect aspect : Roma.aspects()) {
+		for (AspectConfigurator aspect : AspectManager.getConfigurators()) {
 			aspect.configField(this);
 		}
 

@@ -16,9 +16,6 @@
 package org.romaframework.aspect.semantic;
 
 import org.romaframework.core.module.SelfRegistrantConfigurableModule;
-import org.romaframework.core.schema.SchemaAction;
-import org.romaframework.core.schema.SchemaClassDefinition;
-import org.romaframework.core.schema.SchemaField;
 
 /**
  * IMPORTANT: PLEASE DO NOT RELY ON THIS RESOURCE, IT IS UNDER DEFINITION AND HEAVY DEVELOPMENT
@@ -27,23 +24,6 @@ import org.romaframework.core.schema.SchemaField;
  * 
  */
 public abstract class SemanticAspectAbstract extends SelfRegistrantConfigurableModule<String> implements SemanticAspect {
-
-	public void beginConfigClass(SchemaClassDefinition iClass) {
-	}
-
-	public void endConfigClass(SchemaClassDefinition iClass) {
-	}
-
-	public void configClass(SchemaClassDefinition iClass) {
-
-	}
-
-	public void configField(SchemaField iField) {
-	}
-
-	public void configAction(SchemaAction iAction) {
-		// Semantic cannot be used on actions
-	}
 
 	public String aspectName() {
 		return ASPECT_NAME;

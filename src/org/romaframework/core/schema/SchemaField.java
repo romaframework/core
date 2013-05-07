@@ -34,7 +34,6 @@ import org.romaframework.core.exception.FieldErrorUserException;
 import org.romaframework.core.flow.Controller;
 import org.romaframework.core.flow.SchemaFieldListener;
 import org.romaframework.core.schema.config.SchemaConfiguration;
-import org.romaframework.core.schema.virtual.VirtualObject;
 import org.romaframework.core.schema.xmlannotations.XmlFieldAnnotation;
 
 /**
@@ -248,15 +247,7 @@ public abstract class SchemaField extends SchemaClassElement {
 		if (value != null) {
 			// TODO is this the right place to do this...?
 			Class<?> valueClass = value.getClass();
-			// SUCH A MONSTER!!! MOVE THIS LOGIC IN SchemaClass.isAssignableFrom...
-			if (value instanceof VirtualObject && !(typeClass.getLanguageType() instanceof Class<?> && ((Class<?>) typeClass.getLanguageType()).isAssignableFrom(VirtualObject.class))
-					&& ((VirtualObject) value).getSuperClassObject() != null) {
-				if (ComposedEntity.class.isAssignableFrom(((VirtualObject) value).getSuperClassObject().getClass())) {
-					value = ((VirtualObject) value).getSuperClassObject();
-					valueClass = value.getClass();
-				}
-			}
-
+			
 			if (value instanceof ComposedEntity<?> && !typeClass.isAssignableFrom(valueClass)) {
 				value = ((ComposedEntity<?>) value).getEntity();
 			}

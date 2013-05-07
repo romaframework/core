@@ -23,11 +23,7 @@ import org.romaframework.aspect.session.SessionInfo;
 import org.romaframework.core.Roma;
 import org.romaframework.core.Utility;
 import org.romaframework.core.module.SelfRegistrantConfigurableModule;
-import org.romaframework.core.schema.SchemaAction;
-import org.romaframework.core.schema.SchemaClassDefinition;
 import org.romaframework.core.schema.SchemaClassResolver;
-import org.romaframework.core.schema.SchemaEvent;
-import org.romaframework.core.schema.SchemaField;
 
 /**
  * Base abstract class implementing Authentication Aspect interface. Encryption uses the well know MD5 algorithm.
@@ -85,24 +81,6 @@ public abstract class AuthenticationAspectAbstract extends SelfRegistrantConfigu
 		Roma.component(SchemaClassResolver.class).addDomainPackage(Utility.getApplicationAspectPackage(aspectName()));
 
 		super.startup();
-	}
-
-	public void beginConfigClass(SchemaClassDefinition iClass) {
-	}
-
-	public void endConfigClass(SchemaClassDefinition iClass) {
-	}
-
-	public void configAction(final SchemaAction action) {
-	}
-
-	public void configClass(final SchemaClassDefinition class1) {
-	}
-
-	public void configEvent(final SchemaEvent event) {
-	}
-
-	public void configField(SchemaField field) {
 	}
 
 	public Object getUnderlyingComponent() {

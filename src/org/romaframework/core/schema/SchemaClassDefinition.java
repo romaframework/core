@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.romaframework.aspect.authentication.UserObjectPermissionListener;
-import org.romaframework.aspect.core.CoreAspect;
+import org.romaframework.aspect.core.CoreAspectConfigurator;
 import org.romaframework.aspect.core.feature.CoreFieldFeatures;
 import org.romaframework.core.Roma;
 import org.romaframework.core.Utility;
@@ -312,7 +312,7 @@ public abstract class SchemaClassDefinition extends SchemaFeatures {
 				toExpand.add(field);
 		}
 		for (SchemaField schemaField : toExpand) {
-			Roma.component(CoreAspect.class).expandField(schemaField, this);
+			Roma.component(CoreAspectConfigurator.class).expandField(schemaField, this);
 		}
 	}
 

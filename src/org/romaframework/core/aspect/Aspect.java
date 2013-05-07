@@ -16,10 +16,6 @@
 
 package org.romaframework.core.aspect;
 
-import org.romaframework.core.schema.SchemaAction;
-import org.romaframework.core.schema.SchemaClassDefinition;
-import org.romaframework.core.schema.SchemaEvent;
-import org.romaframework.core.schema.SchemaField;
 
 /**
  * Interface to define an Aspect. An Aspect is a Java interface that define a generic behavior.
@@ -34,43 +30,6 @@ public interface Aspect {
 	 * @return
 	 */
 	public String aspectName();
-
-	/**
-	 * 
-	 * @param iClass
-	 */
-	public void beginConfigClass(SchemaClassDefinition iClass);
-
-	/**
-	 * 
-	 * @param iClass
-	 */
-	public void configClass(SchemaClassDefinition iClass);
-
-	/**
-	 * 
-	 * @param iField
-	 */
-	public void configField(SchemaField iField);
-
-	/**
-	 * 
-	 * @param iAction
-	 */
-	public void configAction(SchemaAction iAction);
-
-	/**
-	 * 
-	 * @param iEvent
-	 */
-	public void configEvent(SchemaEvent iEvent);
-
-	
-	/**
-	 * 
-	 * @param iClass
-	 */
-	public void endConfigClass(SchemaClassDefinition iClass);
 
 	/**
 	 * Allow to access to the underlying component bypassing the Aspect concept. This allow to make things dirty but sometimes you

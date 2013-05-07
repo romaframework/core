@@ -40,9 +40,7 @@ import org.romaframework.core.module.SelfRegistrantModule;
 import org.romaframework.core.schema.Feature;
 import org.romaframework.core.schema.SchemaAction;
 import org.romaframework.core.schema.SchemaClass;
-import org.romaframework.core.schema.SchemaClassDefinition;
 import org.romaframework.core.schema.SchemaClassElement;
-import org.romaframework.core.schema.SchemaEvent;
 import org.romaframework.core.schema.SchemaField;
 import org.romaframework.core.schema.SchemaObject;
 
@@ -76,45 +74,7 @@ public class HookAspect extends SelfRegistrantModule implements Aspect, FieldRef
 	public void showConfiguration() {
 	}
 
-	public void beginConfigClass(SchemaClassDefinition iClass) {
-	}
 
-	public void endConfigClass(SchemaClassDefinition iClass) {
-	}
-
-	public void configClass(SchemaClassDefinition iClass) {
-	}
-
-	public void configField(SchemaField iField) {
-
-		HookScope scope = iField.getFeature(HookFieldFeatures.SCOPE);
-		if (scope != null)
-			scope = HookScope.SESSION;
-
-		registerHook(iField, HookFieldFeatures.FIELD, scope);
-
-	}
-
-	public void configAction(SchemaAction iAction) {
-
-		HookScope scope = iAction.getFeature(HookActionFeatures.SCOPE) != null ? iAction.getFeature(HookActionFeatures.SCOPE) : HookScope.SESSION;
-
-		registerHook(iAction, HookActionFeatures.HOOK_AROUND_ACTION, scope);
-		registerHook(iAction, HookActionFeatures.HOOK_BEFORE_ACTION, scope);
-		registerHook(iAction, HookActionFeatures.HOOK_AFTER_ACTION, scope);
-
-		registerHook(iAction, HookActionFeatures.HOOK_AROUND_FIELD_READ, scope);
-		registerHook(iAction, HookActionFeatures.HOOK_BEFORE_FIELD_READ, scope);
-		registerHook(iAction, HookActionFeatures.HOOK_AFTER_FIELD_READ, scope);
-
-		registerHook(iAction, HookActionFeatures.HOOK_AROUND_FIELD_READ, scope);
-		registerHook(iAction, HookActionFeatures.HOOK_BEFORE_FIELD_READ, scope);
-		registerHook(iAction, HookActionFeatures.HOOK_AFTER_FIELD_READ, scope);
-
-		registerHook(iAction, HookActionFeatures.HOOK_AROUND_EVENT, scope);
-		registerHook(iAction, HookActionFeatures.HOOK_AROUND_EVENT, scope);
-		registerHook(iAction, HookActionFeatures.HOOK_AFTER_EVENT, scope);
-	}
 
 	/**
 	 * Register the hook in the genericHooks map if it uses wild-cards, otherwise put the hook in the exactHooks map.
@@ -147,9 +107,6 @@ public class HookAspect extends SelfRegistrantModule implements Aspect, FieldRef
 
 		// REGISTER THE HOOK
 		entries.add(new HookEntry(iElement, iScope));
-	}
-
-	public void configEvent(SchemaEvent event) {
 	}
 
 	public String aspectName() {

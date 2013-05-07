@@ -20,15 +20,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import org.romaframework.core.Roma;
-import org.romaframework.core.aspect.Aspect;
+import org.romaframework.core.aspect.AspectConfigurator;
+import org.romaframework.core.aspect.AspectManager;
 import org.romaframework.core.schema.FeatureLoader;
 import org.romaframework.core.schema.SchemaClassDefinition;
 import org.romaframework.core.schema.SchemaEvent;
 import org.romaframework.core.schema.SchemaField;
 import org.romaframework.core.schema.SchemaParameter;
 import org.romaframework.core.schema.config.SchemaConfiguration;
-import org.romaframework.core.schema.virtual.VirtualObject;
 import org.romaframework.core.schema.xmlannotations.XmlActionAnnotation;
 import org.romaframework.core.schema.xmlannotations.XmlParameterAnnotation;
 
@@ -60,9 +59,6 @@ public class SchemaEventReflection extends SchemaEvent {
 
 	@Override
 	public Object invokeFinal(Object iContent, Object[] params) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
-		while (iContent instanceof VirtualObject)
-			iContent = ((VirtualObject) iContent).getSuperClassObject();
-
 		return method.invoke(iContent, params);
 	}
 
@@ -89,7 +85,7 @@ public class SchemaEventReflection extends SchemaEvent {
 		FeatureLoader.loadEventFeatures(this, parentDescriptor);
 
 		// BROWSE ALL ASPECTS
-		for (Aspect aspect : Roma.aspects()) {
+		for (AspectConfigurator aspect : AspectManager.getConfigurators()) {
 			// CONFIGURE THE SCHEMA OBJECT WITH CURRENT ASPECT
 			aspect.configEvent(this);
 		}

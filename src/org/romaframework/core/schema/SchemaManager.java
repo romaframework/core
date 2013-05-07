@@ -32,8 +32,6 @@ import org.romaframework.core.exception.ConfigurationNotFoundException;
 import org.romaframework.core.schema.config.SchemaConfiguration;
 import org.romaframework.core.schema.reflection.SchemaClassFactoryReflection;
 import org.romaframework.core.schema.reflection.SchemaClassReflection;
-import org.romaframework.core.schema.virtual.SchemaClassFactoryVirtual;
-import org.romaframework.core.schema.virtual.VirtualObject;
 
 /**
  * Manage the Entities and cache them.
@@ -78,9 +76,6 @@ public class SchemaManager extends Configurable<String> {
 	public SchemaClass getSchemaClass(Object iObject) {
 		if (iObject == null)
 			return null;
-		if (iObject instanceof VirtualObject) {
-			return ((VirtualObject) iObject).getClazz();
-		}
 		if (iObject instanceof Class<?>) {
 			return getSchemaClass((Class<?>) iObject);
 		}
@@ -271,7 +266,6 @@ public class SchemaManager extends Configurable<String> {
 			// PUT THE REFLECTION AND VIRTUAL FACTORIES BY DEFAULT
 			factories = new ArrayList<SchemaClassFactory>();
 			factories.add(new SchemaClassFactoryReflection());
-			factories.add(new SchemaClassFactoryVirtual());
 		}
 	}
 

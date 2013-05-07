@@ -17,7 +17,6 @@
 package org.romaframework.aspect.scheduler;
 
 import org.romaframework.core.module.SelfRegistrantConfigurableRunnableModule;
-import org.romaframework.core.schema.SchemaClassDefinition;
 
 /**
  * Scheduler Aspect abstract implementation.
@@ -28,9 +27,4 @@ public abstract class SchedulerAspectAbstract extends SelfRegistrantConfigurable
 		return NAME;
 	}
 
-	public void beginConfigClass(SchemaClassDefinition iClass) {
-	}
-
-	public void endConfigClass(SchemaClassDefinition iClass) {
-	}
 }

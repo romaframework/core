@@ -82,7 +82,7 @@ public abstract class SchemaFeatures implements Cloneable, Serializable {
 		return (T) parent.getFeature(feature);
 	}
 
-	public <T> boolean isSettedFeature(Feature<T> feature) {
+	public <T> boolean isSetFeature(Feature<T> feature) {
 		if (getFeatureType() != feature.getType()) {
 			throw new RuntimeException("Try to check a feature of type:" + feature.getType() + " on a SchemaFeature of type:"
 					+ getFeatureType());
@@ -91,7 +91,7 @@ public abstract class SchemaFeatures implements Cloneable, Serializable {
 			return true;
 		if (parent == null)
 			return false;
-		return parent.isSettedFeature(feature);
+		return parent.isSetFeature(feature);
 	}
 
 	public FeatureType getFeatureType() {

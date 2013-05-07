@@ -48,8 +48,6 @@ import org.romaframework.core.exception.ConfigurationException;
 import org.romaframework.core.exception.UserException;
 import org.romaframework.core.factory.GenericFactory;
 import org.romaframework.core.schema.reflection.SchemaClassReflection;
-import org.romaframework.core.schema.reflection.SchemaFieldReflection;
-import org.romaframework.core.schema.virtual.VirtualObject;
 
 public class SchemaHelper {
 
@@ -185,9 +183,6 @@ public class SchemaHelper {
 		if (iInstance == null || iField == null)
 			return null;
 
-		while (iInstance instanceof VirtualObject && iField instanceof SchemaFieldReflection)
-			iInstance = ((VirtualObject) iInstance).getSuperClassObject();
-
 		return iField.getValue(iInstance);
 	}
 
@@ -224,10 +219,6 @@ public class SchemaHelper {
 	public static void setFieldValue(SchemaField iField, Object iInstance, Object iFieldValue) throws BindingException {
 		if (iInstance == null || iField == null)
 			return;
-
-		while (iInstance instanceof VirtualObject && iField instanceof SchemaFieldReflection)
-			iInstance = ((VirtualObject) iInstance).getSuperClassObject();
-
 		iField.setValue(iInstance, iFieldValue);
 	}
 
@@ -814,10 +805,7 @@ public class SchemaHelper {
 		if (iObject == null)
 			return false;
 
-		if (iObject instanceof VirtualObject)
-			return false;
-		else
-			return isMultiValueType((Type) iObject.getClass());
+		return isMultiValueType((Type) iObject.getClass());
 	}
 
 	public static boolean isMultiValueType(SchemaClass schemaClass) {

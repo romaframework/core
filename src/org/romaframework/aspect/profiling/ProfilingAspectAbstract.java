@@ -17,9 +17,6 @@
 package org.romaframework.aspect.profiling;
 
 import org.romaframework.core.module.SelfRegistrantConfigurableModule;
-import org.romaframework.core.schema.SchemaAction;
-import org.romaframework.core.schema.SchemaClassDefinition;
-import org.romaframework.core.schema.SchemaEvent;
 
 /**
  * Abstract implementation for Profiling Aspect.
@@ -27,17 +24,6 @@ import org.romaframework.core.schema.SchemaEvent;
  * @author Luca Garulli (luca.garulli--at--assetdata.it)
  */
 public abstract class ProfilingAspectAbstract extends SelfRegistrantConfigurableModule<String> implements ProfilingAspect {
-
-	public void configClass(SchemaClassDefinition iClass) {
-
-	}
-
-	public void configAction(SchemaAction iAction) {
-	}
-
-	public void configEvent(SchemaEvent iEvent) {
-		configAction(iEvent);
-	}
 
 	public String aspectName() {
 		return ASPECT_NAME;

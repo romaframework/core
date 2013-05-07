@@ -24,7 +24,7 @@ package org.romaframework.core.install;
  * 
  */
 public interface ApplicationInstaller {
-	public static final String	MODULE_NAME	= "ApplicationInstaller";
+	
 
 	/**
 	 * Makes all the operation needed for the application installation

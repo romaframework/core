@@ -20,10 +20,6 @@ import org.romaframework.core.flow.Controller;
 import org.romaframework.core.flow.SchemaActionListener;
 import org.romaframework.core.flow.SchemaFieldListener;
 import org.romaframework.core.module.SelfRegistrantConfigurableModule;
-import org.romaframework.core.schema.SchemaAction;
-import org.romaframework.core.schema.SchemaClassDefinition;
-import org.romaframework.core.schema.SchemaEvent;
-import org.romaframework.core.schema.SchemaField;
 
 public abstract class SecurityAspectAbstract extends SelfRegistrantConfigurableModule<String> implements SecurityAspect, UserObjectPermissionListener, SchemaActionListener,
 		SchemaFieldListener {
@@ -32,27 +28,6 @@ public abstract class SecurityAspectAbstract extends SelfRegistrantConfigurableM
 		Controller.getInstance().registerListener(SchemaFieldListener.class, this);
 		Controller.getInstance().registerListener(SchemaActionListener.class, this);
 		Controller.getInstance().registerListener(UserObjectPermissionListener.class, this);
-	}
-
-	public void beginConfigClass(SchemaClassDefinition iClass) {
-	}
-
-	public void endConfigClass(SchemaClassDefinition iClass) {
-	}
-
-	public void configClass(SchemaClassDefinition iClass) {
-
-	}
-
-	public void configField(SchemaField iField) {
-	}
-
-	public void configEvent(SchemaEvent iEvent) {
-
-	}
-
-	public void configAction(SchemaAction iAction) {
-
 	}
 
 	public String aspectName() {

@@ -19,10 +19,6 @@ package org.romaframework.aspect.logging;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.romaframework.core.module.SelfRegistrantConfigurableModule;
-import org.romaframework.core.schema.SchemaAction;
-import org.romaframework.core.schema.SchemaClassDefinition;
-import org.romaframework.core.schema.SchemaEvent;
-import org.romaframework.core.schema.SchemaField;
 
 /**
  * Abstract implementation for Logging Aspect.
@@ -35,24 +31,6 @@ public abstract class LoggingAspectAbstract extends SelfRegistrantConfigurableMo
 
 	protected Log								log					= LogFactory.getLog(this.getClass());
 
-	public void beginConfigClass(SchemaClassDefinition iClass) {
-	}
-
-	public void endConfigClass(SchemaClassDefinition iClass) {
-	}
-
-	public void configClass(SchemaClassDefinition iClass) {
-	}
-
-	public void configField(SchemaField iField) {
-	}
-
-	public void configAction(SchemaAction iAction) {
-	}
-
-	public void configEvent(SchemaEvent iEvent) {
-		configAction(iEvent);
-	}
 
 	public String aspectName() {
 		return ASPECT_NAME;

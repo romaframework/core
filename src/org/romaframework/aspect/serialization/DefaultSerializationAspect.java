@@ -19,23 +19,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
 import org.romaframework.aspect.serialization.exception.SerializationException;
-import org.romaframework.aspect.serialization.feature.SerializationClassFeatures;
-import org.romaframework.aspect.serialization.feature.SerializationFieldFeatures;
 import org.romaframework.core.module.SelfRegistrantConfigurableModule;
-import org.romaframework.core.schema.SchemaAction;
-import org.romaframework.core.schema.SchemaClassDefinition;
-import org.romaframework.core.schema.SchemaEvent;
-import org.romaframework.core.schema.SchemaField;
-import org.romaframework.core.schema.reflection.SchemaClassReflection;
-import org.romaframework.core.schema.reflection.SchemaFieldReflection;
 
 /**
  * @author Emanuele Tagliaferri (emanuele.tagliaferri--at--assetdata.it)
@@ -144,43 +132,4 @@ public class DefaultSerializationAspect extends SelfRegistrantConfigurableModule
 		return null;
 	}
 
-	public void beginConfigClass(SchemaClassDefinition iClass) {
-	}
-
-	public void endConfigClass(SchemaClassDefinition iClass) {
-	}
-
-	public void configAction(SchemaAction iAction) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void configClass(SchemaClassDefinition iClass) {
-		if (iClass instanceof SchemaClassReflection) {
-			String name;
-			Class<?> clazz = ((SchemaClassReflection) iClass).getLanguageType();
-			XmlRootElement xmlRootElement = clazz.getAnnotation(XmlRootElement.class);
-			if (xmlRootElement != null)
-				name = xmlRootElement.name();
-			else
-				name = clazz.getSimpleName();
-			iClass.setFeature(SerializationClassFeatures.ROOT_ELEMENT_NAME, name);
-		}
-	}
-
-	public void configEvent(SchemaEvent iEvent) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void configField(SchemaField iField) {
-
-		if (iField instanceof SchemaFieldReflection) {
-			Field field = ((SchemaFieldReflection) iField).getField();
-			if (field != null) {
-				Boolean trans = Modifier.isTransient(field.getModifiers());
-				iField.setFeature(SerializationFieldFeatures.TRANSIENT, trans);
-			}
-		}
-	}
 }

@@ -10,11 +10,7 @@ import org.apache.commons.logging.LogFactory;
 import org.romaframework.aspect.service.feature.ServiceClassFeatures;
 import org.romaframework.core.exception.ConfigurationException;
 import org.romaframework.core.module.SelfRegistrantConfigurableModule;
-import org.romaframework.core.schema.SchemaAction;
 import org.romaframework.core.schema.SchemaClass;
-import org.romaframework.core.schema.SchemaClassDefinition;
-import org.romaframework.core.schema.SchemaEvent;
-import org.romaframework.core.schema.SchemaField;
 
 public abstract class ServiceAspectAbstract extends SelfRegistrantConfigurableModule<String> implements ServiceAspect {
 	protected Set<String>	additionalPaths;
@@ -24,25 +20,7 @@ public abstract class ServiceAspectAbstract extends SelfRegistrantConfigurableMo
 		return ASPECT_NAME;
 	}
 
-	public void beginConfigClass(SchemaClassDefinition iClass) {
-	}
-
-	public void endConfigClass(SchemaClassDefinition iClass) {
-	}
-
-	public void configClass(SchemaClassDefinition iClass) {
-
-	}
-
-	public void configAction(SchemaAction iAction) {
-	}
-
-	public void configEvent(SchemaEvent iEvent) {
-	}
-
-	public void configField(SchemaField iField) {
-	}
-
+	
 	public Set<String> getAdditionalPaths() {
 		return additionalPaths;
 	}

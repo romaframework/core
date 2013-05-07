@@ -22,7 +22,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.romaframework.core.Roma;
 import org.romaframework.core.domain.entity.ComposedEntity;
-import org.romaframework.core.schema.virtual.VirtualObject;
 
 /**
  * Represent a base element for an entity.
@@ -121,16 +120,7 @@ public abstract class SchemaClassElement extends SchemaElement {
 		if (value != null) {
 			// TODO is this the right place to do this...?
 			Class<?> valueClass = value.getClass();
-			// SUCH A MONSTER!!! MOVE THIS LOGIC IN SchemaClass.isAssignableFrom...
-			if (value instanceof VirtualObject
-					&& !(typeClass.getLanguageType() instanceof Class<?> && ((Class<?>) typeClass.getLanguageType())
-							.isAssignableFrom(VirtualObject.class)) && ((VirtualObject) value).getSuperClassObject() != null) {
-				if (ComposedEntity.class.isAssignableFrom(((VirtualObject) value).getSuperClassObject().getClass())) {
-					value = ((VirtualObject) value).getSuperClassObject();
-					valueClass = value.getClass();
-				}
-			}
-
+			
 			if (value instanceof ComposedEntity<?> && !typeClass.isAssignableFrom(valueClass)) {
 				value = ((ComposedEntity<?>) value).getEntity();
 			}

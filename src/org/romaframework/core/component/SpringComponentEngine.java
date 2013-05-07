@@ -10,11 +10,7 @@ import org.romaframework.core.Utility;
 import org.romaframework.core.config.AbstractServiceable;
 import org.romaframework.core.config.ContextException;
 import org.romaframework.core.exception.ConfigurationNotFoundException;
-import org.romaframework.core.schema.SchemaAction;
 import org.romaframework.core.schema.SchemaClass;
-import org.romaframework.core.schema.SchemaClassDefinition;
-import org.romaframework.core.schema.SchemaEvent;
-import org.romaframework.core.schema.SchemaField;
 import org.springframework.beans.BeansException;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -192,24 +188,6 @@ public class SpringComponentEngine extends AbstractServiceable implements Compon
 
 	public String aspectName() {
 		return ASPECT_NAME;
-	}
-
-	public void beginConfigClass(SchemaClassDefinition iClass) {
-	}
-
-	public void endConfigClass(SchemaClassDefinition iClass) {
-	}
-
-	public void configAction(SchemaAction action) {
-	}
-
-	public void configClass(SchemaClassDefinition class1) {
-	}
-
-	public void configEvent(SchemaEvent event) {
-	}
-
-	public void configField(SchemaField field) {
 	}
 
 	public Object getUnderlyingComponent() {

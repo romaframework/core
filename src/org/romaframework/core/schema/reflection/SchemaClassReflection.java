@@ -33,7 +33,8 @@ import org.apache.commons.logging.LogFactory;
 import org.romaframework.core.GlobalConstants;
 import org.romaframework.core.Roma;
 import org.romaframework.core.Utility;
-import org.romaframework.core.aspect.Aspect;
+import org.romaframework.core.aspect.AspectConfigurator;
+import org.romaframework.core.aspect.AspectManager;
 import org.romaframework.core.exception.ConfigurationNotFoundException;
 import org.romaframework.core.schema.FeatureLoader;
 import org.romaframework.core.schema.SchemaAction;
@@ -457,7 +458,7 @@ public class SchemaClassReflection extends SchemaClass {
 
 	protected void readAllAnnotations() {
 		FeatureLoader.loadClassFeatures(this, descriptor);
-		for (Aspect aspect : Roma.aspects()) {
+		for (AspectConfigurator aspect : AspectManager.getConfigurators()) {
 			aspect.configClass(this);
 		}
 	}
@@ -547,13 +548,13 @@ public class SchemaClassReflection extends SchemaClass {
 	}
 
 	protected void beginConfig() {
-		for (Aspect aspect : Roma.aspects()) {
+		for (AspectConfigurator aspect : AspectManager.getConfigurators()) {
 			aspect.beginConfigClass(this);
 		}
 	}
 
 	protected void endConfig() {
-		for (Aspect aspect : Roma.aspects()) {
+		for (AspectConfigurator aspect : AspectManager.getConfigurators()) {
 			aspect.endConfigClass(this);
 		}
 	}

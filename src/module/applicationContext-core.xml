@@ -1,9 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans default-autowire="no" default-dependency-check="none" default-lazy-init="false">
-	<bean id="FlowAspect" singleton="true" class="org.romaframework.aspect.flow.impl.POJOFlow" />
+	<bean id="FlowAspect" singleton="true" class="org.romaframework.aspect.flow.impl.POJOFlow" lazy-init="false" />
 
-	<bean id="I18NAspect" singleton="true" class="org.romaframework.aspect.i18n.rb.I18NAspectResourceBundleImpl">
+	<bean id="I18NAspect" singleton="true" class="org.romaframework.aspect.i18n.rb.I18NAspectResourceBundleImpl"
+		lazy-init="false">
 		<constructor-arg ref="AutoReloadManager" />
 		<property name="packages">
 			<list>
@@ -12,13 +13,14 @@
 		</property>
 	</bean>
 
-	<bean id="AutoReloadManager" singleton="true" class="org.romaframework.core.resource.AutoReloadManager">
+	<bean id="AutoReloadManager" singleton="true" class="org.romaframework.core.resource.AutoReloadManager" lazy-init="false">
 		<constructor-arg value="1000" />
 	</bean>
 
-	<bean id="ResourceResolver" class="org.romaframework.core.resource.ResourceResolver" singleton="true" />
+	<bean id="ResourceResolver" class="org.romaframework.core.resource.ResourceResolver" singleton="true" lazy-init="false" />
 
-	<bean id="SchemaClassResolver" class="org.romaframework.core.schema.SchemaClassResolver" singleton="true">
+	<bean id="SchemaClassResolver" class="org.romaframework.core.schema.SchemaClassResolver" singleton="true"
+		lazy-init="false">
 		<constructor-arg ref="ResourceResolver" />
 		<property name="packages">
 			<list>
@@ -27,7 +29,8 @@
 		</property>
 	</bean>
 
-	<bean id="SchemaManager" class="org.romaframework.core.schema.SchemaManager" singleton="true" init-method="config">
+	<bean id="SchemaManager" class="org.romaframework.core.schema.SchemaManager" singleton="true" init-method="config"
+		lazy-init="false">
 		<property name="configuration">
 			<map>
 				<entry key="ignore-actions" value="jdo*" />
@@ -35,14 +38,15 @@
 		</property>
 	</bean>
 
-	<bean id="SchemaConfigurationLoader" class="org.romaframework.core.schema.SchemaConfigurationLoader" singleton="true" />
+	<bean id="SchemaConfigurationLoader" class="org.romaframework.core.schema.SchemaConfigurationLoader" singleton="true"
+		lazy-init="false" />
 
-	<bean id="SchemaReloader" class="org.romaframework.core.schema.SchemaReloader" singleton="true" />
+	<bean id="SchemaReloader" class="org.romaframework.core.schema.SchemaReloader" singleton="true" lazy-init="false" />
 
 	<bean id="AuthenticationAspect" class="org.romaframework.aspect.authentication.mock.NoAuthenticationManager"
-		singleton="true" />
+		lazy-init="false" singleton="true" />
 
-	<bean id="LoggingAspect" class="org.romaframework.aspect.logging.LoggingCommonAspect" singleton="true" />
+	<bean id="LoggingAspect" class="org.romaframework.aspect.logging.LoggingCommonAspect" singleton="true" lazy-init="false" />
 
 	<bean id="ConsoleLogger" class="org.romaframework.aspect.logging.loggers.ConsoleLogger" singleton="true">
 		<constructor-arg>
@@ -50,11 +54,19 @@
 		</constructor-arg>
 	</bean>
 
-	<bean id="ValidationAspect" class="org.romaframework.aspect.validation.BasicValidationModule" singleton="true" />
+	<bean id="ValidationAspect" class="org.romaframework.aspect.validation.BasicValidationModule" singleton="true"
+		lazy-init="false" />
 
-	<bean id="SerializationAspect" class="org.romaframework.aspect.serialization.DefaultSerializationAspect" />
+	<bean id="SerializationAspect" class="org.romaframework.aspect.serialization.DefaultSerializationAspect"
+		lazy-init="false" />
 	<bean id="SerializationInspectionStrategy" class="org.romaframework.aspect.serialization.impl.SchemaSerializationInspectionStrategy" />
 	<bean id="SerializationFormatStrategy" class="org.romaframework.aspect.serialization.impl.NativeSerializationFormatStrategy" />
 
-	<bean id="HookAspect" class="org.romaframework.aspect.hook.HookAspect" />
+	<bean id="HookAspect" class="org.romaframework.aspect.hook.HookAspect" lazy-init="false" />
+	<bean class="org.romaframework.core.install.ApplicationInstallerModule" singleton="true" lazy-init="false" />
+	<bean class="org.romaframework.aspect.core.CoreAspectConfigurator" singleton="true" lazy-init="false" />
+	<bean class="org.romaframework.aspect.hook.HookAspectConfigurator" singleton="true" lazy-init="false" />
+	<bean class="org.romaframework.aspect.serialization.SerializationAspectConfigurator" singleton="true" lazy-init="false" />
+	<bean class="org.romaframework.aspect.validation.ValidationAspectConfigurator" singleton="true" lazy-init="false" />
+	<bean class="org.romaframework.core.aspect.AspectManager" id="AspectManager" lazy-init="default" singleton="true" />
 </beans>

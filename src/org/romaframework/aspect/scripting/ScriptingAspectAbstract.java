@@ -17,37 +17,11 @@
 package org.romaframework.aspect.scripting;
 
 import org.romaframework.core.module.SelfRegistrantConfigurableModule;
-import org.romaframework.core.schema.SchemaAction;
-import org.romaframework.core.schema.SchemaClassDefinition;
-import org.romaframework.core.schema.SchemaEvent;
-import org.romaframework.core.schema.SchemaField;
 
 public abstract class ScriptingAspectAbstract extends SelfRegistrantConfigurableModule<String> implements ScriptingAspect {
 
 	public String aspectName() {
 		return ASPECT_NAME;
-	}
-
-	public void beginConfigClass(SchemaClassDefinition iClass) {
-	}
-
-	public void endConfigClass(SchemaClassDefinition iClass) {
-	}
-
-	/**
-	 * Used to define the constructor.
-	 */
-	public void configClass(SchemaClassDefinition iClass) {
-
-	}
-
-	public void configAction(SchemaAction action) {
-	}
-
-	public void configEvent(SchemaEvent event) {
-	}
-
-	public void configField(SchemaField field) {
 	}
 
 }

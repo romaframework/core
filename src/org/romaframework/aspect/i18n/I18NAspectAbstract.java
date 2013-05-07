@@ -31,11 +31,9 @@ import org.romaframework.core.flow.Controller;
 import org.romaframework.core.flow.SchemaFieldListener;
 import org.romaframework.core.module.SelfRegistrantConfigurableModule;
 import org.romaframework.core.schema.Feature;
-import org.romaframework.core.schema.SchemaAction;
 import org.romaframework.core.schema.SchemaClassDefinition;
 import org.romaframework.core.schema.SchemaClassElement;
 import org.romaframework.core.schema.SchemaElement;
-import org.romaframework.core.schema.SchemaEvent;
 import org.romaframework.core.schema.SchemaFeatures;
 import org.romaframework.core.schema.SchemaField;
 import org.romaframework.core.schema.SchemaObject;
@@ -60,19 +58,7 @@ public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModul
 		Controller.getInstance().registerListener(SchemaFieldListener.class, this);
 	}
 
-	public void beginConfigClass(SchemaClassDefinition iClass) {
-	}
 
-	public void endConfigClass(SchemaClassDefinition iClass) {
-	}
-
-	public void configField(SchemaField iField) {
-
-		setFieldDefaults(iField);
-	}
-
-	private void setFieldDefaults(SchemaField field) {
-	}
 
 	public Object onAfterFieldRead(Object iContent, SchemaField iField, Object iCurrentValue) {
 		if (iContent == null || iCurrentValue == null) {
@@ -116,14 +102,6 @@ public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModul
 		return currentValue;
 	}
 
-	public void configAction(SchemaAction action) {
-	}
-
-	public void configClass(SchemaClassDefinition class1) {
-	}
-
-	public void configEvent(SchemaEvent event) {
-	}
 
 	public Object getUnderlyingComponent() {
 		return null;
@@ -256,7 +234,7 @@ public abstract class I18NAspectAbstract extends SelfRegistrantConfigurableModul
 		}
 		if (solved != null)
 			return fill(solved, iArgs);
-		if (featureOverride != null && iObjectClass.isSettedFeature(featureOverride)) {
+		if (featureOverride != null && iObjectClass.isSetFeature(featureOverride)) {
 			return iObjectClass.getFeature(featureOverride);
 		}
 		if (".label".equals(type)) {

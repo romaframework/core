@@ -26,11 +26,8 @@ import org.romaframework.core.Roma;
 import org.romaframework.core.config.ApplicationConfiguration;
 import org.romaframework.core.flow.Controller;
 import org.romaframework.core.module.SelfRegistrantConfigurableModule;
-import org.romaframework.core.schema.SchemaAction;
 import org.romaframework.core.schema.SchemaClass;
 import org.romaframework.core.schema.SchemaClassDefinition;
-import org.romaframework.core.schema.SchemaEvent;
-import org.romaframework.core.schema.SchemaField;
 import org.romaframework.core.schema.SchemaObject;
 import org.romaframework.core.schema.SchemaReloadListener;
 
@@ -183,30 +180,6 @@ public abstract class SessionAspectAbstract extends SelfRegistrantConfigurableMo
 	@SuppressWarnings("unchecked")
 	public <T extends SessionAccount> T getAccount() {
 		return (T) getActiveSessionInfo().getAccount();
-	}
-
-	//TODO
-	public void beginConfigClass(SchemaClassDefinition iClass) {
-	}
-
-	//TODO
-	public void configAction(SchemaAction action) {
-	}
-
-	//TODO
-	public void configClass(SchemaClassDefinition class1) {
-	}
-
-	//TODO
-	public void configEvent(SchemaEvent event) {
-	}
-
-	//TODO
-	public void configField(SchemaField field) {
-	}
-
-	//TODO
-	public void endConfigClass(SchemaClassDefinition iClass) {
 	}
 
 	/**
