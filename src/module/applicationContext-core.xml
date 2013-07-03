@@ -22,21 +22,11 @@
 	<bean id="SchemaClassResolver" class="org.romaframework.core.schema.SchemaClassResolver" singleton="true"
 		lazy-init="false">
 		<constructor-arg ref="ResourceResolver" />
-		<property name="packages">
-			<list>
-				<!-- ADDITIONAL PACKAGES TO USE AS DOMAIN -->
-			</list>
-		</property>
 	</bean>
 
 	<bean id="SchemaManager" class="org.romaframework.core.schema.SchemaManager" singleton="true" init-method="config"
 		lazy-init="false">
-		<property name="configuration">
-			<map>
-				<entry key="ignore-actions" value="jdo*" />
-			</map>
-		</property>
-	</bean>
+ 	</bean>
 
 	<bean id="SchemaConfigurationLoader" class="org.romaframework.core.schema.SchemaConfigurationLoader" singleton="true"
 		lazy-init="false" />

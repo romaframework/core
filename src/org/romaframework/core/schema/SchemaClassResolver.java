@@ -25,6 +25,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.romaframework.aspect.core.CoreSettings;
 import org.romaframework.core.Utility;
 import org.romaframework.core.classloader.ClassLoaderListener;
 import org.romaframework.core.config.Serviceable;
@@ -58,6 +59,7 @@ public class SchemaClassResolver implements ResourceResolverListener, Serviceabl
 	}
 
 	public void startup() throws RuntimeException {
+		packages.addAll(CoreSettings.getInstance().getAdditionalPackages());
 	}
 
 	public void shutdown() throws RuntimeException {

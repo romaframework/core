@@ -25,9 +25,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import org.romaframework.aspect.core.CoreSettings;
 import org.romaframework.core.Roma;
 import org.romaframework.core.Utility;
-import org.romaframework.core.config.Configurable;
 import org.romaframework.core.exception.ConfigurationNotFoundException;
 import org.romaframework.core.schema.config.SchemaConfiguration;
 import org.romaframework.core.schema.reflection.SchemaClassFactoryReflection;
@@ -38,26 +38,23 @@ import org.romaframework.core.schema.reflection.SchemaClassReflection;
  * 
  * @author Luca Garulli (luca.garulli--at--assetdata.it)
  */
-public class SchemaManager extends Configurable<String> {
-	protected ArrayList<String>							ignoreFields									= new ArrayList<String>();
-	protected ArrayList<String>							ignoreActions									= new ArrayList<String>();
-	protected ArrayList<String>							ignoreEvents									= new ArrayList<String>();
+public class SchemaManager {
+	protected ArrayList<String> ignoreFields = new ArrayList<String>();
+	protected ArrayList<String> ignoreActions = new ArrayList<String>();
+	protected ArrayList<String> ignoreEvents = new ArrayList<String>();
 
-	protected static final String						PAR_IGNORE_FIELDS							= "ignore-fields";
-	protected static final String						PAR_IGNORE_ACTIONS						= "ignore-actions";
-	protected static final String						PAR_IGNORE_EVENTS							= "ignore-events";
+	protected HashMap<String, SchemaClass> registeredClassesNoPackage = new HashMap<String, SchemaClass>();
+	protected HashMap<String, SchemaClass> registeredClassesFullPackage = new HashMap<String, SchemaClass>();
+	protected Set<String> notFountEntities = new HashSet<String>();
 
-	protected HashMap<String, SchemaClass>	registeredClassesNoPackage		= new HashMap<String, SchemaClass>();
-	protected HashMap<String, SchemaClass>	registeredClassesFullPackage	= new HashMap<String, SchemaClass>();
-	protected Set<String>										notFountEntities							= new HashSet<String>();
-
-	protected List<SchemaClassFactory>			factories;
+	protected List<SchemaClassFactory> factories;
 
 	public SchemaManager() {
 	}
 
 	/**
-	 * Return the SchemaClass instance by searching with the full class package name.
+	 * Return the SchemaClass instance by searching with the full class package
+	 * name.
 	 */
 	public SchemaClass getSchemaClassFullPackage(Class<?> javaSuperClass) {
 		return registeredClassesFullPackage.get(javaSuperClass.getName());
@@ -97,19 +94,23 @@ public class SchemaManager extends Configurable<String> {
 		return getSchemaClass(iEntityName, null, null);
 	}
 
-	public SchemaClass getSchemaClass(Class<?> iEntityClass, SchemaConfiguration iDescriptor) {
-		return getSchemaClass(Utility.getClassName(iEntityClass), null, iDescriptor);
+	public SchemaClass getSchemaClass(Class<?> iEntityClass,
+			SchemaConfiguration iDescriptor) {
+		return getSchemaClass(Utility.getClassName(iEntityClass), null,
+				iDescriptor);
 	}
 
 	/**
-	 * Virtual class: implementation by concrete java class but extended by xml descriptor.
+	 * Virtual class: implementation by concrete java class but extended by xml
+	 * descriptor.
 	 * 
 	 * @param iEntityName
 	 * @param iBaseClass
 	 * @param iDescriptor
 	 * @return
 	 */
-	public SchemaClass getSchemaClass(String iEntityName, SchemaClass iBaseClass, SchemaConfiguration iDescriptor) {
+	public SchemaClass getSchemaClass(String iEntityName,
+			SchemaClass iBaseClass, SchemaConfiguration iDescriptor) {
 		if (notFountEntities.contains(iEntityName))
 			// AVOID TO RE-TRY TO CREATE IT: IT'S MISSED!
 			throw new ConfigurationNotFoundException("Class " + iEntityName);
@@ -125,7 +126,7 @@ public class SchemaManager extends Configurable<String> {
 	 * checks if a schema class exists or can be created
 	 * 
 	 * @param iEntityName
-	 *          the entity class
+	 *            the entity class
 	 * @return true if a schema class exists or can be created, false otherwise
 	 */
 	public boolean existsSchemaClass(Class<?> iEntity) {
@@ -136,7 +137,7 @@ public class SchemaManager extends Configurable<String> {
 	 * checks if a schema class exists or can be created
 	 * 
 	 * @param iEntityName
-	 *          the entity name
+	 *            the entity name
 	 * @return true if a schema class exists or can be created, false otherwise
 	 */
 	public boolean existsSchemaClass(String iEntityName) {
@@ -156,33 +157,41 @@ public class SchemaManager extends Configurable<String> {
 		return true;
 	}
 
-	public SchemaClass createSchemaClass(Class<?> iEntityClass, SchemaConfiguration iDescriptor) {
+	public SchemaClass createSchemaClass(Class<?> iEntityClass,
+			SchemaConfiguration iDescriptor) {
 		// CREATE ENTITY
 		SchemaClass superClass = null;
 		if (iEntityClass.getSuperclass() != null)
-			superClass = Roma.schema().getSchemaClass(iEntityClass.getSuperclass());
-		return registerSchemaClass(Utility.getClassName(iEntityClass), iEntityClass, superClass, iDescriptor);
+			superClass = Roma.schema().getSchemaClass(
+					iEntityClass.getSuperclass());
+		return registerSchemaClass(Utility.getClassName(iEntityClass),
+				iEntityClass, superClass, iDescriptor);
 	}
 
 	/**
-	 * Create and register a class info. Call this if you want to register virtual class built at run-time.
+	 * Create and register a class info. Call this if you want to register
+	 * virtual class built at run-time.
 	 * 
 	 * @param iEntityName
-	 *          Class name, unique name
+	 *            Class name, unique name
 	 * @param iClass
-	 *          Class instance
+	 *            Class instance
 	 * @param iBaseClass
-	 *          Base class where to extend
+	 *            Base class where to extend
 	 * @param iDescriptor
-	 *          Optional XML descriptor
+	 *            Optional XML descriptor
 	 * @return Registered ClassInfo instance.
 	 * @throws ConfigurationNotFoundException
 	 */
-	public SchemaClass registerSchemaClass(String iEntityName, Class<?> iClass, SchemaClass iBaseClass, SchemaConfiguration iDescriptor) throws ConfigurationNotFoundException {
+	public SchemaClass registerSchemaClass(String iEntityName, Class<?> iClass,
+			SchemaClass iBaseClass, SchemaConfiguration iDescriptor)
+			throws ConfigurationNotFoundException {
 		// CREATE THE SCHEMA INFO INSTANCE
-		SchemaClassReflection cls = new SchemaClassReflection(iEntityName, iClass, iBaseClass, iDescriptor);
+		SchemaClassReflection cls = new SchemaClassReflection(iEntityName,
+				iClass, iBaseClass, iDescriptor);
 
-		// REGISTER IT (MUST PRECEDE CONFIGURATION FOR SELF-REFERENCED PROPERTIES)
+		// REGISTER IT (MUST PRECEDE CONFIGURATION FOR SELF-REFERENCED
+		// PROPERTIES)
 		createEntry(iEntityName, cls);
 
 		cls.config();
@@ -190,11 +199,13 @@ public class SchemaManager extends Configurable<String> {
 		return cls;
 	}
 
-	public SchemaClass createSchemaClass(String iEntityName, SchemaClass iBaseClass, SchemaConfiguration iDescriptor) {
+	public SchemaClass createSchemaClass(String iEntityName,
+			SchemaClass iBaseClass, SchemaConfiguration iDescriptor) {
 		if (!notFountEntities.contains(iEntityName)) {
 			SchemaClass cls = null;
 			for (SchemaClassFactory factory : factories) {
-				cls = factory.createSchemaClass(iEntityName, iBaseClass, iDescriptor);
+				cls = factory.createSchemaClass(iEntityName, iBaseClass,
+						iDescriptor);
 				if (cls != null) {
 					createEntry(iEntityName, cls);
 
@@ -216,7 +227,8 @@ public class SchemaManager extends Configurable<String> {
 
 	public List<SchemaClass> getSchemaClassesByPackage(String packageName) {
 
-		Map<String, String> classes = Roma.component(SchemaClassResolver.class).getClassLocations();
+		Map<String, String> classes = Roma.component(SchemaClassResolver.class)
+				.getClassLocations();
 
 		List<SchemaClass> result = new ArrayList<SchemaClass>();
 		if (classes == null)
@@ -241,21 +253,22 @@ public class SchemaManager extends Configurable<String> {
 	 * Invoked by IoC container at startup.
 	 */
 	public void config() {
-		String cfgIgnore = getConfiguration(PAR_IGNORE_FIELDS);
+		CoreSettings settings = CoreSettings.getInstance();
+		String cfgIgnore = settings.getSchemaIgnoreFields();
 		if (cfgIgnore != null) {
 			StringTokenizer tokenizer = new StringTokenizer(cfgIgnore, ",");
 			while (tokenizer.hasMoreTokens())
 				ignoreFields.add(tokenizer.nextToken());
 		}
 
-		cfgIgnore = getConfiguration(PAR_IGNORE_ACTIONS);
+		cfgIgnore = settings.getSchemaIgnoreActions();
 		if (cfgIgnore != null) {
 			StringTokenizer tokenizer = new StringTokenizer(cfgIgnore, ",");
 			while (tokenizer.hasMoreTokens())
 				ignoreActions.add(tokenizer.nextToken());
 		}
 
-		cfgIgnore = getConfiguration(PAR_IGNORE_EVENTS);
+		cfgIgnore = settings.getSchemaIgnoreEvents();
 		if (cfgIgnore != null) {
 			StringTokenizer tokenizer = new StringTokenizer(cfgIgnore, ",");
 			while (tokenizer.hasMoreTokens())
@@ -285,10 +298,11 @@ public class SchemaManager extends Configurable<String> {
 	 * Retrieve all SchemaClass that extend or implement iBaseClass.
 	 * 
 	 * @param iBaseClass
-	 *          the base SchemaClass inherited.
+	 *            the base SchemaClass inherited.
 	 * @return the list of SchemaClass that inherit iBaseClass.
 	 */
-	public List<SchemaClass> getSchemaClassesByInheritance(SchemaClass iBaseClass) {
+	public List<SchemaClass> getSchemaClassesByInheritance(
+			SchemaClass iBaseClass) {
 		List<SchemaClass> result = new ArrayList<SchemaClass>();
 		for (SchemaClass schema : registeredClassesNoPackage.values()) {
 			if (schema.isAssignableAs(iBaseClass))
@@ -324,7 +338,8 @@ public class SchemaManager extends Configurable<String> {
 	private void createEntry(String iEntityName, SchemaClass cls) {
 		registeredClassesNoPackage.put(iEntityName, cls);
 		if (cls instanceof SchemaClassReflection)
-			registeredClassesFullPackage.put(((SchemaClassReflection) cls).getLanguageType().getName(), cls);
+			registeredClassesFullPackage.put(((SchemaClassReflection) cls)
+					.getLanguageType().getName(), cls);
 
 		if (notFountEntities.contains(iEntityName))
 			// REMOVE THE ENTRY SINCE IT WAS JUST CREATED
