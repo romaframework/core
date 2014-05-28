@@ -82,7 +82,11 @@ public class EntityHelper {
 		SchemaClass sc = Roma.schema().getSchemaClass(iValue);
 		if (sc == null || target == null || sc.isAssignableAs(target.getSchemaClass()))
 			return iValue;
-		return getEntityObject(iValue);
+		Object entityObj = getEntityObject(iValue);
+		SchemaClass entityObjSc = Roma.schema().getSchemaClass(entityObj);
+		if (entityObjSc != null && entityObjSc.isAssignableAs(target.getSchemaClass()))
+			return entityObj;
+		return iValue;
 	}
 
 	public static Object getEntityObject(Object iSource) {
