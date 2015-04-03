@@ -95,7 +95,8 @@ public abstract class SchemaField extends SchemaClassElement {
 			if (e.getCause() instanceof FieldErrorUserException) {
 				throw (FieldErrorUserException) e.getCause();
 			} else {
-				log.error("[SchemaHelper.setFieldValue] Error on setting value '" + iFieldValue + "' for field '" + name + "' on object " + iObject, e);
+				log.error("[SchemaHelper.setFieldValue] Error on setting value '" + iFieldValue + "' for field '" + name + "' on object "
+						+ iObject, e);
 				throw new BindingException(iObject, name, e);
 			}
 		} finally {
@@ -249,21 +250,27 @@ public abstract class SchemaField extends SchemaClassElement {
 			// TODO is this the right place to do this...?
 			Class<?> valueClass = value.getClass();
 			// SUCH A MONSTER!!! MOVE THIS LOGIC IN SchemaClass.isAssignableFrom...
-			if (value instanceof VirtualObject && !(typeClass.getLanguageType() instanceof Class<?> && ((Class<?>) typeClass.getLanguageType()).isAssignableFrom(VirtualObject.class))
-					&& ((VirtualObject) value).getSuperClassObject() != null) {
+			if (value instanceof VirtualObject
+					&& !(typeClass.getLanguageType() instanceof Class<?> && ((Class<?>) typeClass.getLanguageType())
+							.isAssignableFrom(VirtualObject.class)) && ((VirtualObject) value).getSuperClassObject() != null) {
 				if (ComposedEntity.class.isAssignableFrom(((VirtualObject) value).getSuperClassObject().getClass())) {
 					value = ((VirtualObject) value).getSuperClassObject();
 					valueClass = value.getClass();
 				}
 			}
 
+			Class<?> fieldClass = (Class<?>) getLanguageType();
 			if (value instanceof ComposedEntity<?> && !typeClass.isAssignableFrom(valueClass)) {
-				value = ((ComposedEntity<?>) value).getEntity();
+				final Object entity = ((ComposedEntity<?>) value).getEntity();
+				if (entity.getClass().equals(fieldClass)
+						|| (entity.getClass().isAssignableFrom(fieldClass) && !fieldClass.equals(Object.class)))
+					value = entity;
 			}
 		}
 
 		if (value == null && typeClass.isPrimitive()) {
-			log.warn("Cannot set the field value to null for primitive types! Field: " + getEntity() + "." + name + " of class " + getType().getName() + ". Setting value to 0.");
+			log.warn("Cannot set the field value to null for primitive types! Field: " + getEntity() + "." + name + " of class "
+					+ getType().getName() + ". Setting value to 0.");
 			// SET THE VALUE TO 0
 			value = SchemaHelper.assignDefaultValueToLiteral(typeClass);
 		}
