@@ -65,11 +65,14 @@ public class RomaContext {
 		Integer counter = ObjectContext.getInstance().getContextComponent(CTX_CREATED);
 		if (counter == 0) {
 			// REMOVE THE COMPONENT
-			List<ContextLifecycleListener> contextListener = Controller.getInstance().getListeners(ContextLifecycleListener.class);
-			for (ContextLifecycleListener listener : contextListener) {
-				listener.onContextDestroy();
+			try {
+				List<ContextLifecycleListener> contextListener = Controller.getInstance().getListeners(ContextLifecycleListener.class);
+				for (ContextLifecycleListener listener : contextListener) {
+					listener.onContextDestroy();
+				}
+			} finally {
+				ObjectContext.getInstance().setContextComponent(CTX_CREATED, null);
 			}
-			ObjectContext.getInstance().setContextComponent(CTX_CREATED, null);
 		} else
 			// DECREMENT THE COUNTER
 			ObjectContext.getInstance().setContextComponent(CTX_CREATED, --counter);
