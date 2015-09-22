@@ -1,0 +1,463 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://www.romaframework.org/xml/roma"
+	xmlns="http://www.romaframework.org/xml/roma" version="3.0"
+	attributeFormDefault="unqualified" elementFormDefault="qualified"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<xsd:complexType name="aspectClassTypeCore">
+		<xsd:attribute name="entity" type="xsd:string" use="optional" />
+	</xsd:complexType>
+	<xsd:complexType name="aspectFieldTypeCore">
+		<xsd:attribute name="type" type="xsd:string" use="optional" />
+		<xsd:attribute name="embeddedType" type="xsd:string"
+			use="optional" />
+		<xsd:attribute name="embedded" type="xsd:boolean" use="optional"
+			default="true" />
+		<xsd:attribute name="expand" type="xsd:boolean" use="optional"
+			default="true" />
+		<xsd:attribute name="useRuntimeType" type="xsd:boolean"
+			use="optional" default="true" />
+		<xsd:attribute name="refresh" type="xsd:string" use="optional" />
+	</xsd:complexType>
+	<xsd:complexType name="aspectActionTypeFlow">
+		<xsd:attribute name="next" type="xsd:string" use="optional" />
+		<xsd:attribute name="position" type="xsd:string" use="optional" />
+		<xsd:attribute name="error" type="xsd:string" use="optional" />
+		<xsd:attribute name="back" type="xsd:boolean" use="optional"
+			default="false" />
+		<xsd:attribute name="confirmRequired" type="xsd:boolean"
+			use="optional" default="false" />
+		<xsd:attribute name="confirmMessage" type="xsd:string"
+			use="optional" />
+	</xsd:complexType>
+	<xsd:complexType name="aspectFieldTypeI18n">
+		<xsd:attribute name="key" type="xsd:string" use="optional" />
+	</xsd:complexType>
+	<xsd:complexType name="aspectClassTypeLogging">
+		<xsd:attribute name="enabled" type="xsd:boolean" use="optional"
+			default="true" />
+		<xsd:attribute name="mode" type="xsd:string" use="optional"
+			default="true" />
+	</xsd:complexType>
+	<xsd:complexType name="aspectActionTypeLogging">
+		<xsd:attribute name="enabled" type="xsd:boolean" use="optional"
+			default="true" />
+		<xsd:attribute name="level" type="xsd:integer" use="optional" />
+		<xsd:attribute name="category" type="xsd:string" use="optional" />
+		<xsd:attribute name="mode" type="xsd:string" use="optional" />
+		<xsd:attribute name="pre" type="xsd:string" use="optional" />
+		<xsd:attribute name="post" type="xsd:string" use="optional" />
+		<xsd:attribute name="exception" type="xsd:string" use="optional" />
+		<xsd:attribute name="exceptionsToLog" type="xsd:string"
+			use="optional" />
+	</xsd:complexType>
+	<xsd:complexType name="exceptionsToLogType">
+		<xsd:sequence>
+			<xsd:element name="exceptionName" type="xsd:string"
+				minOccurs="1" maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="aspectFieldTypeLogging">
+		<xsd:attribute name="enabled" type="xsd:boolean" use="optional"
+			default="true" />
+		<xsd:attribute name="level" type="xsd:integer" use="optional" />
+		<xsd:attribute name="category" type="xsd:string" use="optional" />
+		<xsd:attribute name="mode" type="xsd:string" use="optional" />
+		<xsd:attribute name="post" type="xsd:string" use="optional" />
+		<xsd:attribute name="exception" type="xsd:string" use="optional" />
+		<xsd:attribute name="exceptionsToLog" type="xsd:string"
+			use="optional" />
+	</xsd:complexType>
+	<xsd:complexType name="aspectElementTypeModule">
+		<xsd:sequence minOccurs="0" maxOccurs="1">
+			<xsd:element name="attribute" type="aspectAttributeTypeModule"
+				minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+	</xsd:complexType>
+	<xsd:complexType name="aspectAttributeTypeModule">
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+		<xsd:attribute name="value" type="xsd:string" use="required" />
+	</xsd:complexType>
+	<xsd:complexType name="aspectTypePersistence">
+		<xsd:attribute name="mode" type="xsd:string" use="required" />
+	</xsd:complexType>
+	<xsd:complexType name="aspectClassTypeProfiling">
+		<xsd:attribute name="enabled" type="xsd:boolean" use="optional"
+			default="true" />
+	</xsd:complexType>
+	<xsd:complexType name="aspectActionTypeProfiling">
+		<xsd:attribute name="enabled" type="xsd:boolean" use="optional"
+			default="true" />
+		<xsd:attribute name="key" type="xsd:string" use="optional" />
+	</xsd:complexType>
+	<xsd:complexType name="aspectClassTypeReporting">
+		<xsd:attribute type="xsd:string" name="documentType"
+			use="optional" />
+		<xsd:attribute type="xsd:string" name="layout" use="optional" />
+		<xsd:attribute type="xsd:string" name="label" use="optional" />
+		<xsd:attribute name="render" type="xsd:string" use="optional" />
+		<xsd:attribute name="explicitElements" type="xsd:boolean"
+			use="optional" default="true" />
+		<xsd:attribute name="entity" type="xsd:string" use="optional" />
+		<xsd:attribute name="inheritViewConfiguration" type="xsd:boolean"
+			use="optional" default="true" />
+	</xsd:complexType>
+	<xsd:complexType name="aspectFieldTypeReporting">
+		<xsd:attribute name="layout" type="xsd:string" use="optional" />
+		<xsd:attribute name="visible" type="xsd:boolean" use="optional"
+			default="false" />
+		<xsd:attribute name="label" type="xsd:string" use="optional" />
+		<xsd:attribute name="render" type="xsd:string" use="optional" />
+	</xsd:complexType>
+	<xsd:complexType name="aspectClassTypeScripting" mixed="true">
+		<xsd:attribute name="language" type="xsd:string"
+			default="javascript" />
+	</xsd:complexType>
+	<xsd:complexType name="aspectActionTypeScripting"
+		mixed="true">
+		<xsd:attribute name="language" type="xsd:string"
+			default="javascript" />
+	</xsd:complexType>
+	<xsd:complexType name="aspectEventTypeScripting" mixed="true">
+		<xsd:attribute name="language" type="xsd:string"
+			default="javascript" />
+	</xsd:complexType>
+	<xsd:complexType name="aspectClassTypeSemantic">
+		<xsd:attribute type="xsd:string" name="subjectPrefix"
+			use="optional" />
+		<xsd:attribute type="xsd:string" name="subjectId" use="optional" />
+		<xsd:attribute type="xsd:string" name="classUri" use="optional" />
+	</xsd:complexType>
+	<xsd:complexType name="aspectFieldTypeSemantic">
+		<xsd:attribute name="predicate" type="xsd:string" use="optional" />
+		<xsd:attribute name="resources" type="xsd:string" use="optional" />
+	</xsd:complexType>
+	<xsd:complexType name="aspectClassTypeService">
+		<xsd:attribute name="interfaceClass" type="xsd:string"
+			use="optional" />
+		<xsd:attribute name="serviceName" type="xsd:string" use="required" />
+	</xsd:complexType>
+	<xsd:complexType name="aspectClassTypeSerialization">
+		<xsd:attribute name="rootElementName" type="xsd:string"
+			use="optional" />
+	</xsd:complexType>
+
+	<xsd:complexType name="aspectFieldTypeSerialization">
+		<xsd:attribute name="transient" type="xsd:boolean" use="optional"
+			default="false" />
+	</xsd:complexType>
+	<xsd:complexType name="aspectClassTypeView">
+		<xsd:sequence>
+			<xsd:element name="form" type="areaLayoutType" minOccurs="0"
+				maxOccurs="1" />
+		</xsd:sequence>
+		<xsd:attribute type="xsd:byte" name="columns" use="optional"
+			default="1" />
+		<xsd:attribute type="xsd:string" name="label" use="optional" />
+		<xsd:attribute type="xsd:string" name="style" use="optional" />
+		<xsd:attribute name="render" type="xsd:string" use="optional" />
+		<xsd:attribute name="explicitElements" type="xsd:boolean"
+			use="optional" default="true" />
+		<xsd:attribute name="entity" type="xsd:string" use="optional" />
+		<xsd:attribute name="description" type="xsd:string" />
+	</xsd:complexType>
+	<xsd:complexType name="aspectFieldTypeView">
+		<xsd:attribute name="position" type="xsd:string" use="optional" />
+		<xsd:attribute name="visible" type="xsd:boolean" use="optional"
+			default="false" />
+		<xsd:attribute name="enabled" type="xsd:boolean" use="optional"
+			default="false" />
+		<xsd:attribute name="match" type="xsd:string" use="optional" />
+		<xsd:attribute name="min" type="xsd:int" use="optional" />
+		<xsd:attribute name="max" type="xsd:int" use="optional" />
+		<xsd:attribute name="required" type="xsd:boolean" use="optional"
+			default="true" />
+		<xsd:attribute name="order" type="xsd:byte" use="optional" />
+		<xsd:attribute name="label" type="xsd:string" use="optional" />
+		<xsd:attribute name="style" type="xsd:string" use="optional" />
+		<xsd:attribute name="render" type="xsd:string" use="optional" />
+		<xsd:attribute name="embeddedType" type="xsd:string"
+			use="optional" />
+		<xsd:attribute name="description" type="xsd:string" use="optional" />
+		<xsd:attribute name="selectionField" type="xsd:string"
+			use="optional" />
+		<xsd:attribute name="format" type="xsd:string" use="optional" />
+		<xsd:attribute name="displayWith" type="xsd:string" use="optional" />
+		<xsd:attribute name="selectionMode">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="value"></xsd:enumeration>
+					<xsd:enumeration value="index"></xsd:enumeration>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+	</xsd:complexType>
+	<xsd:complexType name="aspectActionTypeView">
+		<xsd:attribute name="position" type="xsd:string" use="optional" />
+		<xsd:attribute name="bind" type="xsd:boolean" use="optional"
+			default="true" />
+		<xsd:attribute name="validation" type="xsd:boolean" use="optional"
+			default="true" />
+		<xsd:attribute name="label" type="xsd:string" use="optional" />
+		<xsd:attribute name="actionName" type="xsd:string" use="optional" />
+		<xsd:attribute name="order" type="xsd:byte" use="optional" />
+		<xsd:attribute name="visible" type="xsd:boolean" use="optional"
+			default="false" />
+		<xsd:attribute name="style" type="xsd:string" use="optional" />
+		<xsd:attribute name="render" type="xsd:string" use="optional" />
+		<xsd:attribute name="enabled" type="xsd:boolean" use="optional" />
+		<xsd:attribute name="description" type="xsd:string" use="optional" />
+		<xsd:attribute name="submit" type="xsd:boolean" use="optional"
+			default="true" />
+	</xsd:complexType>
+	<xsd:complexType name="areaLayoutType">
+		<xsd:sequence>
+			<xsd:element name="area" type="areaType" minOccurs="0"
+				maxOccurs="1" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="areaType" mixed="true">
+		<xsd:sequence>
+			<xsd:element name="area" type="areaType" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>Area name to be referenced by setting the
+					position: area-name</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="type" type="xsd:string" use="optional"
+			default="placeholder">
+			<xsd:annotation>
+				<xsd:documentation>
+					Define rendering component to use: placeholder
+					column row grid form
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="size" type="xsd:int" use="optional"
+			default="1">
+			<xsd:annotation>
+				<xsd:documentation>Define the component size (use in columns, rows
+					and grids)</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="align" type="xsd:string" use="optional"
+			default="center">
+			<xsd:annotation>
+				<xsd:documentation>
+					Alignment to use for the area inside its parent.
+					The first value is the vertical alignment between: center,
+					top
+					and
+					bottom. The second one is for the horizontal: center, left or
+					right. Use a space to separate it. You can
+					specify only the
+					vertical
+					alignment by omitting the second one: in this case center will be
+					taken as horizontal
+					alignment. Example: align="top"
+					or align="bottom
+					right"
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="style" type="xsd:string" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>Define the style of the area. Since area is a
+					container of components, in such implementations can have a own
+					style. This is true for the Janiculum that load the styles as CSS.
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+	<xsd:include schemaLocation="roma-validation.xsd" />
+	<xsd:include schemaLocation="roma-security.xsd" />
+	<xsd:include schemaLocation="roma-console.xsd" />
+	<xsd:element name="class" type="classType" />
+
+	<xsd:complexType name="classType">
+		<xsd:sequence>
+			<xsd:element name="aspects" maxOccurs="1" minOccurs="0">
+				<xsd:complexType>
+					<xsd:choice maxOccurs="unbounded">
+						<xsd:element name="core" type="aspectClassTypeCore"
+							minOccurs="0" maxOccurs="1" />
+						<xsd:element name="logging" type="aspectClassTypeLogging"
+							minOccurs="0" maxOccurs="1" />
+						<xsd:element name="module" type="aspectElementTypeModule"
+							minOccurs="0" maxOccurs="unbounded" />
+						<xsd:element name="profiling" type="aspectClassTypeProfiling"
+							minOccurs="0" maxOccurs="1" />
+						<xsd:element name="reporting" type="aspectClassTypeReporting"
+							minOccurs="0" maxOccurs="1" />
+						<xsd:element name="scripting" type="aspectClassTypeScripting"
+							minOccurs="0" maxOccurs="1" />
+						<xsd:element name="security" type="aspectClassTypeSecurity"
+							minOccurs="0" maxOccurs="1" />
+						<xsd:element name="semantic" type="aspectClassTypeSemantic"
+							minOccurs="0" maxOccurs="1" />
+						<xsd:element name="serialization" type="aspectClassTypeSerialization"
+							minOccurs="0" maxOccurs="1" />
+						<xsd:element name="service" type="aspectClassTypeService"
+							minOccurs="0" maxOccurs="1" />
+						<xsd:element name="view" type="aspectClassTypeView"
+							minOccurs="0" maxOccurs="1" />
+						<xsd:element name="console" type="aspectClassTypeConsole"
+							minOccurs="0" maxOccurs="1" />
+					</xsd:choice>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="fields" maxOccurs="1" minOccurs="0">
+				<xsd:complexType>
+					<xsd:sequence minOccurs="0" maxOccurs="1">
+						<xsd:element type="fieldType" name="field" maxOccurs="unbounded"
+							minOccurs="0" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="actions" minOccurs="0" maxOccurs="1">
+				<xsd:complexType>
+					<xsd:sequence minOccurs="0" maxOccurs="1">
+						<xsd:element type="actionType" name="action"
+							maxOccurs="unbounded" minOccurs="0" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="events" minOccurs="0" maxOccurs="1">
+				<xsd:complexType>
+					<xsd:sequence minOccurs="0" maxOccurs="1">
+						<xsd:element type="eventType" name="event" maxOccurs="unbounded"
+							minOccurs="0" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="extends" type="xsd:string" use="optional" />
+		<xsd:attribute name="implements" type="xsd:string" use="optional" />
+	</xsd:complexType>
+	<xsd:complexType name="fieldType">
+		<xsd:sequence>
+			<xsd:element name="aspects" minOccurs="0" maxOccurs="1">
+				<xsd:complexType>
+					<xsd:choice maxOccurs="unbounded">
+						<xsd:element name="core" type="aspectFieldTypeCore"
+							minOccurs="0" maxOccurs="1" />
+						<xsd:element name="i18n" type="aspectFieldTypeI18n"
+							minOccurs="0" maxOccurs="1" />
+						<xsd:element name="logging" type="aspectFieldTypeLogging"
+							minOccurs="0" maxOccurs="1" />
+						<xsd:element name="module" type="aspectElementTypeModule"
+							minOccurs="0" maxOccurs="unbounded" />
+						<xsd:element name="persistence" type="aspectTypePersistence"
+							minOccurs="0" maxOccurs="1" />
+						<xsd:element name="reporting" type="aspectFieldTypeReporting"
+							minOccurs="0" maxOccurs="1" />
+						<xsd:element name="semantic" type="aspectFieldTypeSemantic"
+							minOccurs="0" maxOccurs="1" />
+						<xsd:element name="security" type="aspectFieldTypeSecurity"
+							minOccurs="0" maxOccurs="1" />
+						<xsd:element name="serialization" type="aspectFieldTypeSerialization"
+							minOccurs="0" maxOccurs="1" />
+						<xsd:element name="validation" type="aspectFieldTypeValidation"
+							minOccurs="0" maxOccurs="1" />
+						<xsd:element name="view" type="aspectFieldTypeView"
+							minOccurs="0" maxOccurs="1" />
+					</xsd:choice>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="events" minOccurs="0" maxOccurs="1">
+				<xsd:complexType>
+					<xsd:sequence minOccurs="0" maxOccurs="1">
+						<xsd:element type="eventType" name="event" maxOccurs="unbounded"
+							minOccurs="0" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="value" type="xsd:string" minOccurs="0"
+				maxOccurs="1" />
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+		<xsd:attribute name="type" type="xsd:string" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>Use standard types: string, integer, float, date,
+					short, byte, char or custom types as well
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+	<xsd:complexType name="actionType">
+		<xsd:sequence>
+			<xsd:element name="parameters" minOccurs="0">
+				<xsd:complexType>
+					<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+						<xsd:element name="param" type="paramType" minOccurs="0"
+							maxOccurs="1" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="aspects" minOccurs="0" maxOccurs="1">
+				<xsd:complexType>
+					<xsd:choice maxOccurs="unbounded">
+						<xsd:element name="flow" type="aspectActionTypeFlow"
+							minOccurs="0" maxOccurs="1" />
+						<xsd:element name="logging" type="aspectActionTypeLogging"
+							minOccurs="0" maxOccurs="1" />
+						<xsd:element name="module" type="aspectElementTypeModule"
+							minOccurs="0" maxOccurs="unbounded" />
+						<xsd:element name="persistence" type="aspectTypePersistence"
+							minOccurs="0" maxOccurs="1" />
+						<xsd:element name="profiling" type="aspectActionTypeProfiling"
+							minOccurs="0" maxOccurs="1" />
+						<xsd:element name="scripting" type="aspectActionTypeScripting"
+							minOccurs="0" maxOccurs="1" />
+						<xsd:element name="security" type="aspectActionTypeSecurity"
+							minOccurs="0" maxOccurs="1" />
+						<xsd:element name="validation" type="aspectActionTypeValidation"
+							minOccurs="0" maxOccurs="1" />
+						<xsd:element name="view" type="aspectActionTypeView"
+							minOccurs="0" maxOccurs="1" />
+						<xsd:element name="console" type="aspectActionTypeConsole"
+							minOccurs="0" maxOccurs="1" />
+					</xsd:choice>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+	</xsd:complexType>
+
+	<xsd:complexType name="paramType">
+		<xsd:sequence>
+			<xsd:element name="aspects" minOccurs="0" maxOccurs="1">
+				<xsd:complexType>
+					<xsd:choice maxOccurs="unbounded">
+						<xsd:element name="console" type="aspectParameterTypeConsole"
+							minOccurs="0" maxOccurs="1" />
+					</xsd:choice>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="optional" />
+	</xsd:complexType>
+
+	<xsd:complexType name="eventType">
+		<xsd:sequence>
+			<xsd:element name="aspects" minOccurs="0" maxOccurs="1">
+				<xsd:complexType>
+					<xsd:choice maxOccurs="unbounded">
+						<xsd:element name="flow" type="aspectActionTypeFlow"
+							minOccurs="0" maxOccurs="1" />
+						<xsd:element name="logging" type="aspectActionTypeLogging"
+							minOccurs="0" maxOccurs="1" />
+						<xsd:element name="security" type="aspectActionTypeSecurity"
+							minOccurs="0" maxOccurs="1" />
+						<xsd:element name="scripting" type="aspectEventTypeScripting"
+							minOccurs="0" maxOccurs="1" />
+					</xsd:choice>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+	</xsd:complexType>
+</xsd:schema>
